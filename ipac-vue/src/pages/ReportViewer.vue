@@ -36,12 +36,12 @@
 
 			<h2>{{ section.heading }}</h2>
 			<div class="intro" v-html="section.description_text"></div>
-			<div v-if="section.has_guidelines">
+			<div v-if="section.has_guidelines == '1'">
 				<h3>Guidelines And Requirements</h3>
 
 				<div v-html="section.guidelines_text"></div>
 			</div>
-			<div v-if="section.has_findings">
+			<div v-if="section.has_findings == '1'">
 				<h3>Findings</h3>
 
 				<div v-html="section.findings"></div>
@@ -111,14 +111,30 @@
 				let renderedSections = [];
 				let vm = this
 
-				this.sections.forEach(function(section, index) {
-					section.description_text = Mustache.render(section.description_text, vm.variables)
-					section.guidelines_text = Mustache.render(section.guidelines_text, vm.variables)
-					section.findings = Mustache.render(section.findings, vm.variables)
-					section.heading =  Mustache.render(section.heading, vm.variables)
+				console.log(vm.variables)
 
-					renderedSections.push(section)
-				})
+				//make sure client object exists, otherwise skip render (it will render again when client changes)
+				if (this.variables.client.length > 0 && this.variables.company.length > 0 && this.variables.report_date) {
+
+					this.sections.forEach(function(section, index) {
+
+						if (typeof section.description_text == "string")
+							section.description_text = Mustache.render(section.description_text, vm.variables)
+						
+						if (typeof section.guidelines_text == "string")
+							section.guidelines_text = Mustache.render(section.guidelines_text, vm.variables)
+						
+						if (typeof section.findings == "string")
+							section.findings = Mustache.render(section.findings, vm.variables)
+						
+						if (typeof section.heading == "string")
+							section.heading =  Mustache.render(section.heading, vm.variables)
+
+						renderedSections.push(section)
+					})
+				}
+				else
+					console.log("Skipping template render...")
 
 				return renderedSections
 			}

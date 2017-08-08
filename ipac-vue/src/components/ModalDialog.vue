@@ -22,7 +22,7 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" v-on:click="closeModal">Cancel</button>
-					<button type="submit" class="btn btn-primary" v-if="localSubmitVisible">{{ confirmButtonText }}</button>
+					<button type="submit" class="btn" :class="buttonClass ? buttonClass : 'btn-primary'" v-if="localSubmitVisible">{{ confirmButtonText }}</button>
 				</div>
 			</form>
 		</div>
@@ -34,7 +34,15 @@
 <script type="text/javascript">
 	export default {
 		name: 'ModalDialog',
-		props: ['modalVisible','title','confirmButtonText','formAction','formEnctype',"submitVisible"],
+		props: [
+			'modalVisible',
+			'title',
+			'confirmButtonText',
+			'formAction',
+			'formEnctype',
+			"submitVisible",
+			"buttonClass"
+		],
 		data () {
 			return {
 				canceled: false,

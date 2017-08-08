@@ -2,7 +2,7 @@
 	<section class="small-section">
 		<router-link to="/reports"><i class="fa fa-angle-double-left"></i> Back to Reports</router-link>
 
-		<form class="form-horizontal" style="margin-top: 20px;" v-on:submit.prevent="save">
+		<form class="form-horizontal" v-on:submit.prevent="save">
 			<form-group label="Report Title" col-class="col-md-4">
 				<input type="text" v-model="report.report_title" class="form-control">
 			</form-group>
@@ -60,10 +60,7 @@
 			save() {
 
 				let vm = this
-
 				let payload = this.report
-
-				console.log(payload)
 
 				this.postData(window.apiBase+"report/save",payload).then(function(response){
 

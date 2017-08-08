@@ -1,12 +1,23 @@
 <template>
 	<section>
-		<router-link to="/reports"><i class="fa fa-angle-double-left"></i> Back to Reports</router-link>
+		<div class="button-bar">
+			<router-link to="/reports"><i class="fa fa-angle-double-left"></i> Back to Reports</router-link>
 
-		<div class="pull-right">
-			<button class="btn btn-success" v-on:click="save"><i class="fa fa-save"></i> Save</button>
-			<a class="btn btn-primary" :href="'/reports/view/'+$route.params.id" target="_blank"><i class="fa fa-eye"></i> View Report</a>
+			<div class="pull-right">
+				<button class="btn btn-info" type="button" v-on:click="varHelpVisible = true">
+					<i class="fa fa-question-circle"></i> Variable Reference
+				</button>
+
+				<button class="btn btn-success" v-on:click="save">
+					<i class="fa fa-save"></i> Save
+				</button>
+
+				<a class="btn btn-primary" :href="'/reports/view/'+$route.params.id" target="_blank">
+					<i class="fa fa-eye"></i> View Report
+				</a>
+			</div>
+			<div style="clear: both;"></div>
 		</div>
-		<div style="clear: both;"></div>
 
 		<form class="form-horizontal" style="margin-top: 20px;">
 			<form-group label="Report Title" col-class="col-lg-2">
@@ -34,6 +45,8 @@
 				</div>
 			</div>
 		</form>
+
+		<variable-help v-if="varHelpVisible" v-on:close="varHelpVisible = false" :modal-visible="varHelpVisible"></variable-help>
 	</section>
 
 </template>
@@ -43,6 +56,7 @@
 	import FormGroup from '../components/FormGroup'
 	import DateField from '../components/DateField'
 	import draggable from 'vuedraggable'
+	import VariableHelp from '../components/VariableHelp'
 
 	export default {
 		name: "ReportEditor",
@@ -51,7 +65,8 @@
 			FormGroup,
 			RichText,
 			DateField,
-			draggable
+			draggable,
+			VariableHelp
 		},
 		data () {
 			return {
@@ -60,7 +75,8 @@
 					report_title: "",
 					date_issued: "",
 				},
-				activeSection: null
+				activeSection: null,
+				varHelpVisible: false
 			}
 		},
 		methods: {

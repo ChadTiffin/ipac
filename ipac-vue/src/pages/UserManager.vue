@@ -29,7 +29,7 @@
 					<td>{{ user.last_login }}</td>
 					<td>{{ user.api_key }}</td>
 					<td>
-						<button class="btn btn-sm btn-warning" v-on:click="editUser(user)"><i class="fa fa-pencil"></i></button>
+						<button class="btn btn-sm btn-default" v-on:click="editUser(user)"><i class="fa fa-pencil"></i></button>
 					</td>
 				</tr>
 			</tbody>

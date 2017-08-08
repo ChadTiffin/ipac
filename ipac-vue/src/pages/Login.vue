@@ -42,20 +42,16 @@
 
 		</ModalDialog>
 
-		<spinner :spinner-visible="spinnerVisible"></spinner>
-
 	</div>
 </template>
 
 <script type="text/javascript">
 	import ModalDialog from '../components/ModalDialog'
 	import FormGroup from '../components/FormGroup'
-	import Spinner from '../components/Spinner'
 
 	export default {
 		name: 'Login',
 		components: {
-			Spinner,
 			ModalDialog,
 			FormGroup
 		},
@@ -132,7 +128,7 @@
 			//log user out
 			localStorage.removeItem("apiKey");
 			this.$emit("updateLoginStatus",false);
-			vm.$emit("toggleSpinner",false)
+			this.$emit("toggleSpinner",false)
 		}
 	}
 </script>

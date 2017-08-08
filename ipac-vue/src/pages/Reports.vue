@@ -2,7 +2,17 @@
 	<section>
 		<router-link class="btn btn-success" to="reports/new"><i class="fa fa-plus"></i> New Report</router-link>
 
-		<table-list :records="amendedReports" :fields="fields" has-edit="reports/edit/" has-delete="true" :other-buttons="otherButtons"></table-list>
+		<table-list 
+			:records="amendedReports" 
+			:fields="fields" 
+			has-edit="reports/edit/" 
+			has-delete="true" 
+			v-on:modelChange="fetchTemplates" 
+			:other-buttons="otherButtons"
+			delete-endpoint="report/delete">
+			
+		</table-list>
+
 	</section>
 
 </template>
@@ -14,7 +24,7 @@
 		name: "Reports",
 		props: [],
 		components: {
-			TableList
+			TableList,
 		},
 		data () {
 			return {
@@ -63,9 +73,6 @@
 			}
 		},
 		methods: {
-			edit(report) {
-				window.location = "/reports/edit/"+report.id
-			},
 			fetchTemplates() {
 				let vm = this
 

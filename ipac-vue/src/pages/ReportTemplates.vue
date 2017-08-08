@@ -2,7 +2,15 @@
 	<section>
 		<router-link to="/templates/reports/edit/new" class="btn btn-success"><i class="fa fa-plus"></i> New Report Template</router-link>
 
-		<table-list :records="templates" :fields="fields" has-edit="/templates/reports/edit/" has-delete="true" v-on:edit="editTemplate"></table-list>
+		<table-list 
+			:records="templates" 
+			:fields="fields" 
+			has-edit="/templates/reports/edit/" 
+			delete-endpoint="reportTemplate/delete"
+			has-delete="true"
+			v-on:modelChange="fetchTemplates">
+		</table-list>
+
 	</section>
 
 </template>
@@ -14,7 +22,7 @@
 		name: "ReportTemplatesList",
 		props: [],
 		components: {
-			TableList
+			TableList,
 		},
 		data () {
 			return {
@@ -28,7 +36,7 @@
 						label: "Last Updated"
 					}
 				],
-				templates: []
+				templates: [],
 			}
 		},
 		methods: {
@@ -41,9 +49,6 @@
 					vm.$emit("toggleSpinner",false)
 				})
 			},
-			editTemplate(template) {
-				window.location = "/edit-report-template/"+template.id
-			}
 		},
 		created() {
 			this.$emit("toggleSpinner",true)

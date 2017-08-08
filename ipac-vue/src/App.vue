@@ -19,7 +19,13 @@
 
       <div class="section-wrapper" :class="{ menuShowing: menuShowing }" v-on:click="hideMenu">
         
-        <router-view v-on:updateAlert="updateAlert" v-on:updateLoginStatus="updateLoginStatus" v-on:toggleSpinner="toggleSpinner" :clients="clients"></router-view>
+        <router-view 
+          v-on:updateAlert="updateAlert" 
+          v-on:updateLoginStatus="updateLoginStatus" 
+          v-on:toggleSpinner="toggleSpinner" 
+          v-on:clientsChanged="fetchClients"
+          :clients="clients">
+        </router-view>
         
       </div>
     </div>
@@ -67,6 +73,11 @@ export default {
     },
     updateAlert(alert) {
       this.alert = alert
+      let vm = this
+
+      setTimeout(function(){
+        vm.alert.visible = false
+      },4000)
     },
     updateLoginStatus(newStatus) {
       this.loggedIn = newStatus
@@ -85,21 +96,18 @@ export default {
     },
   },
   created() {
-    if ("apiKey" in localStorage)
+    if ("apiKey" in localStorage) {
       this.loggedIn = true
+      this.fetchClients()
+    }
     else
       this.loggedIn = false
-
-    this.fetchClients()
+    
   }
 }
 </script>
 
 <style>
-.dashboard {
-    
-    padding: 1px;
-  }
 
   .section-wrapper {
     margin-top: 40px;
@@ -118,6 +126,7 @@ export default {
     
     margin-bottom: 20px;
     background-color: white;
+    position: relative;
   }
 
   section.small-section {
@@ -129,15 +138,20 @@ export default {
     margin-top: 0;
   }
 
-  .field-set {
-    padding: 20px;
-    margin-left: -20px;
-    margin-right: -20px;
-    clear: both;
+  .button-bar {
+    background-color: #dbe3e4;
+    margin: -20px;
+    margin-bottom: 20px;
+    z-index: 3;
+    padding: 5px;
+    color: white;
   }
 
-  .field-set:nth-child(even) {
-    background-color: #ecf5fb;
+  .button-bar a.router-link-active {
+    margin-top: 8px;
+    margin-left: 10px;
+    display: inline-block;
+    cursor: pointer;
   }
 
   .table {

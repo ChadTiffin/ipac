@@ -1,71 +1,75 @@
 <template>
 	<section>
-		<router-link to="/templates/reports"><i class="fa fa-angle-double-left"></i> Back to Report Templates</router-link>
-
 		<form class="form-horizontal" v-on:submit.prevent="save">
+			<div class="button-bar">
 
-			<div class="field-set">
-				<button class="btn btn-primary pull-right"><i class="fa fa-save"></i> Save</button>
+				<router-link to="/templates/reports"><i class="fa fa-angle-double-left"></i> Back to Report Templates</router-link>
+
+				<div class="pull-right">
+					<button class="btn btn-info" type="button" v-on:click="varHelpVisible = true">
+						<i class="fa fa-question-circle"></i> Variable Reference
+					</button>
+
+					<button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
+				</div>
+
 				<div style="clear: both;"></div>
 			</div>
-			
 
-			<div class="field-set">
-				<form-group label="Report Name" col-class="col-md-2">
-					<input type="text" class="form-control" v-model="report.template_name">
-				</form-group>
-			</div>
-			<div class="field-set">
-				<form-group label="Preface Page Text" col-class="col-md-2">
-					<rich-text v-model="report.preface_text" id="preface_text"></rich-text>
-				</form-group>
-			</div>
+			<form-group label="Report Name" col-class="col-md-2">
+				<input type="text" class="form-control" v-model="report.template_name">
+			</form-group>
 
-			<div class="field-set">
-				<p>Drag over section templates from right to left to include them in this report template</p>
-				<div class="row">
-					<div class="col-md-6">
-						<h2>Included in Report Template</h2>
+			<hr>
 
+			<form-group label="Preface Page Text" col-class="col-md-2">
+				<rich-text v-model="report.preface_text" id="preface_text"></rich-text>
+			</form-group>
+		
+			<hr>
+
+			<div class="row">
+				<div class="col-md-2">
+				<label class="control-label">Drag over section templates from right to left to include them in this report template</label>
+				</div>
+				<div class="col-md-5">
+					<h2>Included in Report Template</h2>
+
+					
+					<ul class="list-group">
+						<draggable v-model="includedSections" :options="{group:'sections'}"  style="min-height: 200px">
 						
-						<ul class="list-group">
-							<draggable v-model="includedSections" :options="{group:'sections'}"  style="min-height: 200px">
-							
-								<li class="list-group-item" v-for="section in includedSections">
-									{{ section.heading }}
-									<div v-if="section.template_description != ''">
-										<small>({{ section.template_description }})</small>
-									</div>
-								</li>
+							<li class="list-group-item" v-for="section in includedSections">
+								{{ section.heading }}
+								<div v-if="section.template_description != ''">
+									<small>({{ section.template_description }})</small>
+								</div>
+							</li>
 
-							</draggable>
-						</ul>
-						
-					</div>
-					<div class="col-md-6">
-						<h2>Available Sections</h2>
-						<ul class="list-group">
-							<draggable v-model="availableSections" :options="{group:'sections'}" style="min-height: 200px">
+						</draggable>
+					</ul>
+					
+				</div>
+				<div class="col-md-5">
+					<h2>Available Sections</h2>
+					<ul class="list-group">
+						<draggable v-model="availableSections" :options="{group:'sections'}" style="min-height: 200px">
 
-								<li class="list-group-item" v-for="section in availableSections">
-									{{ section.heading }}
-									<div v-if="section.template_description != ''">
-										<small>({{ section.template_description }})</small>
-									</div>
-								</li>
+							<li class="list-group-item" v-for="section in availableSections">
+								{{ section.heading }}
+								<div v-if="section.template_description != ''">
+									<small>({{ section.template_description }})</small>
+								</div>
+							</li>
 
-							</draggable>
-						</ul>
-					</div>
+						</draggable>
+					</ul>
 				</div>
 			</div>
 
-			<div class="field-set">
-				<button class="btn btn-primary pull-right"><i class="fa fa-save"></i> Save</button>
-			
-				<div style="clear: both;"></div>
-			</div>
 		</form>
+
+		<variable-help v-if="varHelpVisible" v-on:close="varHelpVisible = false" :modal-visible="varHelpVisible"></variable-help>
 	</section>
 
 </template>
@@ -74,6 +78,7 @@
 	import RichText from '../components/RichText'
 	import FormGroup from '../components/FormGroup'
 	import draggable from 'vuedraggable'
+	import VariableHelp from '../components/VariableHelp'
 
 	export default {
 		name: "ReportTemplateEditor",
@@ -81,7 +86,8 @@
 		components: {
 			FormGroup,
 			RichText,
-			draggable
+			draggable,
+			VariableHelp
 		},
 		data () {
 			return {
@@ -92,8 +98,8 @@
 				},
 				includedSections: [],
 				allSections: [],
-				availableSections: []
-
+				availableSections: [],
+				varHelpVisible: false
 			}
 		},
 		watch: {

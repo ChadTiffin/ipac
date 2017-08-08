@@ -14,12 +14,6 @@ class Report extends Base_Controller {
 		$this->gatekeep(["Demo", "User","Admin","Root"]);
 	}
 
-	public function display($id) {
-		$report = $this->db->get_where($this->table,['id' => $id])->row_array();
-
-		
-	}
-
 	public function find($id,$field='id') {
 		//$report = $this->db->get_where($this->table,['id' => $id])->row_array();
 
@@ -44,6 +38,7 @@ class Report extends Base_Controller {
 			->from("report_template_sections")
 			->join("section_templates", "section_templates.id = report_template_sections.section_template_id")
 			->where("report_template_sections.report_template_id",$report['report_template_id'])
+			->order_by("order_index","ASC")
 			->get()->result_array();
 
 		$new_sections = [];

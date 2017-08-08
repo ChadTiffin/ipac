@@ -69,10 +69,12 @@ class ReportTemplate extends Base_Controller {
 			unset($section['id']);
 			unset($section['heading']);
 			unset($section['description_text']);
+			unset($section['template_description']);
 			unset($section['has_guidelines']);
 			unset($section['has_findings']);
 			unset($section['guidelines_text']);
 			unset($section['updated_at']);
+			unset($section['deleted']);
 
 			$section['order_index'] = $cnt_order;
 			$cnt_order++;

@@ -56,6 +56,7 @@
 
 				},
 				plugins: 'link lists advlist hr code',
+				menubar : false,
 				toolbar: 'undo redo | styleselect | alignleft aligncenter alignright | bold italic bullist numlist hr | code',
 				formats: {
 					custom_format: {block : 'p', styles : {margin: '0px'}}

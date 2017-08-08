@@ -11,6 +11,7 @@ import ReportNew from './pages/ReportNew'
 import ReportEditor from './pages/ReportEditor'
 import ReportViewer from './pages/ReportViewer'
 import CompanySettings from './pages/CompanySettings'
+import ClientEditor from './pages/ClientEditor'
 
 export default [
 
@@ -51,6 +52,15 @@ export default [
       icon: "fa-users",
       navbar: true,
       titleText: "Clients"
+    }
+  },
+  {
+    path: '/clients/edit/:id' , 
+    component: ClientEditor,
+    meta: {
+      icon: "fa-users",
+      navbar: true,
+      titleText: "Edit Client"
     }
   },
   {

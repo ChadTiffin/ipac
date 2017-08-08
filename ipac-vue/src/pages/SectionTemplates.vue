@@ -2,7 +2,14 @@
 	<section>
 		<router-link class="btn btn-success" to="/templates/sections/edit/new"><i class="fa fa-plus"></i> New Section Template</router-link>
 
-		<table-list :records="templates" :fields="fields" has-edit="/templates/sections/edit/" has-delete="true" v-on:edit="editTemplate"></table-list>
+		<table-list 
+			:records="templates"
+			:fields="fields" 
+			has-edit="/templates/sections/edit/" 
+			has-delete="true"
+			delete-endpoint="sectionTemplate/delete"
+			v-on:modelChange="fetchTemplates">
+		</table-list>
 	</section>
 
 </template>
@@ -32,7 +39,7 @@
 						label: "Last Updated"
 					}
 				],
-				templates: []
+				templates: [],
 			}
 		},
 		methods: {
@@ -45,9 +52,6 @@
 					vm.$emit("toggleSpinner",false)
 				})
 			},
-			editTemplate(template) {
-				window.location = "/edit-section-template/"+template.id
-			}
 		},
 		created() {
 			this.$emit("toggleSpinner",true)
