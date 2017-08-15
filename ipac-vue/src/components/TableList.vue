@@ -1,5 +1,6 @@
 <template>
     <div>
+
     	<table class="table table-striped">
             <thead>
                 <tr>
@@ -12,7 +13,14 @@
                     <td v-for="field in fields">{{ record[field.key] }}</td>
                     <td v-if="hasEdit || hasDelete">
 
-                        <button v-if="hasEdit == 'true'" class="btn btn-default btn-sm" v-on:click="editRecord(record)">
+                        <div class="other-buttons" v-for="button in otherButtons" v-if="otherButtons">
+                            <router-link class="btn btn-sm" style="margin-left: 4px;" :to="button.link + record.id" :class="button.class">
+                                <i v-if="button.icon" class="fa" :class="button.icon"></i>
+                                {{ button.text }}
+                            </router-link>
+                        </div>
+
+                        <button v-if="hasEdit == true" class="btn btn-default btn-sm" v-on:click="editRecord(record)">
                             <i class="fa fa-pencil"></i>
                         </button>
 
@@ -21,13 +29,7 @@
                         </router-link>
 
                         <button v-if="hasDelete" class="btn btn-danger btn-sm" v-on:click="deleteRecord(record)"><i class="fa fa-remove"></i></button>
-
-                        <div class="other-buttons" v-for="button in otherButtons">
-                            <router-link class="btn btn-sm" :to="button.link + record.id" :class="button.class">
-                                <i v-if="button.icon" class="fa" :class="button.icon"></i>
-                                {{ button.text }}
-                            </router-link>
-                        </div>
+                        
                     </td>
                 </tr>
                 <tr v-if="records.length == 0">

@@ -7,7 +7,7 @@
 			:fields="fields" 
 			has-edit="/templates/reports/edit/" 
 			delete-endpoint="reportTemplate/delete"
-			has-delete="true"
+			:has-delete="true"
 			v-on:modelChange="fetchTemplates">
 		</table-list>
 

@@ -13,6 +13,7 @@
       </DashboardHeader>
 
       <div class="alert main-alert" :class="alert.class" v-if="alert.visible">
+        <i class="fa" :class="alert.icon"></i>
         {{ alert.msg }}
         <p v-if="alert.errors">{{ alert.errors }}</p>
       </div>
@@ -135,7 +136,9 @@ export default {
   }
 
   h2 {
-    margin-top: 0;
+    font-size: 16pt;
+    margin-top: 10px;
+
   }
 
   .button-bar {
@@ -147,9 +150,10 @@ export default {
     color: white;
   }
 
-  .button-bar a.router-link-active {
+  .button-bar a.router-link {
     margin-top: 8px;
     margin-left: 10px;
+    margin-bottom: 5px;
     display: inline-block;
     cursor: pointer;
   }
@@ -225,11 +229,6 @@ export default {
     display: inline-block;
   }
 
-  .col2-control {
-    width: calc(50% - 2px);
-    display: inline-block;
-  }
-
   @media (max-width: 1200px) {
     .section-wrapper.menuShowing {
       margin-left: 0;
@@ -251,4 +250,5 @@ export default {
       width: 100%;
     }
   }
+
 </style>

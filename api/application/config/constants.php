@@ -5,6 +5,8 @@ defined('APP_NAME') OR define('APP_NAME', "IPAC Report Builder");
 defined('DOMAIN_NAME') OR define('DOMAIN_NAME', "api.budget.chadtiffin.com");
 defined('FRONT_END_DOMAIN') OR define('FRONT_END_DOMAIN', "budget.chadtiffin.com");
 defined('PSW_MIN_LENGTH') OR define('PSW_MIN_LENGTH', 6);
+defined('UPLOAD_FOLDER') OR define('UPLOAD_FOLDER', "../uploads/");
+
 
 /*
 |--------------------------------------------------------------------------

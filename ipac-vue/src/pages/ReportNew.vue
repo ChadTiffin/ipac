@@ -1,8 +1,10 @@
 <template>
-	<section class="small-section">
-		<router-link to="/reports"><i class="fa fa-angle-double-left"></i> Back to Reports</router-link>
+	<section >
+		<div class="button-bar">
+			<router-link :to="'/clients/'+currentClientId" class='router-link'><i class="fa fa-angle-double-left"></i> Back to Client</router-link>
+		</div>
 
-		<form class="form-horizontal" v-on:submit.prevent="save">
+		<form class="form-horizontal" style="max-width: 600px" v-on:submit.prevent="save">
 			<form-group label="Report Title" col-class="col-md-4">
 				<input type="text" v-model="report.report_title" class="form-control">
 			</form-group>
@@ -50,7 +52,8 @@
 					client_id: null
 				},
 				reportTemplates: [],
-				activeSection: null
+				activeSection: null,
+				currentClientId: localStorage.currentClientId
 			}
 		},
 		methods: {
@@ -88,6 +91,8 @@
 </script>
 
 <style type="text/css" scoped>
-
+	.form-horizontal {
+		min-height: 300px;
+	}
 </style>
 

@@ -1,7 +1,7 @@
 <template>
 	<section>
 		<div class="button-bar">
-			<router-link to="/reports"><i class="fa fa-angle-double-left"></i> Back to Reports</router-link>
+			<router-link :to="'/clients/'+currentClientId" class='router-link'><i class="fa fa-angle-double-left"></i> Back to Client</router-link>
 
 			<div class="pull-right">
 				<button class="btn btn-info" type="button" v-on:click="varHelpVisible = true">
@@ -20,25 +20,47 @@
 		</div>
 
 		<form class="form-horizontal" style="margin-top: 20px;">
-			<form-group label="Report Title" col-class="col-lg-2">
-				<input type="text" v-model="report.report_title" class="form-control">
-			</form-group>
+			<div class="row">
+				<div class="col-md-6">
+					<form-group label="Report Title" col-class="col-md-4">
+						<input type="text" v-model="report.report_title" class="form-control">
+					</form-group>
 
-			<form-group label="Report Issue Date" col-class="col-lg-2">
-				<date-field v-model="report.date_issued" extra-classes="form-control"></date-field>
-			</form-group>
+					<form-group label="Location" col-class="col-md-4">
+						<select class="form-control" v-model="report.location_id">
+							<option v-for="location in locations" :value="location.id">{{location.location_name}}</option>
+						</select>
+					</form-group>
+
+					<form-group label="Report Issue Date" col-class="col-md-4">
+						<date-field v-model="report.date_issued" extra-classes="form-control"></date-field>
+					</form-group>
+				</div>
+				<div class="col-md-6">
+					<form-group label="Audits to Import From" col-class="col-md-4">
+						<select multiple class="form-control" v-model="includedAudits">
+							<option v-for="audit in audits" :value="audit.id">{{ audit.audit_date}} {{ audit.form_templates.form_name }}</option>
+						</select>
+					</form-group>
+				</div>
+			</div>
 
 			<div class="row">
 				<div class="col-md-4">
 					<h3>Report Sections</h3>
-					<ul class="list-group">
-						<li v-for="section in sections" v-on:click="editSection(section)" class="list-group-item">{{ section.heading }}</li>
+					<ul class="nav nav-pills nav-stacked report-sections">
+						<li v-for="section in sections" :class="{active: activeSection == section.id}"><a href="#" v-on:click="activeSection = section.id">{{ section.heading }}</a></li>
 					</ul>
 				</div>
 				<div class="col-md-8">
+
 					
 					<div v-show="activeSection == section.id" class="section-editor" v-for="section in sections">
+
+						<button type="button" class="btn btn-primary pull-right" v-on:click="importAuditData(section)"><i class="fa fa-download"></i> Import Audit Data Into Findings</button>
+
 						<h3><small>Findings:</small> {{ section.heading }}</h3>
+
 						<rich-text :id="'editor-'+section.id" v-model="section.findings"></rich-text>
 					</div>
 					
@@ -60,7 +82,6 @@
 
 	export default {
 		name: "ReportEditor",
-		props: [],
 		components: {
 			FormGroup,
 			RichText,
@@ -74,14 +95,98 @@
 				report: {
 					report_title: "",
 					date_issued: "",
+					location_id: null
 				},
+				includedAudits: [],
+				reportMeta: {},
+				locations: [],
+				audits: [],
 				activeSection: null,
-				varHelpVisible: false
+				varHelpVisible: false,
+				currentClientId: localStorage.currentClientId
 			}
 		},
 		methods: {
-			editSection(section) {
-				this.activeSection = section.id
+			importAuditData(section) {
+
+				let vm = this
+				let findings_html = "<ul>";
+				let findings_images = "";
+				this.audits.forEach(function(audit,index){
+
+					if (vm.includedAudits.indexOf(audit.id) >= 0) {
+
+						if (audit.form_template_id == section.findings_form_template_id) {
+							//this is the template to pull from
+							let fields = JSON.parse(audit.form_values)
+
+							fields.forEach(function(field_section, index) {
+
+								if (field_section.heading == section.findings_section_name) {
+									//we've found it, pull in all the photos and negative answer notes
+
+									if ("fields" in field_section) {
+										console.log("searching main fields...")
+										field_section.fields.forEach(function(field, index){
+											
+											if (field.type == 'images' || field.type =='image') {
+												console.log("images found")
+												if (field.value) {
+													field.value.forEach(function(image,index){
+														findings_images += "<img style='width:320px' src='"+window.apiBase+"image/image/"+image+"'>"
+													})
+												}
+											}
+											else if (field.type == 'yes/no') {
+												if (field.value == "no" && field.notes) {
+													findings_html += "<li><strong>"+field.question+":</strong> "+field.notes+"</li>"
+												}
+												else if (field.value == "no") {
+													findings_html += "<li><strong>"+field.question+":</strong> NO</li>"
+												}
+											}
+										})
+									}
+									if ("subSections" in field_section) {
+										console.log("searching subsection fields...")
+										field_section.subSections.forEach(function(subSection, index) {
+											if ("fields" in subSection) {
+												subSection.fields.forEach(function(field, index) {
+
+													if (field.type == 'images' || field.type =='image') {
+														console.log("images found")
+														if (field.value) {
+															field.value.forEach(function(image,index){
+																findings_images += "<img style='width:320px' src='"+window.apiBase+"image/image/"+image+"'>"
+															})
+														}
+													}
+													else if (field.type == 'yes/no') {
+														if (field.value == "no" && field.notes) {
+															findings_html += "<li><strong>"+field.question+":</strong> "+field.notes+"</li>"
+														}
+														else if (field.value == "no") {
+															findings_html += "<li><strong>NO</strong> "+field.question+"</li>"
+														}
+													}
+												})
+											}
+										})
+									}
+								}
+							})
+						}
+					}
+				})
+				findings_html += "</ul>"
+
+				if (findings_html == "<ul></ul>") {
+					findings_html = "<p>No violations found</p>"
+				}
+
+				let editor = tinymce.get("editor-"+section.id)
+
+				editor.insertContent(findings_images+findings_html)
 			},
 			save() {
 
@@ -102,6 +207,8 @@
 					id: this.$route.params.id
 				}
 
+				console.log(payload)
+
 				this.postData(window.apiBase+"report/save-report",payload).then(function(response){
 
 					vm.$emit("updateAlert",{
@@ -114,6 +221,32 @@
 			},
 			view() {
 
+			},
+			fetchLocations() {
+				let vm = this
+
+				let filters = JSON.stringify([
+					["client_id",this.reportMeta.client_id]
+				])
+
+				let order = JSON.stringify(["location_name","ASC"]);
+
+				this.getJSON(window.apiBase + "location/get?filters="+filters+"&order="+order).then(function(response){
+					vm.locations = response
+				})
+			},
+			fetchAudits() {
+				let vm = this
+
+				let filters = JSON.stringify([
+					["audits.client_id",this.reportMeta.client_id]
+				])
+
+				let order = JSON.stringify(["audit_date","DESC"]);
+
+				this.getJSON(window.apiBase + "auditForm/get?filters="+filters+"&order="+order).then(function(response){
+					vm.audits = response
+				})
 			},
 			fetchReport() {
 				let vm = this
@@ -128,6 +261,12 @@
 					vm.activeSection = response.sections[0].id
 					vm.report.date_issued = response.date_issued
 					vm.report.report_title = response.report_title
+					vm.report.location_id = response.location_id
+
+					vm.reportMeta = response
+
+					vm.fetchLocations()
+					vm.fetchAudits()
 
 					vm.$emit("toggleSpinner",false)
 
@@ -137,11 +276,15 @@
 		created() {
 			this.$emit("toggleSpinner",true)
 			this.fetchReport()
+
 		}
 	}
 </script>
 
 <style type="text/css" scoped>
-
+	.report-sections .list-group-item:hover {
+		cursor: pointer;
+		background-color: blue;
+	}
 </style>
 

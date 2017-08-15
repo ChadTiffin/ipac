@@ -1,0 +1,1416 @@
+[  
+   {  
+      "heading":"IPAC Policies, Procedures, and Training",
+      "fields":[  
+         {  
+            "question":"Policies are written and readily availble to staff",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Reviewed every 3 years",
+            "type":"yes\/no",
+            "hasNotes":true
+         }
+      ],
+      "subSections":[  
+         {  
+            "heading":"Education",
+            "fields":[  
+               {  
+                  "question":"New hire IPAC education",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Annual IPAC education",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"New procedure education",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Education is documented",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Training is evaluated",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               }
+            ]
+         },
+         {  
+            "heading":"Specific Policies",
+            "fields":[  
+               {  
+                  "question":"Boil-Water Advisory",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Cleaning and disinfecting environmental surfaces",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Cleaning blood\/body fluid spills",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Exposure protocol (blood\/body fluids)",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Waterline management and water quality",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Equipment maintenance and record keeping",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Single-use devices (not to be reprocessed unless by FDA cleared 3rd party)",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Staff illness",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Screening patients (e.g. ARI)",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Staff bloodborne pathogen guidelines",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Facial tissue is available to patients in waiting room",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Sharps controls",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               }
+            ]
+         },
+         {  
+            "heading":"Specific Training",
+            "fields":[  
+               {  
+                  "question":"HH (soap vs. ABHR)",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Routine Precautions",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"PPE use",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Exposure protocol, prevention and management (sharps, body fluid, waste handling)",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Waste handling and disposal",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Water quality: including biofilm, water treatment, and maintenance of lines and equipment",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               }
+            ]
+         }
+      ]
+   },
+   {  
+      "heading":"Occupational Health and Safety and Patient Screening",
+      "fields":[  
+         {
+            "question":"Photos",
+            "type":"images",
+            "hasNotes":true
+         },
+         {  
+            "question":"Appropriate staff immunizations",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Appropriate infectious disease screening at hire",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Body fluid exposure education\/training",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Hep B Immunity status confirmed for direct or indirect contact with blood\/saliva",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Appropriate sharps container is available at point-of-care",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Sharps containers are not overfilled before removal",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Safety-engineered sharps are used exclusively",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Appropriate use of singl-use sharps",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Material Safety Data Sheets (MSDS) are available for all chemical substances",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Reception staff are protected by physical barrier or 2 metres from patients",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"ARI Screening\/HH Signage for patients",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"ABHR available to patients and staff",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Instruction to patients for HH before operatory seating",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Respiratory ettiquet is promoted",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"PPE available to staff",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Masks available to patients",
+            "type":"yes\/no",
+            "hasNotes":true
+         }
+      ]
+   },
+   {  
+      "heading":"Hand Hygiene",
+      "fields":[  
+         {
+            "question":"Photos",
+            "type":"images",
+            "hasNotes":true
+         },
+         {  
+            "question":"Point of care HH stations",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Dedicated HH sinks where risk of body fluid exposure",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Mitigation of hand contamination at HH sinks via environmental or administrative controls (e.i. faucet opperation or procedures with paper towels on faucet)",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Liquid soap available at HH sinks (bar soap is not allowed)",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"HH products are medical grade and compatible with each other and gloves",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"HH product containers are disposable",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Antimicrobial soap or persistant agent ABHR is available (for invasive procedures)",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Single-use hand towels",
+            "type":"yes\/no",
+            "hasNotes":true
+         }
+      ]
+   },
+   {  
+      "heading":"Routine Practices",
+      "fields":[  
+         {  
+            "question":"Dedicated space(s) outside of operatory, laboratory, and\/or reprocessing areas for: food and beverage consumption, personal care, etc.",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Appropriate clothing for exposure risks (i.e. scrubs)",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Sterile gloves available for sterile procedures",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Appropriate cleaning\/disinfecting\/sterilizing of equipment before being handled",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Contaminated equipment, unable to be properly processed are labelled as such",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Maintentance records kept in a logbook",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Equipment maintenance is performed with PPE",
+            "type":"yes\/no",
+            "hasNotes":true
+         }
+      ],
+      "subSections":[  
+         {  
+            "heading":"Personal Protective Equipment",
+            "fields":[  
+               {  
+                  "question":"New gloves are donned for separate procedures on the same patient",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"New gloves are donned after being compromised",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Gloves are doffed immediately after a procedure",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"PPE is used appropriately for spills\/exposure",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"PPE is used appropriately for cleaning\/disinfecting",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"PPE is changed when wet\/contaminated",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Masks are not touched during a procedure",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Appropriate use of single-use PPE (gloves, masks, gowns, face sheilds, etc.)",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Eye protection is worn by patients when reclined",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Eye protection is cleaned and disinfected between use",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"PPE is removed before leaving operatory or point-of-care",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Gloves are worn while exposing film in patient\u2019s mouth",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               }
+            ]
+         }
+      ]
+   },
+   {  
+      "heading":"Environmental Barriers",
+      "fields": [
+         {
+            "question":"Photos",
+            "type":"images",
+            "hasNotes":true
+         }
+      ],
+      "subSections":[  
+         {  
+            "heading":"Surfaces",
+            "fields":[  
+               {  
+                  "question":"Work surfaces are cleanable (i.e. non-porous)",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Operatories and reprocessing areas are free of fabric-upholstery and carpeting",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Operatory furnature and surfaces are in good repair and cleanable",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Dental light lense\/sheild is in good repair and cleanable",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Treatment area surfaces are free of unecessary supplies and equipment",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Clean supplies are protected from contamination\/exposure",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Posters are wipeable (i.e. laminated)",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Surface barriers are replaced\/removed with procedures to prevent contamination",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               }
+            ]
+         },
+         {  
+            "heading":"Devices",
+            "fields":[  
+               {  
+                  "question":"Permanent devices (i.e. high volume suction, saliva ejectors, air\/water syringes) are cleaned and covered between patient use",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Contaminated permanent devices are disinfected between patient use",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"The operatory is inspected and cleaned\/disinfected when necessary between patients",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               }
+            ]
+         }
+      ]
+   },
+   {  
+      "heading":"Environmental Cleaning and Disinfection",
+      "subSections":[  
+         {  
+            "heading":"Cleaning Solutions",
+            "fields":[  
+               {  
+                  "question":"Cleaning solutions and disinfectants are used according to manufacturer\u2019s instructions",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Ready-to-use products are used or fresh cleaning solution is prepared, dated and discarded according to the manufacturer\u2019s instructions",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"When in-house solutions are discarded, the containers and dispensinc mechanisms are cleaned and dried",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Liquid products are not topped up",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"All materials and containers are labelled appropriately",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"If chemicals are decanted into smaller bottles, they are labelled appropriately",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Non-disposable cleaning cloths and mop heads (e.g. microfibre) are laundered after each use and stored dry",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Disinfectants have a Drug Identification Number (DIN) from Health Canada",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Prior to disinfection, all visibly soiled surfaces are cleaned appropriately",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Cleaning clothes are not double-dipped into cleaning solution",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               }
+            ]
+         },
+         {  
+            "heading":"Surfaces",
+            "fields":[  
+               {  
+                  "question":"Dental surfaces and countertops not protected by barriers are cleaned and disinfected between each patient using a low-level disinfectant (LLD)",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Sufficient contact time (i.e. \"wet time\") is allowed for disinfecting",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"If a surface has been visibly soiled with blood, a low-level disinfectant is used",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Housekeeping surfaces (floors, walls, sinks) are regularly cleaned using a low-level disinfectant",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Walls, blinds, and window curtains are cleaned when visibly dusty or soiled",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               }
+            ]
+         },
+         {  
+            "heading":"Waste\/Linen",
+            "fields":[  
+               {  
+                  "question":"Reusable linen is laundered between patient use",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Soiled linen is contained in leak-proof bags",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Waste and linen containers are not over-filled",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Appropriate disposal of general medical waste (i.e. ordinary waste)",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Appropriate disposal of regulated medical waste (i.e. according to local regulations)",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Waste containers are covered in storage areas",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               }
+            ]
+         }
+      ]
+   },
+   {  
+      "heading":"Waterlines and Water Quality",
+      "fields":[  
+         {  
+            "question":"Monitoring and records are maintained for dental equipment and water quality",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Coolant\/Irrigant water for non-surgical procedures contains <= 500 CFU\/ml (recommendation)",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Sterile coolant\/irrigant solutions used during surgical procedures",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Manufacturer's instructions for water quality are available and followed",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Manufacturer's instructions for anti-retraction valve maintenance are available and followed",
+            "type":"yes\/no",
+            "hasNotes":true
+         }
+      ]
+   },
+   {  
+      "heading":"Dental Devices",
+      "fields":[  
+         {  
+            "question":"Waterlines are turned on and flushed for at least 2-3 minutes at the beginning of the day, with handpieces disconnected",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Dental devices that enter the mouth and are connected to the dental air\/water system (including handpieces, air\/water syringes, sonic\/ultrasonic scalers, etc.) are flushed for 20- 30 seconds before removal for reprocessing",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Sterile water is available and delivered from a source separate from the dental unit",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Handpieces that can be removed from the air and waterlines are cleaned, lubricated and sterilized between patients",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Handpieces that can be removed from the air and waterlines are maintained according to the manufacturer\u2019s instructions",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Suction lines are purged between patients by aspirating water or an appropriate cleaning solution",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"At least once per week, suction lines are flushed out with an enzymatic cleaner or appropriate cleaning solution",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Respiratory assist equipment is cleaned and high-level disinfected between patient use",
+            "type":"yes\/no",
+            "hasNotes":true
+         }
+      ]
+   },
+   {  
+      "heading":"Other",
+      "fields":[  
+         {  
+            "question":"Materials, impressions and intra-oral appliances are cleaned and disinfected prior to being sent to an off-site laboratory",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"All items returned from an outside laboratory to a dental office are cleaned and disinfected prior to placing in a patient\u2019s mouth ",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"On-site laboratories have a separate receiving area for contaminated items.",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Laboratory equipment that becomes contaminated is cleaned and disinfected between patients (e.g., articulators, case pans, rubber bowls, spatulas, lathes, pressure pots, water baths)",
+            "type":"yes\/no",
+            "hasNotes":true
+         }
+      ]
+   },
+   {  
+      "heading":"Reprocessing",
+      "subSections":[  
+         {  
+            "heading":"Policies",
+            "fields":[  
+               {  
+                  "question":"There are written policies and procedures for all aspects of reprocessing that are based on current recognized standards (e.g., Canadian Standards Association - CSA) ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Reprocessing policies and procedures are reviewed at least annually by the department ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"There are written instructions for disassembly, sorting and soaking, cleaning, rinsing, drying, inspecting, packaging and sterilizing each item to be reprocessed, that include pictures for dental health care personnel (DHCP) to follow, for each item to be sterilized ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"There is a policy that requires scheduled maintenance of equipment, with written documentation that this has occurred (e.g., logbook) ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Written manuals for all reprocessing equipment are readily available ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"installation and preventive maintenance of reprocessing equipment ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"qualifications and training of DHCP involved in reprocessing ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"ongoing audits with documentation of competency of DHCP involved in reprocessing ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"processes to monitor and document the reprocessing process, including routine daily operations ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"There is a policy and procedure for placement of implants (e.g., bone) in the dental setting, if applicable ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"There is a protocol for failed biological indicators (BI) ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"There is a policy prohibiting the reuse of single-use devices unless reprocessed by an approved and FDA cleared 3rd party reprocessor ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"DHCP have been screened for immunity to hepatitis B and offered vaccination if warranted ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"DHCP assigned to reprocess dental devices have completed a recognized qualification\/ certificate course, or are certified by an accredited body, in reprocessing ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               }
+            ]
+         },
+         {  
+            "heading":"Reprocessing DHCP receive: ",
+            "fields":[  
+               {  
+                  "question":"education and training on hire ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"supervision until competency is demonstrated and documented ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"annual competency testing ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"education and training on any authorized ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"change in process ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"education and training when new dental devices are purchased that require reprocessing ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               }
+            ]
+         },
+         {  
+            "heading":"DHCP receive annual infection prevention and control (IPAC) education that includes: ",
+            "fields":[  
+               {  
+                  "question":"hand hygiene with soap and water and alcohol-based hand rub (ABHR) ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"correct and consistent use of Routine Practices (RP) ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"appropriate use of personal protective equipment (PPE) ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"prevention of blood and body fluid exposure, including sharps safety and waste handling ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"management of accidental exposure to blood\/ body fluids ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"principles of basic reprocessing techniques that minimize cross- contamination, such as one-way work flow progressing from least soiled to most soiled ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"All DHCP training and education is documented ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"All DHCP training and education is evaluated ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               }
+            ]
+         }
+      ]
+   },
+   {  
+      "heading":"General Procedures",
+      "fields":[  
+         {  
+            "question":"Devices are cleaned in a designated area that is physically separate from direct care areas and from where clean, disinfected or sterile items are handled or stored (e.g., separate room, divided room) ",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"There is a one-way work flow from dirty to clean to prevent cross-contamination ",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Eye wash facilities are available wherever reprocessing is done ",
+            "type":"yes\/no",
+            "hasNotes":true
+         }
+      ],
+      "subSections":[  
+         {  
+            "heading":"Chemical products used for disinfection\/sterilization: ",
+            "fields":[  
+               {  
+                  "question":"have a drug identification number (DIN) from Health Canada ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"are prepared and used according to the manufacturer\u2019s instructions for dilution, temperature, water hardness, use, shelf life and storage conditions ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"have WHMIS information and a Materials Safety Data Sheet (MSDS) readily available ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"are properly labelled with the expiry date ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"are stored in a manner that reduces the risk of contamination, inhalation, skin contact or personal injury ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Chemical products are compatible with both the reprocessing equipment and the devices being reprocessed, according to manufacturer\u2019s instructions ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Manufacturer\u2019s written instructions for operating equipment are followed (e.g., sterilizers, ultrasonic cleaners) ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Manufacturer\u2019s written instructions for reprocessing are followed for each device (e.g., assembly, disassembly, lubrication, wrapping) ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Single-use dental devices are not reprocessed. Some examples include disposable air\/water syringe tips, disposable prophylaxis angles, high-volume evacuator tips, saliva ejectors, prophylaxis cups and brushes, etc. ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               }
+            ]
+         }
+      ]
+   },
+   {  
+      "heading":"Transportation and Handling of Contaminated Equipment",
+      "fields":[  
+         {  
+            "question":"Disposable sharps are removed and disposed of in an appropriate puncture- resistant sharps container at point-of-use, prior to transport ",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Gross soil on devices is removed at point-of- use prior to transport ",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Used items must be collected in a puncture- resistant and leak-proof container\/trolley with a lid or liner capable of being closed ",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Containers for transporting soiled items should be made of metal or plastic and be capable of being easily cleaned ",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Contaminated dental devices are transported in a manner that reduces the risk of exposure and injury during transport to the device reprocessing area ",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Appropriate PPE (puncture-resistant gloves, gowns\/aprons, eye and face protection) is worn when handling contaminated devices ",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"A process is in place that ensures reprocessed devices can be differentiated from devices which have not been reprocessed ",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Sterile and clean supplies are transported in clean containers or covered carts to protect the integrity of sterile packages ",
+            "type":"yes\/no",
+            "hasNotes":true
+         }
+      ]
+   },
+   {  
+      "heading":"Pre-Cleaning Contaminated Dental Devices",
+      "fields":[  
+         {  
+            "question":"A sink for cleaning dental devices is located in a dedicated decontamination area ",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Dirty devices are kept separate from clean devices ",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Immediately after use, device is immersed in an appropriately diluted cleaning solution (e.g., enzymatic cleaner) to avoid drying of secretions or body fluids; or treated with an agent that prevents hardening of bioburden ",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Device is disassembled, if applicable, according to manufacturer\u2019s instructions ",
+            "type":"yes\/no",
+            "hasNotes":true
+         }
+      ]
+   },
+   {  
+      "heading":"Cleaning Dental Devices",
+      "fields":[  
+         {  
+            "question":"Device is cleaned manually with an enzymatic solution, in an ultrasonic cleaner, or in an automated instrument washer ",
+            "type":"yes\/no",
+            "hasNotes":true
+         }
+      ],
+      "subSections":[  
+         {  
+            "heading":"When performing manual cleaning: ",
+            "fields":[  
+               {  
+                  "question":"items are cleaned using an instrument detergent or enzymatic cleaner ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"cleaning solutions are used according to the manufacturer\u2019s instructions ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"appropriate PPE is worn for device cleaning (moisture-impervious gown, heavy duty utility gloves, mask and eye protection with side shields) ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"device cleaning takes place under the surface of the water (i.e., not running water) ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"appropriate PPE is worn for device cleaning (moisture-impervious gown, heavy duty utility gloves, mask and eye protection with side shields) ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Device is rinsed with clean, fresh tap water, or distilled water if water hardness is a factor ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Devices with lumens are: ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"cleaned according to manufacturer\u2019s instructions ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"manually flushed with enzymatic cleaner rinsed ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"inspected to ensure lumens are clean and unobstructed ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               }
+            ]
+         },
+         {  
+            "heading":"Special cleaning equipment (e.g., sponges, brushes), if used, is: ",
+            "fields":[  
+               {  
+                  "question":"\u00a0disposable, or thoroughly cleaned and disinfected with a high-level disinfectant or sterilized between uses ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"of an approved material that will not damage the device ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               }
+            ]
+         },
+         {  
+            "heading":"If an ultrasonic cleaner is used: ",
+            "fields":[  
+               {  
+                  "question":"cleaning solution is changed at least daily, or when visibly soiled ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"device is manually cleaned prior to ultrasonic cleaning ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"device is thoroughly rinsed after ultrasonic cleaning ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"it is operated with the lid closed ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"it is tested for efficacy at least weekly or according to manufacturer's recommendations (e.g., \u2018foil test\u2019 \u2013 see Glossary) ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"there is documented preventive maintenance and performance monitoring of the ultrasonic cleaner ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Device is dry prior to HLD or sterilization (e.g., dried with a lint-free cloth) ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Detergent or enzymatic cleaning solution is discarded after each use ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               }
+            ]
+         }
+      ]
+   },
+   {  
+      "heading":"Inspection of Dental Devices",
+      "fields":[  
+         {  
+            "question":"Device is inspected for any damage, operating ability, pitting, corrosion, etc. ",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"There is a process for removing faulty devices until repaired or replaced ",
+            "type":"yes\/no",
+            "hasNotes":true
+         }
+      ]
+   },
+   {  
+      "heading":"High Level Disinfection",
+      "fields":[  
+         {  
+            "question":"Semi-critical devices are, at a minimum, high- level disinfected between each use ",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"All disinfectants have a Drug Identification Number (DIN) from Health Canada ",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Devices receive HLD according to the device and disinfectant manufacturer\u2019s instructions (e.g., temperature, time, concentration) ",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"The minimum effective concentration of disinfectant is monitored daily before first use with test strips available from the disinfectant product manufacturer ",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"High-level disinfectant test strips specific to the product are checked for efficacy when each bottle is opened ",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Disinfectant test strip bottles are dated when opened and discarded as per the manufacturer\u2019s instructions ",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Disinfectant test strips are stored in their original containers ",
+            "type":"yes\/no",
+            "hasNotes":true
+         }
+      ],
+      "subSections":[  
+         {  
+            "heading":"A log is kept of devices that receive HLD including: ",
+            "fields":[  
+               {  
+                  "question":"date and time of HLD",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"length of contact time with disinfectant ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"person responsible for checking and recording the information ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"A written log of disinfectant concentration monitoring is maintained ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"If an automated reprocessor is used, there is a documented preventive maintenance program ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"If chemical disinfection is performed, appropriate PPE is worn by DHCP who are performing decontamination and HLD (e.g., gloves, mask, eye protection) ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               }
+            ]
+         },
+         {  
+            "heading":"If chemical disinfection is performed: ",
+            "fields":[  
+               {  
+                  "question":"device is totally submerged in the disinfectant for the time specified by the disinfectant manufacturer ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"device is rinsed with at least three separate rinses with sterile or bacteria- free (e.g., achieved by submicron filtration) water ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"device is dried following disinfection ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"the disinfectant container is kept covered during use ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"he disinfectant container is washed, rinsed and dried when the solution is changed ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"there is no topping-up of disinfectant solution ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               }
+            ]
+         }
+      ]
+   },
+   {  
+      "heading":"Dental Devices Receiving Sterilization",
+      "fields":[  
+         {  
+            "question":"Critical devices are sterilized between each re-use or are disposable ",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Handpieces that can be removed from the air and waterlines are cleaned, lubricated and sterilized between patients ",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Critical devices are sterilized by an approved sterilization process (e.g., dry heat, autoclave) for the device; Note: inappropriate methods include flash sterilization, glass bead sterilization, boiling water and microwave ovens ",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Device is packaged according to the device manufacturer\u2019s instructions (e.g., devices are opened, disassembled) and is self-sealing or heat-sealed ",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Packaging is validated for the sterilization method ",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Internal and external pouch\/pack chemical indicators (CI) are placed appropriately in and\/ or on each package (if not part of the pouch\/pack wrap) ",
+            "type":"yes\/no",
+            "hasNotes":true
+         }
+      ],
+      "subSections":[  
+         {  
+            "heading":"Device packages are labelled with: ",
+            "fields":[  
+               {  
+                  "question":"name of sterilizer ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"item(s) ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"date of sterilization ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"load number (if more than one sterilizer load is run per day) ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"operator\u2019s initials ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"If more than one device is being sterilized in a pack and\/or more than one pack is in the load, the pack is placed in the sterilizer according to the detailed steps recommended by the manufacturer ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Device is placed in a steam sterilizer according to manufacturer's instructions (e.g., in the open position), oriented in a manner that will preserve sterility when opened ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Sterilizer mechanical printout is checked and signed each cycle by the person responsible for releasing the load ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Sterilizer is tested with a biological indicator (BI) each day and for each type of cycle the sterilizer is used ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"BIs are placed inside a process challenge device (PCD) ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Records are kept to document that all sterilization parameters have been met (e.g., BIs, CIs, time\/temperature\/pressure readings) ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"A dental device is not used until the CI(s) is\/are checked ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Dental devices are not used until the BI is checked ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"There is documentation of the sterilizer's preventive maintenance program, including a regular cleaning schedule, according to manufacturer's instructions ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"There is a written procedure to follow in the event of a sterilization failure ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               },
+               {  
+                  "question":"Device packs are allowed to dry inside the sterilizer chamber before removal and handling ",
+                  "type":"yes\/no",
+                  "hasNotes":true
+               }
+            ]
+         }
+      ]
+   },
+   {  
+      "heading":"Storage of Reprocessed Dental Devices",
+      "fields":[  
+         {  
+            "question":"There is a process for inventory management of sterile devices (e.g., event or time-related) ",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Sterile items are stored in their sterile packaging until time of use ",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Sterile items are only stored with other sterile items or clean supplies (e.g., pre-packaged items such as needles, syringes) ",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Sterile items are handled in a manner that prevents contamination of the item ",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Packaged, sterilized devices are stored securely in a manner that keeps them clean, dry and prevents contamination (e.g., drawer, upper cupboard) ",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Shelving, cupboards and drawers are in good repair and are made of non-porous material that can be disinfected ",
+            "type":"yes\/no",
+            "hasNotes":true
+         },
+         {  
+            "question":"Stock is rotated so that the oldest stock is used first ",
+            "type":"yes\/no",
+            "hasNotes":true
+         }
+      ]
+   }
+]

@@ -46,7 +46,7 @@
 						vm.$emit("input",new_value)
 					});
 					editor.on('init',function(){
-						this.getDoc().body.style.fontSize = '12pt';
+						
 						if (vm.value != null)
 							this.setContent(vm.value)
 						else 

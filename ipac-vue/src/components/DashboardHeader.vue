@@ -7,7 +7,6 @@
 		</div>
 
 		<nav class="menu" :class="{ menuShowing: menuShowing }">
-
 			<h2 
 				class="menu-heading">		
 				Menu 

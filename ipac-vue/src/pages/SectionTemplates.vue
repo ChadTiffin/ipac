@@ -6,7 +6,7 @@
 			:records="templates"
 			:fields="fields" 
 			has-edit="/templates/sections/edit/" 
-			has-delete="true"
+			:has-delete="true"
 			delete-endpoint="sectionTemplate/delete"
 			v-on:modelChange="fetchTemplates">
 		</table-list>

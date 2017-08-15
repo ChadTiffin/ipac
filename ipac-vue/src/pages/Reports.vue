@@ -6,7 +6,7 @@
 			:records="amendedReports" 
 			:fields="fields" 
 			has-edit="reports/edit/" 
-			has-delete="true" 
+			:has-delete="true" 
 			v-on:modelChange="fetchTemplates" 
 			:other-buttons="otherButtons"
 			delete-endpoint="report/delete">

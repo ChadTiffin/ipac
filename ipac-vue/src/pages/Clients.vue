@@ -1,13 +1,14 @@
 <template>
 	<section>
-		<router-link to="/clients/edit/new" class="btn btn-success"><i class="fa fa-plus"></i> New Client</router-link>
+		<router-link to="/clients/new" class="btn btn-success"><i class="fa fa-plus"></i> New Client</router-link>
 
 		<table-list 
 			:records="clients" 
 			:fields="fields" 
 			deleteEndpoint="client/delete"
-			has-edit="/clients/edit/" 
+			has-edit="/clients/" 
 			has-delete="true"
+			
 			v-on:modelChange="clientsChanged">
 		</table-list>
 
@@ -67,7 +68,21 @@
 					buttonClass: "btn-danger",
 					parameters: "",
 					successFunction: ""
-				}
+				},
+				/*otherButtons: [
+					{
+						link: "/reports/client/",
+						text: " Reports",
+						icon: "fa-wpforms",
+						class: "btn-primary"
+					},
+					{
+						link: "/reports/client/",
+						text: " Audits",
+						icon: "fa-balance-scale",
+						class: "btn-primary"
+					}
+				]*/
 			}
 		},
 		methods: {

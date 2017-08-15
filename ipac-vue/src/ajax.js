@@ -4,15 +4,12 @@ export default {
 		getJSON: function(url) {
 			return new Promise(function(resolve, reject) {
 
-				if (typeof localStorage.apiKey != 'undefined') {
-					if (url.indexOf("?") >= 0)
-						url += "&key="+localStorage.apiKey
-					else
-						url += "?key="+localStorage.apiKey
-				}
-
 				fetch(url,{
-					credentials: 'include'
+					credentials: 'include',
+					headers: new Headers({
+						'Content-Type': 'text/plain',
+						'x-api-key': localStorage.apiKey
+					})
 				})
 					.then(function(response){
 						return response.json();
@@ -54,7 +51,11 @@ export default {
 				fetch(url,{
 					method: "POST",
 					credentials: 'include',
-					body: payload
+					body: payload,
+					/*headers: new Headers({
+						'Content-Type': 'multipart/form-data',
+						'x-api-key': localStorage.apiKey
+					})*/
 				})
 				.then(function(response) {
 					return response.json()
@@ -99,7 +100,11 @@ export default {
 				fetch(url, {
 					method: "POST",
 					credentials: 'include',
-					body: payload
+					body: payload,
+					/*headers: new Headers({
+						'Content-Type': 'multipart/form-data',
+						'x-api-key': localStorage.apiKey
+					})*/
 				})
 				.then(function(response) {
 					return response.json()

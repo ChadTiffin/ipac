@@ -57,9 +57,33 @@
 				</label>
 			</form-group>
 
-			<form-group v-if="section.has_findings == '1'" label="" col-class="col-md-2">
-				Findings are unique to each report, so this sub-section will not be templated (for now). You can edit the "Findings" when you create a report.
-			</form-group>
+			<div v-if="section.has_findings == '1'">
+				<form-group label="" col-class="col-md-2">
+					<label>
+						<input type="checkbox" v-model="section.pull_findings_from_section" true-value="1" false-value="0">
+						Pull Findings from an audit form section
+					</label>
+				</form-group>
+
+				<div v-if="section.pull_findings_from_section == '1'">
+
+					<form-group label="Form Template" col-class="col-md-2">
+						<select class="form-control" v-model="section.findings_form_template_id">
+							<option v-for="template in formTemplates" :value="template.id">{{ template.form_name }}</option>
+						</select>
+					</form-group>
+
+					<form-group label="Form Section" col-class="col-md-2">
+						<select class="form-control" v-model="section.findings_section_name">
+							<option v-for="section in selectedFormTemplateSections">{{ section }}</option>
+						</select>
+					</form-group>
+				</div>
+				<div v-else class="col-md-offset-2 col-md-10">
+					Findings will be typed out manually
+				</div>
+
+			</div>
 		
 			<button class="btn btn-primary pull-right"><i class="fa fa-save"></i> Save</button>
 			<div style="clear: both;"></div>
@@ -87,7 +111,26 @@
 		data () {
 			return {
 				section: {},
+				formTemplates: [],
 				varHelpVisible: false
+			}
+		},
+		computed: {
+			selectedFormTemplateSections() {
+				let sections = [];
+
+				let vm = this
+				this.formTemplates.forEach(function(form, index){
+					let template = JSON.parse(form.fields);
+
+					if (form.id == vm.section.findings_form_template_id) {
+						template.forEach(function(section, index){
+							sections.push(section.heading)
+						})
+					}
+				})
+
+				return sections;
 			}
 		},
 		methods: {
@@ -115,6 +158,13 @@
 				else 
 					vm.$emit("toggleSpinner",false)
 			},
+			fetchFormTemplates() {
+				let vm = this
+
+				this.getJSON(window.apiBase + "auditFormTemplate/get").then(function(response){
+					vm.formTemplates = response
+				})
+			},
 			save() {
 				let payload = this.section
 
@@ -135,6 +185,7 @@
 		created() {
 			this.$emit("toggleSpinner",true)
 			this.fetchTemplate();
+			this.fetchFormTemplates();
 		}
 	}
 </script>

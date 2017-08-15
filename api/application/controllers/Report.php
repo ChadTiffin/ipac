@@ -86,4 +86,59 @@ class Report extends Base_Controller {
 
 	}
 
+	private function addPDFPage($pdf) {
+		$pdf->AddPage();
+
+		$margin_side = 0.5;
+		$margin_vertical = 0.3;
+
+		//create header
+		$pdf->Image("assets/logo.png",$margin_side,$margin_vertical,0,1,'');
+
+		$pdf->SetLineWidth(0.025);
+		$pdf->setDrawColor(60,85,75);
+		$pdf->Line($margin_side,$margin_vertical+1.05,8.5-$margin_side,$margin_vertical+1.05);
+		// end header
+
+		//create footer
+		$pdf->Image("assets/report_footer.png",0,9.3,8.5,0,'PNG');
+	}
+
+	public function download($type,$id) {
+		/*if ($type == "pdf") {
+			$this->load->library("fpdf");
+
+			$this->load->model("ReportModel");
+
+			$report = $this->ReportModel->find("id",$id);
+			$company = $this->db->get("company_settings")->result_array();
+
+			$margin_side = 0.5;
+			$margin_vertical = 0.3;
+
+			$pdf = new fpdf("P","in","letter");
+
+			//create cover page
+			$pdf->AddPage();
+			$pdf->Image("assets/cover_page.png",0,0,8.5,11,'');
+
+			$pdf->Text(3,$margin_side,$report_title);
+			$pdf->Text(4,$margin_side,$report_date);
+
+			$this->addPDFPage($pdf);
+
+			$pdf->SetFont('Arial','',10);
+
+			$pdf->Cell(0,0,'Hello World !',1);
+
+			$pdf->Output("I");
+		}*/
+
+		if ($type == 'pdf') {
+			$this->load->library("tcpdf/tcpdf");
+
+			$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+		}
+	}
+
 }

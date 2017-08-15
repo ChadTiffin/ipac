@@ -29,27 +29,40 @@
 			<img src="/static/report_footer.png" class="footer-graphic">
 		</section>
 
-		<section class="report-section page" v-for="(section,index) in renderedSections">
-			<div class="header">
-				<img src="/static/logo.png" class="logo">
-			</div>
+		<div v-for="(section,index) in renderedSections">
+			<section class="report-section page" >
+				<div class="header">
+					<img src="/static/logo.png" class="logo">
+				</div>
 
-			<h2>{{ section.heading }}</h2>
-			<div class="intro" v-html="section.description_text"></div>
-			<div v-if="section.has_guidelines == '1'">
-				<h3>Guidelines And Requirements</h3>
+				<h2>{{ section.heading }}</h2>
+				<div class="intro" v-html="section.description_text"></div>
+				<div v-if="section.has_guidelines == '1'">
+					<h3>Guidelines And Requirements</h3>
 
-				<div v-html="section.guidelines_text"></div>
-			</div>
-			<div v-if="section.has_findings == '1'">
-				<h3>Findings</h3>
+					<div v-html="section.guidelines_text"></div>
+				</div>
+				<div v-if="section.has_findings == '1'">
+					<h3>Findings</h3>
 
-				<div v-html="section.findings"></div>
-			</div>
+					<div v-html="section.findings"></div>
+				</div>
 
-			<div class="page-num">{{ index+3 }}</div>
-			<img src="/static/report_footer.png" class="footer-graphic">
-		</section>
+				<div class="page-num">{{ index+3 }}</div>
+				<img src="/static/report_footer.png" class="footer-graphic">
+			</section>
+
+			<!--<section class="report-section page overflow-page" >
+				<div class="header">
+					<img src="/static/logo.png" class="logo">
+				</div>
+
+				<div v-html="section.findings[1]"></div>
+
+				<div class="page-num">{{ index+3 }}</div>
+				<img src="/static/report_footer.png" class="footer-graphic">
+			</section>-->
+		</div>
 
 	</div>
 
@@ -72,6 +85,11 @@
 					date_issued: "",
 					client: {}
 				},
+				variables: {
+					client: {},
+					company: {},
+					report_date: ""
+				},
 				company: {},
 			}
 		},
@@ -92,13 +110,13 @@
 
 				return day + ' ' + monthNames[monthIndex] + ' ' + year;
 			},
-			variables() {
+			/*variables() {
 				return {
 					client: this.report.client,
 					company: this.company,
 					report_date: this.report.date_issued,
 				}
-			},
+			},*/
 			renderedPreface() {
 				let renderedPreface = ""
 
@@ -111,10 +129,10 @@
 				let renderedSections = [];
 				let vm = this
 
-				console.log(vm.variables)
+				console.log(this.variables.client, this.variables.company, this.variables.report_date)
 
 				//make sure client object exists, otherwise skip render (it will render again when client changes)
-				if (this.variables.client.length > 0 && this.variables.company.length > 0 && this.variables.report_date) {
+				if (Object.keys(this.variables.client).length > 0 && Object.keys(this.variables.company).length > 0 && this.variables.report_date) {
 
 					this.sections.forEach(function(section, index) {
 
@@ -124,14 +142,17 @@
 						if (typeof section.guidelines_text == "string")
 							section.guidelines_text = Mustache.render(section.guidelines_text, vm.variables)
 						
-						if (typeof section.findings == "string")
+						if (typeof section.findings == "string") {
 							section.findings = Mustache.render(section.findings, vm.variables)
+						}
 						
 						if (typeof section.heading == "string")
 							section.heading =  Mustache.render(section.heading, vm.variables)
 
 						renderedSections.push(section)
 					})
+
+					console.log("It should all be rendered now")
 				}
 				else
 					console.log("Skipping template render...")
@@ -151,6 +172,9 @@
 					vm.report.date_issued = response.date_issued
 					vm.report.report_title = response.report_title
 
+					vm.variables.client = response.client
+					vm.variables.report_date = response.date_issued
+
 					vm.$emit("toggleSpinner",false)
 
 				})				
@@ -164,7 +188,11 @@
 
 						//company template variables
 						vm.company[setting.setting] = setting.value
+
+
 					})
+
+					vm.variables.company = vm.company
 				})
 			}
 		},
@@ -176,6 +204,30 @@
 	}
 </script>
 
+<style type="text/css">
+	@media print {
+	    header {
+	      display: none!important;
+
+	    }
+
+	    .report-print, .section-wrapper, .dashboard, #app {
+	    	margin: 0;
+	    }
+
+	    section.cover-page, section {
+	      margin: 0!important;
+	      margin-top: 0!important;
+	      box-shadow: none;
+	      min-height: 11in;
+	    }
+
+	    html, body {
+	      margin: 0;
+	    }
+	  }
+</style>
+
 <style type="text/css" scoped>
 
 	section {
@@ -184,8 +236,9 @@
 		padding: 80px;
 		padding-top: 30px;
 		width: 8.5in;
-		height: 11in;
+		min-height: 10.97in;
 		position: relative;
+		font-size: 12px;
 	}
 
 	section.cover-page {
@@ -278,18 +331,6 @@
 		left: 0;
 		bottom: 0;
 		width: 100%;
-	}
-
-	@media print {
-		header {
-			display: none!important;
-
-		}
-
-		section.cover-page, section {
-			margin: 0!important;
-			box-shadow: none;
-		}
 	}
 
 </style>

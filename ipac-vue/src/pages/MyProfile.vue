@@ -72,21 +72,18 @@
 				let vm = this
 
 				this.postForm('change-password').then(function(response){
-					
-					let alert_msg = "Password changed successfully"
-					let alert_class = "alert-success"
 
+					let alert_class = "alert-success"
 					if (response.status == "success") {
 						document.getElementById('change-password').reset();
 					}
 					else {
-						alert_msg = response.msg
 						alert_class = "alert-danger"
 					}
 
-					vm.$emit("alertUpdate",{
+					vm.$emit("updateAlert",{
 						class: alert_class,
-						msg: alert_msg,
+						msg: response.msg,
 						visible: true
 					})
 

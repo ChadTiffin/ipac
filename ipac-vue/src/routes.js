@@ -12,6 +12,8 @@ import ReportEditor from './pages/ReportEditor'
 import ReportViewer from './pages/ReportViewer'
 import CompanySettings from './pages/CompanySettings'
 import ClientEditor from './pages/ClientEditor'
+import Audits from './pages/Audits'
+import AuditForm from './pages/AuditForm'
 
 export default [
 
@@ -28,11 +30,11 @@ export default [
     component: Login
   },
   {
-    path: '/reports' , 
+    path: '/reports/client/:id' , 
     component: Reports,
     meta: {
       icon: "fa-wpforms",
-      navbar: true,
+      navbar: false,
       titleText: "Reports"
     }
   },
@@ -46,6 +48,24 @@ export default [
     }
   },
   {
+    path: '/audits/client/:id' , 
+    component: Audits,
+    meta: {
+      icon: "fa-balance-scale",
+      navbar: false,
+      titleText: "Audits"
+    }
+  },
+  {
+    path: '/audits/form/:id' , 
+    component: AuditForm,
+    meta: {
+      icon: "fa-balance-scale",
+      navbar: false,
+      titleText: "Audit Form"
+    }
+  },
+  {
     path: '/clients' , 
     component: Clients,
     meta: {
@@ -55,11 +75,11 @@ export default [
     }
   },
   {
-    path: '/clients/edit/:id' , 
+    path: '/clients/:id' , 
     component: ClientEditor,
     meta: {
-      icon: "fa-users",
-      navbar: true,
+      icon: "fa-user",
+      navbar: false,
       titleText: "Edit Client"
     }
   },

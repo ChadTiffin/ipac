@@ -23,7 +23,7 @@ class Base_Controller extends CI_Controller {
 		}
 
 		header('Access-Control-Allow-Credentials: true');
-		header("Access-Control-Allow-Headers: Content-Type, Content-Length, Accept-Encoding");
+		header("Access-Control-Allow-Headers: Content-Type, Content-Length, Accept-Encoding, X-API-KEY");
 		header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
 		if ( "OPTIONS" === $_SERVER['REQUEST_METHOD'] ) {
 			die();
@@ -51,7 +51,14 @@ class Base_Controller extends CI_Controller {
 
 	public function find($id,$field = 'id')
 	{
-		$result = $this->db->get_where($this->table,[$field => $id])->row_array();
+
+		if ($this->model != "") {
+			$model = $this->model;
+			$result = $this->$model->find($field, $id);
+		}
+		else {
+			$result = $this->db->get_where($this->table,[$field => $id])->row_array();
+		}
 
 		foreach ($this->api_excluded_fields as $field) {
 			unset($result[$field]);
@@ -64,7 +71,6 @@ class Base_Controller extends CI_Controller {
 	{
 
 		unset($_REQUEST['key']);
-		unset($_GET['key']);
 		unset($_POST['key']);
 
 		$this->load->library("form_validation");
@@ -72,7 +78,13 @@ class Base_Controller extends CI_Controller {
 
 		$validation_passes = true;
 
+		$data = $this->input->post();
+
+		unset($data['key']);
+
 		if ($this->validation_rules != null) {
+
+			$this->form_validation->set_data($data);
 			$this->form_validation->set_rules($this->validation_rules);
 			$validation_passes = $this->form_validation->run();
 		}
@@ -92,9 +104,6 @@ class Base_Controller extends CI_Controller {
 			]);
 		}
 		else {
-			$data = $this->input->post();
-
-			unset($data['key']);
 
 			$data['updated_at'] = date("Y-m-d H:i:s");
 
@@ -190,23 +199,44 @@ class Base_Controller extends CI_Controller {
 		/*
 		$filters should look like this:
 		$filters = [
-			[field, value],
-			[field, value]
+			[field, value,and/or],
+			[field, value,and/or 'like'],
+			['field >=',value,and/or]
 		]
+
+		$order = [field, order]
 		*/
+
+		$order = [];
+		if ($this->input->get("order")) {
+			$order = json_decode($this->input->get("order"));
+
+			$this->db->order_by($order[0],$order[1]);
+		}
 
 		if ($this->input->get("filters")) {
 			$filters = json_decode($this->input->get("filters"),true);
 
 			if ($this->model != "") {
 				$model = $this->model;
-				$records = $this->$model->get(false, $filters);
+				$records = $this->$model->get(false, $filters,$order);
 			}
 			else {
 				
 				foreach ($filters as $filter) {
-					if (isset($filter[2]) && strtolower($filter[2]) == 'like')
-						$this->db->like($filter[0],$filter[1]);
+
+					if (isset($filter[2]) && strtolower($filter[2]) == 'and') {
+						if (isset($filter[3]) && strtolower($filter[3]) == 'like')
+							$this->db->like($filter[0],$filter[1]);
+						else
+							$this->db->where($filter[0],$filter[1]);
+					}
+					elseif (isset($filter[2]) && strtolower($filter[2]) == 'or') {
+						if (isset($filter[3]) && strtolower($filter[3]) == 'like')
+							$this->db->or_like($filter[0],$filter[1]);
+						else
+							$this->db->or_where($filter[0],$filter[1]);
+					}
 					else
 						$this->db->where($filter[0],$filter[1]);
 				}

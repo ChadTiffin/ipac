@@ -5,6 +5,8 @@ class UserModel extends BaseModel {
 	public $table = "users";
 	public $soft_delete = true;
 
+	public $hidden_fields = ["pw_hash",'api_key','deleted'];
+
 	private $auth_level_mapping = [
 		"User",
 		"Admin",
@@ -60,8 +62,16 @@ class UserModel extends BaseModel {
 		//check for API key
 		if (isset($_REQUEST['key']))
 			$user = $this->db->get_where("users",["api_key" => $_REQUEST['key']])->row();
-		else
-			$user = false;
+		else {
+			$headers = getallheaders();
+
+			if (isset($headers['x-api-key']))  {
+				$user = $this->db->get_where("users",["api_key" => $headers['x-api-key']])->row();
+			}
+			else {
+				$user = false;
+			}
+		}
 
 		if (!$user) 
 			return false;
