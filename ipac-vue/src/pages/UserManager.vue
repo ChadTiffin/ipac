@@ -76,6 +76,11 @@
 				<button class="btn btn-danger" type="button" v-on:click="genNewAPIKey(userDialog.fields.id)"><i class="fa fa-refresh"></i> Generate New API Key</button>
 			</FormGroup>
 
+			<FormGroup label="Send Password Reset" col-class="col-md-3">
+				<div v-if="resetSent" class="form-control-static text-success"><i class="fa fa-check"></i> Password Reset Sent</div>
+				<button v-else class="btn btn-warning" type="button" v-on:click="sendResetInstructions(userDialog.fields.email)"><i class="fa fa-refresh"></i> Send Password Reset Instructions</button>
+			</FormGroup>
+
 			<div class="alert" :class="userDialog.alert.class" v-if="userDialog.alert.visible">
 				{{ userDialog.alert.msg }}
 				<p v-if="userDialog.alert.hasErrors" v-for="error in userDialog.alert.errors">
@@ -136,7 +141,8 @@
 					}
 				},
 				spinnerVisible : false,
-				users: []
+				users: [],
+				resetSent: false
 			}
 		},
 		methods: {
@@ -207,6 +213,17 @@
 						vm.userDialog.fields.api_key = response.newKey
 
 
+				})
+			},
+			sendResetInstructions(email) {
+				let vm = this
+
+				let payload = {
+					email: email
+				}
+
+				this.postData(window.apiBase + "auth/password/reset-request",payload).then(function(){
+					vm.resetSent = true;
 				})
 			},
 			fetchUsers() {

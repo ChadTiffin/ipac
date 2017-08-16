@@ -71,6 +71,9 @@
 						}
 					});
 			}
+		},
+		created() {
+			this.$emit("toggleSpinner",false)
 		}
 	}
 </script>

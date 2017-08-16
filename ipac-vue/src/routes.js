@@ -1,4 +1,5 @@
 import Login from './pages/Login'
+import ResetPassword from './pages/ResetPassword'
 import MyProfile from './pages/MyProfile'
 import UserManager from './pages/UserManager'
 import SectionTemplateEditor from './pages/SectionTemplateEditor'
@@ -27,7 +28,7 @@ export default [
   },
   {
     path: '/reset-password/:token' ,
-    component: Login
+    component: ResetPassword
   },
   {
     path: '/reports/client/:id' , 
