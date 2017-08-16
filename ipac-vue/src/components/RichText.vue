@@ -53,11 +53,15 @@
 							this.setContent("")
 
 					});
+					editor.on('change undo redo paste keypress',function(){
+						vm.$emit("input",editor.getContent())
+						console.log("change")
+					});
 
 				},
 				plugins: 'link lists advlist hr code',
 				menubar : false,
-				toolbar: 'undo redo | styleselect | alignleft aligncenter alignright | bold italic bullist numlist hr | code',
+				toolbar: 'undo redo | alignleft aligncenter alignright | bold italic bullist numlist hr | code',
 				formats: {
 					custom_format: {block : 'p', styles : {margin: '0px'}}
 				}

@@ -5,14 +5,14 @@
 
 			<div class="button-bar">
 			
-				<router-link to="/templates/sections"><i class="fa fa-angle-double-left"></i> Back to Section Templates</router-link>
+				<router-link to="/templates/sections" class="router-link"><i class="fa fa-angle-double-left"></i> Back to Section Templates</router-link>
 
 				<div class="pull-right">
 					<button class="btn btn-info" type="button" v-on:click="varHelpVisible = true">
 						<i class="fa fa-question-circle"></i> Variable Reference
 					</button>
 
-					<button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
+					<button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Save</button>
 				</div>
 
 				<div style="clear: both;"></div>
@@ -85,7 +85,7 @@
 
 			</div>
 		
-			<button class="btn btn-primary pull-right"><i class="fa fa-save"></i> Save</button>
+			<button class="btn btn-success pull-right"><i class="fa fa-save"></i> Save</button>
 			<div style="clear: both;"></div>
 
 		</form>

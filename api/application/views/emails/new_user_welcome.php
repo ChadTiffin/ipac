@@ -16,7 +16,7 @@
 		</tr>
 	</table>
 
-	<p>After you navigate to the App, you can go to the browser menu and click "Add to Homescreen". The web app will now behave like a native web app, with offline access.</p>
+	<p>After you navigate to the App, you can go to the browser menu and click "Add to Homescreen". The web app will now behave like a native web app.</p>
 
-	<p>It would be a good idea to change your password after logging in. Happy budgeting!</p>
+	<p>It would be a good idea to change your password after logging in. Happy report building!</p>
 </div>

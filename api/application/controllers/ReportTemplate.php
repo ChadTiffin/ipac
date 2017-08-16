@@ -73,6 +73,9 @@ class ReportTemplate extends Base_Controller {
 			unset($section['has_guidelines']);
 			unset($section['has_findings']);
 			unset($section['guidelines_text']);
+			unset($section['pull_findings_from_section']);
+			unset($section['findings_form_template_id']);
+			unset($section['findings_section_name']);
 			unset($section['updated_at']);
 			unset($section['deleted']);
 

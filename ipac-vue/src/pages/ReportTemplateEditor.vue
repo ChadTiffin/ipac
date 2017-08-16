@@ -3,14 +3,14 @@
 		<form class="form-horizontal" v-on:submit.prevent="save">
 			<div class="button-bar">
 
-				<router-link to="/templates/reports"><i class="fa fa-angle-double-left"></i> Back to Report Templates</router-link>
+				<router-link to="/templates/reports" class="router-link"><i class="fa fa-angle-double-left"></i> Back to Report Templates</router-link>
 
 				<div class="pull-right">
 					<button class="btn btn-info" type="button" v-on:click="varHelpVisible = true">
 						<i class="fa fa-question-circle"></i> Variable Reference
 					</button>
 
-					<button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
+					<button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Save</button>
 				</div>
 
 				<div style="clear: both;"></div>

@@ -1,6 +1,12 @@
 <template>
 
 	<div class="report-print">
+
+		<form :action="pdfUrl" method="post">
+			<input type="hidden" v-model="pageHtml" name="page">
+			<input type="hidden" name="key" v-model="apiKey">
+			<button type="submit">Download PDF</button>
+		</form>
 		
 		<section class="cover-page">
 			<div class="details">
@@ -91,6 +97,9 @@
 					report_date: ""
 				},
 				company: {},
+				pdfUrl: window.apiBase+"report/pdf",
+				pageHtml: "",
+				apiKey: localStorage.apiKey
 			}
 		},
 		computed: {
@@ -200,7 +209,14 @@
 			this.$emit("toggleSpinner",true)
 			this.fetchReport();
 			this.fetchCompany()
-		}
+
+			let vm =this
+			setTimeout(function(){
+				console.log(vm.pageHtml)
+				vm.pageHtml = "<link href='https://ipac-api.chadtiffin.com/assets/pdf.css'>"
+				vm.pageHtml += document.querySelector(".report-print").outerHTML
+			},3000)
+		},
 	}
 </script>
 

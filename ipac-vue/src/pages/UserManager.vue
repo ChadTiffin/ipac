@@ -214,11 +214,13 @@
 
 				this.getJSON(window.apiBase + "user/get").then(function(response) {
 					vm.users = response
+					vm.$emit("toggleSpinner",false)
 				})
 			}
 		},
 		created() {
 			this.fetchUsers()
+			this.$emit("toggleSpinner",true)
 		}
 	}
 </script>

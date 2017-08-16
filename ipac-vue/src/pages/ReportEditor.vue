@@ -15,6 +15,10 @@
 				<a class="btn btn-primary" :href="'/reports/view/'+$route.params.id" target="_blank">
 					<i class="fa fa-eye"></i> View Report
 				</a>
+
+				<a class="btn btn-primary" :href="pdfUrl" target="_blank">
+					<i class="fa fa-download"></i> Report PDF
+				</a>
 			</div>
 			<div style="clear: both;"></div>
 		</div>
@@ -26,19 +30,20 @@
 						<input type="text" v-model="report.report_title" class="form-control">
 					</form-group>
 
-					<form-group label="Location" col-class="col-md-4">
-						<select class="form-control" v-model="report.location_id">
-							<option v-for="location in locations" :value="location.id">{{location.location_name}}</option>
-						</select>
-					</form-group>
-
 					<form-group label="Report Issue Date" col-class="col-md-4">
 						<date-field v-model="report.date_issued" extra-classes="form-control"></date-field>
+					</form-group>
+
+					<form-group label="Location" col-class="col-md-4">
+						<select class="form-control" v-model="report.location_id" v-on:change="fetchAudits">
+							<option v-for="location in locations" :value="location.id">{{location.location_name}}</option>
+						</select>
 					</form-group>
 				</div>
 				<div class="col-md-6">
 					<form-group label="Audits to Import From" col-class="col-md-4">
-						<select multiple class="form-control" v-model="includedAudits">
+						<p v-if="auditsLoading" class="form-control-static"><i class="fa fa-spin fa-spinner"></i></p>
+						<select v-else multiple class="form-control" v-model="includedAudits">
 							<option v-for="audit in audits" :value="audit.id">{{ audit.audit_date}} {{ audit.form_templates.form_name }}</option>
 						</select>
 					</form-group>
@@ -101,9 +106,11 @@
 				reportMeta: {},
 				locations: [],
 				audits: [],
+				auditsLoading: true,
 				activeSection: null,
 				varHelpVisible: false,
-				currentClientId: localStorage.currentClientId
+				currentClientId: localStorage.currentClientId,
+				pdfUrl: window.apiBase+"report/pdf/"+this.$route.params.id+"?key="+localStorage.apiKey
 			}
 		},
 		methods: {
@@ -238,14 +245,17 @@
 			fetchAudits() {
 				let vm = this
 
+				this.auditsLoading = true;
 				let filters = JSON.stringify([
-					["audits.client_id",this.reportMeta.client_id]
+					["audits.client_id",this.reportMeta.client_id],
+					["audits.location_id",this.report.location_id]
 				])
 
 				let order = JSON.stringify(["audit_date","DESC"]);
 
 				this.getJSON(window.apiBase + "auditForm/get?filters="+filters+"&order="+order).then(function(response){
 					vm.audits = response
+					vm.auditsLoading = false;
 				})
 			},
 			fetchReport() {
