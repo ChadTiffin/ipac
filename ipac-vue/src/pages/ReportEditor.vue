@@ -8,10 +8,6 @@
 					<i class="fa fa-question-circle"></i> Variable Reference
 				</button>
 
-				<button class="btn btn-success" v-on:click="save">
-					<i class="fa fa-save"></i> Save
-				</button>
-
 				<a class="btn btn-primary" :href="'/reports/view/'+$route.params.id" target="_blank">
 					<i class="fa fa-eye"></i> View Report
 				</a>
@@ -19,6 +15,10 @@
 				<a class="btn btn-primary" :href="pdfUrl" target="_blank">
 					<i class="fa fa-download"></i> Report PDF
 				</a>
+
+				<button class="btn btn-success" v-on:click="save">
+					<i class="fa fa-save"></i> Save
+				</button>
 			</div>
 			<div style="clear: both;"></div>
 		</div>

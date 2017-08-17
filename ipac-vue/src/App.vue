@@ -58,6 +58,12 @@ export default {
       clients: []
     }
   }, 
+  watch: {
+    '$route': function() {
+      if (window.innerWidth <= 1400)
+          this.menuShowing = false
+    }
+  },
   methods: {
     navigate(location) {
       this.$router.push(location)
