@@ -19,6 +19,9 @@
 						</li>
 
 						<li v-for="(section, index) in form" :class="{'active':activeSection == index}" v-on:click="activeSection = index">
+							<div v-if="section.totalFields - section.totalFieldsAnswered > 0" class="alert-bubble" title="Unanswered fields">
+								{{ section.totalFields - section.totalFieldsAnswered }}
+							</div>
 							<a href="#">{{ index+1 }}.0 {{ section.heading }}</a>
 						</li>
 
@@ -60,23 +63,30 @@
 						<h2 v-if="section.heading">{{ index+1 }}.0 {{section.heading}}</h2>
 
 						<div v-if="section.fields">
-							<form-group v-for="field in section.fields" :key="field.question" :label="field.question" col-class="col-md-6">
+							<form-group v-for="(field, fieldIndex) in section.fields" :key="field.question" :label="field.question" col-class="col-md-6">
 
 								<yes-no-na-buttons v-if="field.type=='yes/no'" v-model="field.value" v-on:input="autoSave"></yes-no-na-buttons>
 
 								<div v-if="field.type=='images' || field.type == 'image'">
-									<div class="thumbs">
-										<div 
-											v-for="(image,index) in field.value" 
-											class="thumb" 
-											:style="{backgroundImage: 'url('+apiBase+'image/image/'+image+')'}">
+									<div v-if="!$root.isOffline">
+										<div class="thumbs">
+											<div 
+												v-for="(image,index) in field.value" 
+												class="thumb" 
+												:style="{backgroundImage: 'url('+apiBase+'image/image/'+image+')'}">
 
-											<button type="button" class="btn btn-danger btn-sm" v-on:click="deleteImage(index, field.value)">
-												<i class="fa fa-remove"></i>
-											</button>
+												<button type="button" class="btn btn-danger btn-sm" v-on:click="deleteImage(index, field.value)">
+													<i class="fa fa-remove"></i>
+												</button>
+											</div>
 										</div>
+
+										<upload-field v-on:uploaded="saveUpload($event,field)"></upload-field>
 									</div>
-									<upload-field v-on:uploaded="saveUpload($event,field)"></upload-field>
+									<div v-else class="alert alert-warning">
+										<i class="fa fa-warning"></i>
+										Can't upload images when offline
+									</div>
 								</div>
 
 								<textarea v-if="field.hasNotes" class="form-control" v-on:change="autoSave" placeholder="Notes..." v-model="field.notes"></textarea>
@@ -90,22 +100,29 @@
 
 							<div v-if="subSection.fields">
 
-								<form-group v-for="subSectionField in subSection.fields" :key="subSection.question" :label="subSectionField.question" col-class="col-md-6">
+								<form-group v-for="(subSectionField, fieldIndex) in subSection.fields" :key="subSection.question" :label="subSectionField.question" col-class="col-md-6">
 									<yes-no-na-buttons v-if="subSectionField.type=='yes/no'" v-model="subSectionField.value" v-on:input="autoSave"></yes-no-na-buttons>
 
 									<div v-if="subSectionField.type=='images' || subSectionField.type == 'image'">
-										<div class="thumbs">
-											<div 
-												v-for="(image,index) in field.value" 
-												class="thumb" 
-												:style="{backgroundImage: 'url('+apiBase+'image/image/'+image+')'}">
+										<div v-if="!$root.isOffline">
+											<div class="thumbs">
+												<div 
+													v-for="(image,index) in field.value" 
+													class="thumb" 
+													:style="{backgroundImage: 'url('+apiBase+'image/image/'+image+')'}">
 
-												<button type="button" class="btn btn-danger btn-sm" v-on:click="deleteImage(index, subSectionField.value)">
-													<i class="fa fa-remove"></i>
-												</button>
+													<button type="button" class="btn btn-danger btn-sm" v-on:click="deleteImage(index, subSectionField.value)">
+														<i class="fa fa-remove"></i>
+													</button>
+												</div>
 											</div>
+											<upload-field v-on:uploaded="saveUpload($event,subSectionField)"></upload-field>
 										</div>
-										<upload-field v-on:uploaded="saveUpload($event,subSectionField)"></upload-field>
+
+										<div v-else class="alert alert-warning">
+											<i class="fa fa-warning"></i>
+											Can't upload images when offline
+										</div>
 									</div>
 
 									<textarea v-if="subSectionField.hasNotes" class="form-control" placeholder="Notes..." v-model="subSectionField.notes"></textarea>
@@ -143,7 +160,6 @@
 
 	export default {
 		name: "AuditForm",
-		props: [],
 		components: {
 			FormGroup,
 			YesNoNaButtons,
@@ -205,7 +221,46 @@
 				this.autoSave()
 
 			},
+			calcTotalFieldsAnswered() {
+				//calculate total fields and total fields answered
+				let vm = this
+				this.form.forEach(function(section, index){
+
+					let sectiontotalFields = 0;
+					let sectionTotalAnswered = 0;
+
+					if ("fields" in section) {
+						section.fields.forEach(function(field,field_index){
+							sectiontotalFields++;
+							if ("value" in field)
+								sectionTotalAnswered++
+						})
+					}
+					if ("subSections" in section) {
+						section.subSections.forEach(function(subSection, sub_index){
+							subSection.fields.forEach(function(field, field_index){
+								sectiontotalFields++;
+								if ("value" in field)
+									sectionTotalAnswered++
+							})
+						})
+					}
+
+					if ("totalFields" in section)
+						section.totalFields = sectiontotalFields
+					else
+						vm.$set(section,"totalFields",sectiontotalFields)
+
+					if ("totalFieldsAnswered" in section)
+						section.totalFieldsAnswered = sectionTotalAnswered
+					else
+						vm.$set(section,"totalFieldsAnswered",sectionTotalAnswered)
+				})
+			},
 			autoSave() {
+
+				//recalculated number of fields unanswereed for this section
+
 
 				if (this.autoSaveActive) { //we need to prevent autosave from firing on load when controls get bound
 					this.$emit("updateAlert",{
@@ -219,20 +274,55 @@
 
 					this.audit.form_values = this.form
 
-					vm.postData(window.apiBase+"auditForm/save",vm.audit).then(function(response){
+					this.calcTotalFieldsAnswered()
+
+					if (this.$root.isOffline) { //save to local
+						console.log("offline autosave")
+
+						//find audit in list
+						let offlineAudits = []
+						let auditFound = false
+
+						if (localStorage.offlineAudits)
+							offlineAudits = JSON.parse(localStorage.offlineAudits)
+
+						offlineAudits.forEach(function(audit,index) {
+							if (audit.id == vm.$route.params.id) {
+					
+								audit.form_values = vm.audit.form_values
+
+								auditFound = true
+							}
+						})
+						if (!auditFound) {
+							offlineAudits.push(this.audit)
+						}
+						localStorage.offlineAudits = JSON.stringify(offlineAudits);
+
 						vm.$emit("updateAlert",{
 							visible:true,
 							class: "alert-success",
-							msg: "Saved!",
+							msg: "Saved locally!",
 							icon: "fa-save"
 						})
 
-						setTimeout(function(){
+					}
+					else {
+						vm.postData(window.apiBase+"auditForm/save",vm.audit).then(function(response){
 							vm.$emit("updateAlert",{
-								visible:false,
+								visible:true,
+								class: "alert-success",
+								msg: "Saved!",
+								icon: "fa-save"
 							})
-						},6000)
-					})
+
+							setTimeout(function(){
+								vm.$emit("updateAlert",{
+									visible:false,
+								})
+							},6000)
+						})
+					}
 				}
 
 			},
@@ -241,40 +331,60 @@
 
 				this.getJSON(window.apiBase + "auditForm/find/"+this.$route.params.id).then(function(response){
 
-					if (response.form_values)
-						vm.form = JSON.parse(response.form_values)
+					let addValuesandNotes = false
+
+					if ("status" in response && response.status == "offline") {
+						//look for it in local
+
+						if (localStorage.offlineAudits) {
+							let localAudits = JSON.parse(localStorage.offlineAudits)
+
+							localAudits.forEach(function(audit, index){
+								if (audit.id == vm.$route.params.id) {
+									if ("form_values" in audit)
+										vm.form = audit.form_values		
+									else {
+										//no values yet, we need to get the template
+										if (localStorage.auditTemplates) {
+											let templates = JSON.parse(localStorage.auditTemplates)
+
+											templates.forEach(function(template, index){
+
+												if (audit.form_template_id == template.id) {
+
+													vm.form = JSON.parse(template.fields)
+													addValuesandNotes = true
+												}
+											})
+										}
+									}
+								}
+							})
+						}
+					}
 					else {
-						vm.form = JSON.parse(response.form_templates.fields)
 
-						vm.form.forEach(function(section, index){
-							if ("fields" in section) {
-								section.fields.forEach(function(field,field_index){
-									vm.$set(field,"value",null)
-									vm.$set(field,"notes",null)
-								})
-							}
-							if ("subSections" in section) {
-								section.subSections.forEach(function(subSection, sub_index){
-									subSection.fields.forEach(function(field, field_index){
-										vm.$set(field,"value",null)
-										vm.$set(field,"notes",null)
-									})
-								})
-							}
-						})
+						if (response.form_values)
+							vm.form = JSON.parse(response.form_values)
+						else {
+							vm.form = JSON.parse(response.form_templates.fields)
+							addValuesandNotes = true
+						}
+
+						vm.fullAudit = response
+
+						vm.audit = {
+							audit_date: response.audit_date,
+							client_id: response.client_id,
+							form_template_id: response.form_template_id,
+							form_values: response.form_values,
+							id: response.id,
+							location_id: response.location_id,
+						}
 					}
 
-					vm.fullAudit = response
-
-					vm.audit = {
-						audit_date: response.audit_date,
-						client_id: response.client_id,
-						form_template_id: response.form_template_id,
-						form_values: response.form_values,
-						id: response.id,
-						location_id: response.location_id,
-					}
-
+					vm.calcTotalFieldsAnswered()
+					
 					//we're ready, turn on autosave after short delay
 					setTimeout(function(){
 						vm.autoSaveActive = true
@@ -336,6 +446,25 @@
 		position: absolute;
 		top: 0;
 		right: 0;
+	}
+
+	.alert-bubble {
+		float: right;
+		padding: 1px;
+		padding-left: 3px;
+		padding-right: 3px;
+		background-color: red;
+		color: white;
+		box-shadow: 1px 1px 1px black;
+		border-radius: 4px;
+		text-align: center;
+		font-weight: bold;
+		font-size: 9pt;
+		margin-top: 8px;
+		position: relative;
+		z-index: 1;
+		min-width: 20px;
+		margin-left: 3px;
 	}
 
 	@media (max-width: 991px) {

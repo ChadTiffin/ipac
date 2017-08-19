@@ -4,6 +4,8 @@ class ReportTemplate extends Base_Controller {
 
 	public $table = "report_templates";
 
+	public $model = "ReportTemplateModel";
+
 	public $validation_rules = [];
 
 	public function __construct()
@@ -45,13 +47,16 @@ class ReportTemplate extends Base_Controller {
 		if ($post['id'] == "new") {
 			$this->db->insert($this->table,[
 				"template_name" => $post['template_name'],
-				'preface_text' => $post['preface_text']
+				'preface_text' => $post['preface_text'],
+				'updated_at' => date("Y-m-d H:i:s")
 			]);
 		}
 		else {
+
 			$this->db
 				->set("template_name",$post['template_name'])
 				->set("preface_text",$post['preface_text'])
+				->set("updated_at",date("Y-m-d H:i:s"))
 				->where("id",$post['id'])
 				->update($this->table);
 

@@ -18,7 +18,7 @@
 					<input type="password" name="password" placeholder="Password" class="form-control">
 				</div>
 			</div>
-			<button class="btn btn-primary" style="margin-bottom: 10px;">Login</button>
+			<button class="btn btn-primary" type="submit" style="margin-bottom: 10px;"><i class="fa" :class="submitIcon"></i> Login</button>
 			
 			<p><a href="#" v-on:click="passwordResetRequest">I forgot my password</a></p>
 		</form>
@@ -72,6 +72,7 @@
 					visible: false,
 					class: ""
 				},
+				submitIcon: "fa-sign-in",
 				spinnerVisible: false
 			}
 		},
@@ -80,6 +81,11 @@
 				var vm = this;
 
 				e.preventDefault();
+
+				vm.loginAlert.visible = true;
+				vm.loginAlert.msg = "Submitting..."
+				vm.loginAlert.class = "alert-warning"
+				vm.submitIcon = "fa-spin fa-spinner"
 
 				this.postForm("login-form")
 					.then(function(response){

@@ -145,6 +145,9 @@ class Base_Controller extends CI_Controller {
 		unset($post['key']);
 
 		$form_errors = [];
+
+		$numInserts = 0;
+		$numUpdates = 0;
 		foreach (json_decode($post['records'],true) as $record) {
 			$this->form_validation->set_data($record);
 			
@@ -178,16 +181,20 @@ class Base_Controller extends CI_Controller {
 						->update($this->table);
 
 					$record_id = $record['id'];
+					$numUpdates++;
 				}
 				else {
 
 					$this->db->insert($this->table,$record);
 
 					$record_id = $this->db->insert_id();
+					$numInserts++;
 				}
 			}
 		}
 		echo json_encode([
+			"numInserts" => $numInserts,
+			"numUpdates" => $numUpdates,
 			"status" => "success"
 		]);
 

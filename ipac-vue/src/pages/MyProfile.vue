@@ -1,6 +1,6 @@
-<template>
+<template><div>
 
-	<section class="small-section">
+	<section class="small-section" v-if="!$root.isOffline">
 
 		<h2>Profile Details</h2>
 		<table class="table table-striped">
@@ -45,13 +45,15 @@
 		</form>
 
 	</section>
+	<page-offline-alert v-else></page-offline-alert>
 
-</template>
+</div></template>
 
 <script type="text/javascript">
 	import Spinner from '../components/Spinner'
 	import ModalDialog from '../components/ModalDialog'
 	import FormGroup from '../components/FormGroup'
+	import PageOfflineAlert from '../components/PageOfflineAlert'
 
 	export default {
 		name: "MyProfile",

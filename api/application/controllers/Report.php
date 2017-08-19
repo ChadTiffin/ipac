@@ -234,7 +234,7 @@ class Report extends Base_Controller {
 		$pdf->SetFont($this->pdf_font_family,'', 12);
 		$pdf->Text($this->pdf_margin_side,4,$report['date_issued']);
 
-		$pdf->Image("assets/logo.png",6,9.5,0,1,'');
+		$pdf->Image("assets/logo.jpg",6,9.5,0,1,'');
 
 		//Preface Page
 		/////////////////////////////

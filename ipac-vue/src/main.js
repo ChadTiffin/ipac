@@ -4,11 +4,13 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import Ajax from './ajax'
+import CommonFetches from './commonFetches'
 import routes from './routes'
 
 Vue.config.productionTip = false
 
 Vue.mixin(Ajax)
+Vue.mixin(CommonFetches)
 
 window.apiBase = "https://ipac-api.chadtiffin.com/"
 
@@ -21,7 +23,8 @@ new Vue({
   components: { App },
   data() {
   	return {
-  		routes: routes
+  		routes: routes,
+  		isOffline: false
 	}  		
   }
 })

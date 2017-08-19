@@ -173,6 +173,11 @@
 				let vm = this
 				this.postData(window.apiBase+ "sectionTemplate/save",payload).then(function(response){
 					if (response.status == "success") {
+
+						vm.$router.replace("/templates/sections/edit/"+response.id)
+
+						vm.section.id = response.id
+
 						vm.$emit("updateAlert",{
 							visible: true,
 							class: "alert-success",

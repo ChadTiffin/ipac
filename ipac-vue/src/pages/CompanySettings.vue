@@ -1,5 +1,5 @@
-<template>
-	<section>
+<template><div>
+	<section v-if="!$root.isOffline">
 		<p>These will be available in templates as the following variables:</p>
 		<form class="form-horizontal" v-on:submit.prevent="save">
 			<table class="table table-striped">
@@ -24,17 +24,19 @@
 			</table>
 		</form>
 	</section>
+	<page-offline-alert v-else></page-offline-alert>
 
-</template>
+</div></template>
 
 <script type="text/javascript">
 	import FormGroup from '../components/FormGroup'
+	import PageOfflineAlert from '../components/PageOfflineAlert'
 
 	export default {
 		name: "CompanySettings",
-		props: [],
 		components: {
-			FormGroup
+			FormGroup,
+			PageOfflineAlert
 		},
 		data () {
 			return {

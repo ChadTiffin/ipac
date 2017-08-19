@@ -1,6 +1,5 @@
-<template>
-
-	<section>
+<template><div>
+	<section v-if="!$root.isOffline">
 
 		<p><button class="btn btn-success" v-on:click="newUser"><i class="fa fa-plus"></i> New User</button></p>
 
@@ -104,20 +103,23 @@
 		</ModalDialog>
 
 	</section>
-
-</template>
+	<page-offline-alert v-else></page-offline-alert>
+	
+</div></template>
 
 <script type="text/javascript">
 	import Spinner from '../components/Spinner'
 	import ModalDialog from '../components/ModalDialog'
 	import FormGroup from '../components/FormGroup'
+	import PageOfflineAlert from '../components/PageOfflineAlert'
 
 	export default {
 		name: "UserManager",
 		components: {
 			Spinner,
 			ModalDialog,
-			FormGroup
+			FormGroup,
+			PageOfflineAlert
 		},
 		data () {
 			return {

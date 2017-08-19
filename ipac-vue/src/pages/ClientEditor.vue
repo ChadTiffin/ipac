@@ -107,21 +107,24 @@
 				</div>
 
 				<div v-if="activeTab == 'reports'">
-					<h2>Reports</h2>
+					<div v-if="!$root.isOffline">
+						<h2>Reports</h2>
 
-					<router-link class="btn btn-success" to="/reports/new"><i class="fa fa-plus"></i> New Report</router-link>
+						<router-link class="btn btn-success" to="/reports/new"><i class="fa fa-plus"></i> New Report</router-link>
 
-					<!--<search-widget v-model="reportFilterTerms" v-on:submit="filterReports"></search-widget>-->
+						<!--<search-widget v-model="reportFilterTerms" v-on:submit="filterReports"></search-widget>-->
 
-					<table-list 
-						:records="amendedReports" 
-						:fields="reportFields" 
-						has-edit="/reports/edit/" 
-						:has-delete="true" 
-						v-on:modelChange="filterReports" 
-						delete-endpoint="/report/delete">
-						
-					</table-list>
+						<table-list 
+							:records="amendedReports" 
+							:fields="reportFields" 
+							has-edit="/reports/edit/" 
+							:has-delete="true" 
+							v-on:modelChange="filterReports" 
+							delete-endpoint="/report/delete">
+							
+						</table-list>
+					</div>
+					<page-offline-alert v-else></page-offline-alert>
 				</div>
 
 			</div>
@@ -179,6 +182,7 @@
 	import ModalDialog from '../components/ModalDialog'
 	import SearchWidget from '../components/SearchWidget'
 	import DateField from '../components/DateField'
+	import PageOfflineAlert from '../components/PageOfflineAlert'
 
 	export default {
 		name: "ClientEditor",
@@ -188,7 +192,8 @@
 			TableList,
 			ModalDialog,
 			SearchWidget,
-			DateField
+			DateField,
+			PageOfflineAlert
 		},
 		data () {
 			return {
@@ -382,19 +387,6 @@
 					vm.locations = response
 				})
 			},
-			fetchLocations() {
-				let vm = this
-
-				let filters = JSON.stringify([
-					["client_id",this.$route.params.id]
-				])
-
-				let order = JSON.stringify(["location_name","ASC"]);
-
-				this.getJSON(window.apiBase + "location/get?filters="+filters+"&order="+order).then(function(response){
-					vm.locations = response
-				})
-			},
 			filterAudits() {
 				let vm = this
 
@@ -435,13 +427,6 @@
 					vm.reports = response
 
 					vm.$emit("toggleSpinner",false)
-				})
-			},
-			fetchAuditTemplates() {
-				let vm =this
-
-				this.getJSON(window.apiBase + "AuditFormTemplate/get").then(function(response){
-					vm.auditTemplates = response
 				})
 			},
 			fetchClient() {

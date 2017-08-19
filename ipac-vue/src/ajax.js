@@ -2,6 +2,7 @@ export default {
 	methods: {
 
 		getJSON: function(url) {
+			let vm = this
 			return new Promise(function(resolve, reject) {
 
 				fetch(url,{
@@ -18,10 +19,14 @@ export default {
 						console.log(e)
 					})
 					.then(function(j){
+
 						if (typeof j == 'undefined') {//seem to be offline 
+
 							let response = {
 								status: "offline"
 							}
+
+							vm.$root.isOffline = true
 
 							resolve(response)
 						}
@@ -38,6 +43,7 @@ export default {
 
 		},
 		postForm: function(form_id) {
+			let vm = this
 			return new Promise(function (resolve, reject) {
 				
 				let form_el = document.getElementById(form_id)
@@ -69,6 +75,8 @@ export default {
 							status: "offline"
 						}
 
+						vm.$root.isOffline = true
+
 						resolve(response)
 					}
 					else {
@@ -84,6 +92,7 @@ export default {
 			})
 		},
 		postData: function(url, data) {
+			let vm = this
 			return new Promise(function (resolve, reject) {
 
 				let payload = new FormData()
@@ -117,6 +126,8 @@ export default {
 						let response = {
 							status: "offline"
 						}
+
+						vm.$root.isOffline = true
 
 						resolve(response)
 					}

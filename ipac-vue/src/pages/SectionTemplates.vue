@@ -1,5 +1,5 @@
-<template>
-	<section>
+<template><div>
+	<section v-if="!$root.isOffline">
 		<router-link class="btn btn-success" to="/templates/sections/edit/new"><i class="fa fa-plus"></i> New Section Template</router-link>
 
 		<table-list 
@@ -11,17 +11,19 @@
 			v-on:modelChange="fetchTemplates">
 		</table-list>
 	</section>
-
-</template>
+	<page-offline-alert v-else></page-offline-alert>
+</div></template>
 
 <script type="text/javascript">
 	import TableList from '../components/TableList'
+	import PageOfflineAlert from '../components/PageOfflineAlert'
 
 	export default {
 		name: "SectionTemplatesList",
 		props: [],
 		components: {
-			TableList
+			TableList,
+			PageOfflineAlert
 		},
 		data () {
 			return {
@@ -47,7 +49,13 @@
 				let vm = this
 
 				this.getJSON(window.apiBase + "sectionTemplate/get").then(function(response){
-					vm.templates = response
+
+					if ("status" in response && response.status == "offline") {
+
+					}
+					else {
+						vm.templates = response
+					}
 
 					vm.$emit("toggleSpinner",false)
 				})

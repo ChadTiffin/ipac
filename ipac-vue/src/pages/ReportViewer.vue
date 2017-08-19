@@ -1,12 +1,6 @@
 <template>
 
 	<div class="report-print">
-
-		<form :action="pdfUrl" method="post">
-			<input type="hidden" v-model="pageHtml" name="page">
-			<input type="hidden" name="key" v-model="apiKey">
-			<button type="submit">Download PDF</button>
-		</form>
 		
 		<section class="cover-page">
 			<div class="details">
@@ -14,7 +8,7 @@
 				<div class="report-date">{{ formattedDate }}</div>
 			</div>
 
-			<img src="/static/cover_page.png" class="cover-page-graphic">
+			<img src="/static/cover_page.jpg" class="cover-page-graphic">
 		</section>
 
 		<section class="page preface-page" v-html="renderedPreface"></section>

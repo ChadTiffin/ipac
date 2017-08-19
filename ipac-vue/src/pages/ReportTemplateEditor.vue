@@ -175,6 +175,11 @@
 				this.postData(window.apiBase+ "reportTemplate/save",payload).then(function(response){
 
 					if (response.status == "success") {
+
+						vm.$router.replace("/templates/reports/edit/"+response.id)
+
+						vm.report.id = response.id
+
 						vm.$emit("updateAlert",{
 							visible: true,
 							class: "alert-success",

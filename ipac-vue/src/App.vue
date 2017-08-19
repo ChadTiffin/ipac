@@ -9,14 +9,23 @@
         :alert="alert"
         v-on:navigate="navigate"
         v-on:toggleMenu="menuShowing ? menuShowing = false : menuShowing = true"
+        v-on:newAudit="auditDialog.visible = true"
+        :is-offline="$root.isOffline"
+
         >
       </DashboardHeader>
 
-      <div class="alert main-alert" :class="alert.class" v-if="alert.visible">
-        <i class="fa" :class="alert.icon"></i>
-        {{ alert.msg }}
-        <p v-if="alert.errors">{{ alert.errors }}</p>
-      </div>
+      <transition
+        name="modalOverlayFade"
+        enter-active-class="fadeIn"
+        leave-active-class="fadeOut" >
+
+        <div class="alert main-alert" :class="alert.class" v-if="alert.visible">
+          <i class="fa" :class="alert.icon"></i>
+          {{ alert.msg }}
+          <p v-if="alert.errors">{{ alert.errors }}</p>
+        </div>
+      </transition>
 
       <div class="section-wrapper" :class="{ menuShowing: menuShowing }" v-on:click="hideMenu">
         
@@ -25,24 +34,69 @@
           v-on:updateLoginStatus="updateLoginStatus" 
           v-on:toggleSpinner="toggleSpinner" 
           v-on:clientsChanged="fetchClients"
+          :is-offline="$root.isOffline"
           :clients="clients">
         </router-view>
         
       </div>
     </div>
     <spinner v-if="spinnerVisible"></spinner>
+
+    <modal-dialog
+      v-if="auditDialog.visible" 
+      :title="auditDialog.title" 
+      :modal-visible="auditDialog.visible" 
+      :confirm-button-text="auditDialog.buttonText"
+      :button-class="auditDialog.buttonClass"
+      v-on:confirm="createNewAudit"
+      v-on:closeModal="auditDialog.visible = false">
+
+      <form-group label="Client" col-class="col-md-4">
+        <select class="form-control" v-model="auditDialog.fields.client_id" required>
+          <option v-for="client in clients" :value="client.id" >{{ client.company }}</option>
+        </select>
+      </form-group>
+      
+      <form-group label="Location" col-class="col-md-4">
+        <select class="form-control" v-model="auditDialog.fields.location_id" required>
+          <option v-for="location in selectedClientLocations" :value="location.id" >{{ location.location_name }}</option>
+        </select>
+      </form-group>
+
+      <form-group label="Audit Date" col-class="col-md-4">
+        <date-field extra-classes='form-control' v-model="auditDialog.fields.audit_date" ></date-field>
+      </form-group>
+
+      <form-group label="Form Template" col-class="col-md-4">
+        <select class="form-control" v-model="auditDialog.fields.form_template_id" required>
+          <option v-for="template in auditTemplates" :value="template.id">{{ template.form_name }}</option>
+        </select>
+      </form-group>
+
+    </modal-dialog>
+
+    <div v-if="$root.isOffline" class="offline-flag bg-danger">
+      <i class="fa fa-plug"></i>
+      You appear to be offline. The app is running in a limited state
+    </div>
   </div>
 </template>
 
 <script>
 import DashboardHeader from './components/DashboardHeader'
 import Spinner from './components/Spinner'
+import ModalDialog from './components/ModalDialog'
+import FormGroup from './components/FormGroup'
+import DateField from './components/DateField'
 
 export default {
   name: 'app',
   components: {
     DashboardHeader,
-    Spinner
+    Spinner,
+    ModalDialog,
+    FormGroup,
+    DateField
   },
   data() {
     return {
@@ -55,13 +109,42 @@ export default {
         errors: []
       },
       spinnerVisible: true,
-      clients: []
+      clients: [],
+      locations: [],
+      recentAudits: [],
+      auditDialog: {
+        visible: false,
+        title: "New Audit",
+        buttonText: "Create",
+        buttonClass: "btn-success",
+        fields: {
+          client_id: null,
+          location_id: null,
+          audit_date: null,
+          form_template_id: null
+        }
+      },
     }
   }, 
   watch: {
     '$route': function() {
       if (window.innerWidth <= 1400)
           this.menuShowing = false
+    }
+  },
+  computed: {
+    selectedClientLocations() {
+
+      let locationSubset = []
+      let vm = this
+
+      this.locations.forEach(function(location, index){
+        if (location.client_id == vm.auditDialog.fields.client_id) {
+          locationSubset.push(location)
+        }
+      })
+
+      return locationSubset
     }
   },
   methods: {
@@ -92,20 +175,105 @@ export default {
     toggleSpinner(visibility) {
       this.spinnerVisible = visibility
     },
-    fetchClients() {
+    createNewAudit() {
       let vm = this
 
-      this.getJSON(window.apiBase + "client/get").then(function(response){
-        vm.clients = response
+      this.postData(window.apiBase+"auditForm/save",this.auditDialog.fields).then(function(response){
+        vm.auditDialog.visible = false
 
-        vm.$emit("toggleSpinner",false)
+        if ("status" in response && response.status == "offline") {
+          //save new audit to localstorage
+
+          let offlineAudits = []
+
+          if (localStorage.offlineAudits) {
+            offlineAudits = JSON.parse(localStorage.offlineAudits)
+          }
+
+          let hashCode = function(s){
+            return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);              
+          }
+
+          let id = hashCode(JSON.stringify(vm.auditDialog.fields));
+
+          vm.auditDialog.fields.id = "temp-"+id
+
+          offlineAudits.push(vm.auditDialog.fields);
+
+          localStorage.offlineAudits = JSON.stringify(offlineAudits)
+        }
+
       })
     },
+    syncLocalStorage() {
+      if (localStorage.localAudits) {
+
+        let audits = JSON.parse(localStorage.localAudits)
+
+        //strip temp ids
+        audits.forEach(function(audit, index){
+          if (audit.id.search("temp-") >= 0)
+            delete audit.id
+        })
+
+        let payload = {
+          records: JSON.stringify(audits)
+        }
+
+        let vm = this
+
+        this.postData(window.apiBase+"auditForm/save-batch",payload).then(function(response){
+          if (response.status == "success")
+            localStorage.removeItem("localAudits");
+
+            vm.alert.visible = true
+            vm.alert.icon = "fa-plug"
+            vm.alert.class = "alert-success"
+            vm.alert.msg = "Locally saved audits has been synced with the server";
+        })
+      }
+
+    }
+    /*fetchRecentAudits($days_back) {
+      let vm = this
+
+      let filters = "";
+      if (this.searchTerms) {
+        filters = JSON.stringify([
+          ["location_name",this.searchTerms,'and','like'],
+          ["company",this.searchTerms,'or','like'],
+          ["audit_date",this.searchTerms,'or','like'],
+          ["form_name",this.searchTerms,'or','like']
+        ])
+      }
+      else {
+
+        //get date $days_back days ago
+        var today = new Date()
+        var priorDate = new Date().setDate(today.getDate()-$days_back)
+
+        priorDate = new Date(priorDate)
+        var date_string = priorDate.getFullYear()+"-"+(priorDate.getMonth()+1)+"-"+priorDate.getDate()
+
+        filters = JSON.stringify([
+          ["audits.updated_at >=",date_string]
+        ])
+      }
+
+      this.getJSON(window.apiBase + "auditForm/get?filters="+filters).then(function(response){
+        vm.recentAudits = response
+        localStorage.recentAudits = response
+
+      })
+    }*/
   },
   created() {
     if ("apiKey" in localStorage) {
       this.loggedIn = true
       this.fetchClients()
+      this.fetchAuditTemplates()
+      this.fetchLocations()
+      //this.fetchRecentAudits(7)
     }
     else
       this.loggedIn = false
@@ -233,6 +401,16 @@ export default {
 
   tr:hover .fa-remove {
     display: inline-block;
+  }
+
+  .offline-flag {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 5px;
+    text-align: center;
+    z-index: 5;
   }
 
   @media (max-width: 1200px) {

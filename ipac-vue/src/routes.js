@@ -36,7 +36,7 @@ export default [
     meta: {
       icon: "fa-wpforms",
       navbar: false,
-      titleText: "Reports"
+      titleText: "Reports",
     }
   },
   {
@@ -49,12 +49,13 @@ export default [
     }
   },
   {
-    path: '/audits/client/:id' , 
+    path: '/audits', 
     component: Audits,
     meta: {
       icon: "fa-balance-scale",
-      navbar: false,
-      titleText: "Audits"
+      navbar: true,
+      titleText: "Recent Audits",
+      offline: true
     }
   },
   {
@@ -72,7 +73,8 @@ export default [
     meta: {
       icon: "fa-users",
       navbar: true,
-      titleText: "Clients"
+      titleText: "Clients",
+      offline: true
     }
   },
   {
@@ -153,7 +155,8 @@ export default [
     meta: {
       icon: "fa-sign-out",
       navbar: true,
-      titleText: "Logout"
+      titleText: "Logout",
+      offline: true
     }
   },
   {

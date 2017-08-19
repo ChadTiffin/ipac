@@ -24,57 +24,59 @@ class BaseModel extends CI_Model {
 		//has relations, so we'll iterate each declared child and nest them into the result with a key of {table_name}
 
 		//iterate each declared child relation
-		foreach ($relations as $rel) {
+		if ($result) {
+			foreach ($relations as $rel) {
 
-			$this->db
-				->select("*")
-				->from($rel['table']);
+				$this->db
+					->select("*")
+					->from($rel['table']);
 
-			//if any joins are declared, join and merge them into the child record
-			if (isset($rel['joins'])) { //child of child is set
-				foreach ($rel['joins'] as $join) {
-					$this->db->join($join['table'],$rel['table'].".".$join['key']." = ".$join['table'].".id",'left');
+				//if any joins are declared, join and merge them into the child record
+				if (isset($rel['joins'])) { //child of child is set
+					foreach ($rel['joins'] as $join) {
+						$this->db->join($join['table'],$rel['table'].".".$join['key']." = ".$join['table'].".id",'left');
+					}
 				}
-			}
 
-			if (isset($rel['hasMany']) && $rel['hasMany']) {
-				$child = $this->db
-					->where($rel['table'].".".$rel['key'],$result['id'])
-					->get()->result_array();
+				if (isset($rel['hasMany']) && $rel['hasMany']) {
+					$child = $this->db
+						->where($rel['table'].".".$rel['key'],$result['id'])
+						->get()->result_array();
 
-				if (isset($rel['model'])) {
-					$this->load->model($rel['model']);
+					if (isset($rel['model'])) {
+						$this->load->model($rel['model']);
 
-					if (isset($this->$rel['model']->hidden_fields)) {
-						foreach ($child as $record) {
-							foreach ($this->$rel['model']->hidden_fields as $hidden) {
-								unset($record[$hidden]);
+						if (isset($this->$rel['model']->hidden_fields)) {
+							foreach ($child as $record) {
+								foreach ($this->$rel['model']->hidden_fields as $hidden) {
+									unset($record[$hidden]);
+								}
 							}
 						}
 					}
 				}
-			}
-			else {
-				$child = $this->db
-					->where($rel['table'].".id",$result[$rel['key']])
-					->get()->row_array();
+				else {
+					$child = $this->db
+						->where($rel['table'].".id",$result[$rel['key']])
+						->get()->row_array();
 
-				if (isset($rel['model'])) {
-					$this->load->model($rel['model']);
+					if (isset($rel['model'])) {
+						$this->load->model($rel['model']);
 
-					$model = $rel['model'];
+						$model = $rel['model'];
 
-					if (isset($this->$model->hidden_fields)) {
+						if (isset($this->$model->hidden_fields)) {
 
-						foreach ($this->$model->hidden_fields as $hidden) {
-							unset($child[$hidden]);
+							foreach ($this->$model->hidden_fields as $hidden) {
+								unset($child[$hidden]);
+							}
+							
 						}
-						
 					}
 				}
+					
+				$result[$rel['table']] = $child;
 			}
-				
-			$result[$rel['table']] = $child;
 		}
 
 		return $result;

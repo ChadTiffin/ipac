@@ -13,7 +13,14 @@
 			</h2>
 			<ul class="menu-list">
 
-				<li v-for="route in $root.$data.routes" v-if="('meta' in route) && route.meta.navbar">
+				<li v-if="isOffline">
+					<a href="#" v-on:click.prevent="newAudit">
+						<i class="fa fa-fw fa-balance-scale"></i>
+						New Audit
+					</a>
+				</li>
+
+				<li v-for="route in $root.$data.routes" v-if="('meta' in route) && route.meta.navbar && !isOffline || isOffline && ('meta' in route) && isOffline && ('offline' in route.meta) && route.meta.offline">
 					<router-link :to="route.path">
 						<i class="fa fa-fw" :class="route.meta.icon"></i>
 						{{ route.meta.titleText }}
@@ -28,7 +35,7 @@
 
 	export default {
 		name: 'DashboardHeader',
-		props: ['menuShowing','spinnerVisible'],
+		props: ['menuShowing','spinnerVisible',"isOffline"],
 		data () {
 			return {
 				userType: localStorage.userType
@@ -55,17 +62,8 @@
 			toggleMenu: function(e) {
 				this.$emit("toggleMenu");
 			},
-			showModal: function(e) {
-				this.$emit("showModal");
-			},
-			showImportModal () {
-				this.$emit("showImportModal")
-			},
-			showAccountsModal (account) {
-				this.$emit("showAccountsModal",account)
-			},
-			navigate(location) {
-				this.$emit("navigate",location)
+			newAudit() {
+				this.$emit("newAudit");
 			},
 			logout () {
 				localStorage.removeItem("apiKey");

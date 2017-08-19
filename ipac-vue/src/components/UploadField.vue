@@ -41,6 +41,7 @@
 		methods: {
 			startUpload(e) {
 				this.fileUpload.msg = "Uploading..."
+				console.log(e)
 			},
 			finishUpload(e){
 				

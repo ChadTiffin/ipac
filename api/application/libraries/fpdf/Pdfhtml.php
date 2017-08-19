@@ -74,7 +74,7 @@ function addReportPage() {
 	$this->AddPage();
 
 	//create header
-	$this->Image("assets/logo.png",$this->absolute_left_margin,$this->top_margin,0,1,'');
+	$this->Image("assets/logo.jpg",$this->absolute_left_margin,$this->top_margin,0,1,'');
 
 	$this->SetLineWidth(0.025);
 	$this->setDrawColor(60,85,75);
@@ -157,17 +157,19 @@ function OpenTag($tag, $attr,$lineheight=0.25)
 
 				$width = 250/72; //pixels / dpi = inches
 
-				$this->Image($attr['SRC'], $this->GetX(), $this->GetY(), $width, 0);
+                if (file_exists($attr['SRC'])) {
+				    $this->Image($attr['SRC'], $this->GetX(), $this->GetY(), $width, 0);
+            
+    				$this->SetX($this->GetX()+$width);
 
-				$this->SetX($this->GetX()+$width);
-
-				//check if line wrap needs to occur
-				if ($this->getPageWidth() - ($this->GetX() + $width) <= 0) {
-					$this->SetY($this->getY() + $width*0.75);
-				}
-				if ($this->getPageHeight() - ($this->GetY() + ($width*0.75)) - 2 <= 0) {
-					$this->addReportPage();
-				}
+    				//check if line wrap needs to occur
+    				if ($this->getPageWidth() - ($this->GetX() + $width) <= 0) {
+    					$this->SetY($this->getY() + $width*0.75);
+    				}
+    				if ($this->getPageHeight() - ($this->GetY() + ($width*0.75)) - 2 <= 0) {
+    					$this->addReportPage();
+    				}
+                }
 			}
 			break;
 		case 'TR':
