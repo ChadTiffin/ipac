@@ -260,10 +260,6 @@
 						label: "Audit Date"
 					},
 					{
-						key: "client_company",
-						label: "Client"
-					},
-					{
 						key: "client_location",
 						label: "Location"
 					},
@@ -280,12 +276,8 @@
 						label: "Report Title"
 					},
 					{
-						key: "contact_name",
-						label: "Client Contact"
-					},
-					{
-						key: "company",
-						label: "Client Company"
+						key: "location_name",
+						label: "Location"
 					},
 					{
 						key: "date_issued",
@@ -400,6 +392,11 @@
 						["form_name",this.auditFilterTerms,'or','like']
 					])
 				}
+				else {
+					filters = JSON.stringify([
+						["audits.client_id",this.$route.params.id]
+					])
+				}
 
 				this.getJSON(window.apiBase + "auditForm/get?filters="+filters).then(function(response){
 					vm.audits = response
@@ -416,12 +413,9 @@
 			filterReports() {
 				let vm = this
 
-				let filters = "";
-				if (this.auditFilterTerms) {
-					filters = JSON.stringify([
-						["reports.client_id",this.$route.params.id,'and']
-					])
-				}
+				let filters = JSON.stringify([
+					["reports.client_id",this.$route.params.id]
+				])
 
 				this.getJSON(window.apiBase + "report/get?filters="+filters).then(function(response){
 					vm.reports = response

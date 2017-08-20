@@ -214,8 +214,6 @@
 					id: this.$route.params.id
 				}
 
-				console.log(payload)
-
 				this.postData(window.apiBase+"report/save-report",payload).then(function(response){
 
 					vm.$emit("updateAlert",{
@@ -225,9 +223,6 @@
 					})
 
 				});
-			},
-			view() {
-
 			},
 			fetchLocations() {
 				let vm = this
@@ -268,10 +263,12 @@
 				this.getJSON(window.apiBase+"report/find/"+this.$route.params.id).then(function(response){
 
 					vm.sections = response.sections
-					vm.activeSection = response.sections[0].id
 					vm.report.date_issued = response.date_issued
 					vm.report.report_title = response.report_title
 					vm.report.location_id = response.location_id
+
+					if (response.sections.length > 0)
+						vm.activeSection = response.sections[0].id
 
 					vm.reportMeta = response
 

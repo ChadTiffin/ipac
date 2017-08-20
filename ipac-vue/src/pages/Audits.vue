@@ -10,7 +10,7 @@
 			has-edit="/audits/form/" 
 			:has-delete="true" 
 			v-on:modelChange="fetchAudits" 
-			delete-endpoint="filledForm/delete">
+			delete-endpoint="auditForm/delete">
 			
 		</table-list>
 
@@ -26,10 +26,10 @@
 <script type="text/javascript">
 	import TableList from '../components/TableList'
 	import SearchWidget from '../components/SearchWidget'
+	import bus from '../bus.js'
 
 	export default {
 		name: "Audits",
-		props: [],
 		components: {
 			TableList,
 			SearchWidget
@@ -97,7 +97,9 @@
 					])
 				}
 
-				this.getJSON(window.apiBase + "auditForm/get?filters="+filters).then(function(response){
+				let order = JSON.stringify(["audit_date","DESC"])
+
+				this.getJSON(window.apiBase + "auditForm/get?filters="+filters+"&order="+order).then(function(response){
 
 					if ("status" in response && response.status == "offline") {
 						if (localStorage.offlineAudits) {
@@ -146,6 +148,11 @@
 		created() {
 			this.$emit("toggleSpinner",true)
 			this.fetchAudits();
+
+			let vm = this
+			bus.$on("auditsChanged",function(){
+				vm.fetchAudits()
+			})
 		}
 	}
 </script>

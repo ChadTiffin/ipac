@@ -7,7 +7,6 @@
       <DashboardHeader
         :menu-showing="menuShowing"
         :alert="alert"
-        v-on:navigate="navigate"
         v-on:toggleMenu="menuShowing ? menuShowing = false : menuShowing = true"
         v-on:newAudit="auditDialog.visible = true"
         :is-offline="$root.isOffline"
@@ -34,6 +33,7 @@
           v-on:updateLoginStatus="updateLoginStatus" 
           v-on:toggleSpinner="toggleSpinner" 
           v-on:clientsChanged="fetchClients"
+          v-on:newAudit="auditDialog.visible = true"
           :is-offline="$root.isOffline"
           :clients="clients">
         </router-view>
@@ -75,6 +75,8 @@
 
     </modal-dialog>
 
+    <button v-on:click="test">Emit!</button>
+
     <div v-if="$root.isOffline" class="offline-flag bg-danger">
       <i class="fa fa-plug"></i>
       You appear to be offline. The app is running in a limited state
@@ -88,6 +90,7 @@ import Spinner from './components/Spinner'
 import ModalDialog from './components/ModalDialog'
 import FormGroup from './components/FormGroup'
 import DateField from './components/DateField'
+import bus from './bus.js'
 
 export default {
   name: 'app',
@@ -148,15 +151,6 @@ export default {
     }
   },
   methods: {
-    navigate(location) {
-      this.$router.push(location)
-
-      this.currentRoute = location
-
-      if (window.innerWidth <= 1400)
-        this.menuShowing = false
-      
-    },
     hideMenu() {
       if (window.innerWidth < 1050 && this.menuShowing)
         this.menuShowing = false
@@ -179,7 +173,9 @@ export default {
       let vm = this
 
       this.postData(window.apiBase+"auditForm/save",this.auditDialog.fields).then(function(response){
-        vm.auditDialog.visible = false
+        vm.auditDialog.visible = false  
+
+        bus.$emit("auditsChanged") 
 
         if ("status" in response && response.status == "offline") {
           //save new audit to localstorage
@@ -194,7 +190,7 @@ export default {
             return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);              
           }
 
-          let id = hashCode(JSON.stringify(vm.auditDialog.fields));
+          let id = Math.abs(hashCode(JSON.stringify(vm.auditDialog.fields)));
 
           vm.auditDialog.fields.id = "temp-"+id
 
@@ -216,21 +212,26 @@ export default {
             delete audit.id
         })
 
-        let payload = {
-          records: JSON.stringify(audits)
+        if (audits.length > 0) {
+
+          let payload = {
+            records: JSON.stringify(audits)
+          }
+
+          let vm = this
+
+          this.postData(window.apiBase+"auditForm/save-batch",payload).then(function(response){
+            if (response.status == "success") {
+              localStorage.removeItem("localAudits");
+
+              vm.alert.visible = true
+              vm.alert.icon = "fa-plug"
+              vm.alert.class = "alert-success"
+              vm.alert.msg = "Locally saved audits have been synced with the server";
+              vm.alert.errors = false
+            }
+          })
         }
-
-        let vm = this
-
-        this.postData(window.apiBase+"auditForm/save-batch",payload).then(function(response){
-          if (response.status == "success")
-            localStorage.removeItem("localAudits");
-
-            vm.alert.visible = true
-            vm.alert.icon = "fa-plug"
-            vm.alert.class = "alert-success"
-            vm.alert.msg = "Locally saved audits has been synced with the server";
-        })
       }
 
     }
@@ -274,6 +275,7 @@ export default {
       this.fetchAuditTemplates()
       this.fetchLocations()
       //this.fetchRecentAudits(7)
+      this.syncLocalStorage()
     }
     else
       this.loggedIn = false

@@ -341,6 +341,15 @@
 
 							localAudits.forEach(function(audit, index){
 								if (audit.id == vm.$route.params.id) {
+
+									vm.audit = {
+										audit_date: audit.audit_date,
+										client_id: audit.client_id,
+										form_template_id: audit.form_template_id,
+										location_id: audit.location_id,
+										id: audit.id
+									}
+
 									if ("form_values" in audit)
 										vm.form = audit.form_values		
 									else {

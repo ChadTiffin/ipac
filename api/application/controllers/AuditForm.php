@@ -79,4 +79,76 @@ class AuditForm extends Base_Controller {
 		}
 	}
 
+	public function save_batch() {
+		$this->load->library("form_validation");
+		$this->form_validation->set_error_delimiters('', '');
+
+		$validation_passes = true;
+
+		unset($_REQUEST['key']);
+		unset($_GET['key']);
+		unset($_POST['key']);
+
+		$post = $this->input->post();
+
+		unset($post['key']);
+
+		$form_errors = [];
+
+		$numInserts = 0;
+		$numUpdates = 0;
+		foreach (json_decode($post['records'],true) as $record) {
+			$this->form_validation->set_data($record);
+			
+			if ($this->validation_rules != null) {
+				$this->form_validation->set_rules($this->validation_rules);
+				$validation_passes = $this->form_validation->run();
+			}
+
+			if (!$validation_passes) {
+
+				foreach ($this->validation_rules as $field) {
+					if (form_error($field['field']) != "")
+						$form_errors[$field['field']] = form_error($field['field']);
+				}
+
+				echo json_encode([
+					"status" => "fail",
+					"errors" => $form_errors
+				]);
+				die;
+			}
+			else {
+
+				$record['updated_at'] = date("Y-m-d H:i:s");
+
+				if (isset($record['id']) && $record['id'] != 'undefined' && $record['id'] != 0) {
+
+					$record['form_values'] = json_encode($record['form_values']);
+
+					$this->db
+						->set($record)
+						->where('id',$record['id'])
+						->update($this->table);
+
+					$record_id = $record['id'];
+					$numUpdates++;
+				}
+				else {
+
+					$this->db->insert($this->table,$record);
+
+					$record_id = $this->db->insert_id();
+					$numInserts++;
+				}
+			}
+		}
+		echo json_encode([
+			"numInserts" => $numInserts,
+			"numUpdates" => $numUpdates,
+			"status" => "success"
+		]);
+
+	}
+
 }
