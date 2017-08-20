@@ -8,7 +8,7 @@
 			:records="audits" 
 			:fields="fields" 
 			has-edit="/audits/form/" 
-			:has-delete="true" 
+			:has-delete="!isOffline" 
 			v-on:modelChange="fetchAudits" 
 			delete-endpoint="auditForm/delete">
 			

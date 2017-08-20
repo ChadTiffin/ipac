@@ -75,8 +75,6 @@
 
     </modal-dialog>
 
-    <button v-on:click="test">Emit!</button>
-
     <div v-if="$root.isOffline" class="offline-flag bg-danger">
       <i class="fa fa-plug"></i>
       You appear to be offline. The app is running in a limited state
@@ -202,9 +200,11 @@ export default {
       })
     },
     syncLocalStorage() {
-      if (localStorage.localAudits) {
+      console.log("Checking local storage...")
+      if (localStorage.offlineAudits) {
+        console.log("Sync required")
 
-        let audits = JSON.parse(localStorage.localAudits)
+        let audits = JSON.parse(localStorage.offlineAudits)
 
         //strip temp ids
         audits.forEach(function(audit, index){
@@ -222,8 +222,9 @@ export default {
 
           this.postData(window.apiBase+"auditForm/save-batch",payload).then(function(response){
             if (response.status == "success") {
-              localStorage.removeItem("localAudits");
+              localStorage.removeItem("offlineAudits");
 
+              console.log("Synced!")
               vm.alert.visible = true
               vm.alert.icon = "fa-plug"
               vm.alert.class = "alert-success"
@@ -275,6 +276,7 @@ export default {
       this.fetchAuditTemplates()
       this.fetchLocations()
       //this.fetchRecentAudits(7)
+
       this.syncLocalStorage()
     }
     else

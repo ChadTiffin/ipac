@@ -121,10 +121,9 @@ class AuditForm extends Base_Controller {
 			else {
 
 				$record['updated_at'] = date("Y-m-d H:i:s");
+				$record['form_values'] = json_encode($record['form_values']);
 
 				if (isset($record['id']) && $record['id'] != 'undefined' && $record['id'] != 0) {
-
-					$record['form_values'] = json_encode($record['form_values']);
 
 					$this->db
 						->set($record)
