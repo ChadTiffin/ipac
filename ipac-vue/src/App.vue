@@ -224,7 +224,6 @@ export default {
             if (response.status == "success") {
               localStorage.removeItem("offlineAudits");
 
-              console.log("Synced!")
               vm.alert.visible = true
               vm.alert.icon = "fa-plug"
               vm.alert.class = "alert-success"
