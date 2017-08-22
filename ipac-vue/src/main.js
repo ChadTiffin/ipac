@@ -12,8 +12,8 @@ Vue.config.productionTip = false
 Vue.mixin(Ajax)
 Vue.mixin(CommonFetches)
 
-window.apiBase = "https://ipac-api.chadtiffin.com/"
-
+if (!("apiBase" in window))
+  window.apiBase = "https://ipac-api.chadtiffin.com/"
 
 /* eslint-disable no-new */
 new Vue({

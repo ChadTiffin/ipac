@@ -79,6 +79,64 @@ class AuditForm extends Base_Controller {
 		}
 	}
 
+	public function delete() {
+		$id = $this->input->post("id");
+
+		//get all photo reference
+		$audit = $this->db->get_where($this->table,["id"=>$id])->row_array();
+
+		$form_values = json_decode($audit['form_values'],true);
+
+		$deleted_files = 0;
+
+		//delete images associated with audit
+		if ($form_values) {
+			foreach ($form_values as $section) {
+				if (isset($section['fields'])) {
+					foreach ($section['fields'] as $field) {
+						if ($field['type'] == "images" && isset($field['value'])) {
+
+							foreach ($field['value'] as $image) {
+								if (file_exists(UPLOAD_FOLDER.$image)){
+									unlink(UPLOAD_FOLDER.$image);
+									$deleted_files++;
+								}
+
+								$this->db->where("filename",$image)
+									->delete("uploads");
+							}
+							
+						}
+					}
+				}
+
+				if (isset($section['subSections'])) {
+					foreach ($section['subSections'] as $subsection) {
+						if (isset($subsection['fields'])) {
+							foreach ($subsection['fields'] as $field) {
+								if ($field['type'] == "images" && isset($field['value'])) {
+									foreach ($field['value'] as $image) {
+										if (file_exists(UPLOAD_FOLDER.$image)) {
+											unlink(UPLOAD_FOLDER.$image);
+											$deleted_files++;
+										}
+
+										$this->db->where("filename",$image)
+											->delete("uploads");
+									}
+								}
+							}
+						}
+					}
+				}
+			}	
+		}
+
+		$this->db->where("id",$id)->delete($this->table);
+
+		echo json_encode(["status" => "success","deleted_files" => $deleted_files]);
+	}
+
 	public function save_batch() {
 		$this->load->library("form_validation");
 		$this->form_validation->set_error_delimiters('', '');

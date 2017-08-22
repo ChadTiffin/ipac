@@ -1,0 +1,1 @@
+window.apiBase = "https://api.ipac-app.ca/"

@@ -99,7 +99,7 @@
 							//save user type to local storage
 							localStorage.userType = response.userType
 
-							window.location = "/my-profile"
+							window.location = "/audits"
 						}
 						else {
 							vm.loginAlert.visible = true;

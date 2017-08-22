@@ -63,7 +63,7 @@
 						<h2 v-if="section.heading">{{ index+1 }}.0 {{section.heading}}</h2>
 
 						<div v-if="section.fields">
-							<form-group v-for="(field, fieldIndex) in section.fields" :key="field.question" :label="field.question" col-class="col-md-6">
+							<form-group v-for="(field, fieldIndex) in section.fields" :key="field.question" :label="field.question" :col-class="field.type == 'textarea' ? 'col-md-2' : 'col-md-6'" >
 
 								<yes-no-na-buttons v-if="field.type=='yes/no'" v-model="field.value" v-on:input="autoSave"></yes-no-na-buttons>
 
@@ -88,6 +88,8 @@
 										Can't upload images when offline
 									</div>
 								</div>
+
+								<textarea v-if="field.type == 'textarea'" v-model="field.value" v-on:change="autoSave" class="form-control"></textarea>
 
 								<textarea v-if="field.hasNotes" class="form-control" v-on:change="autoSave" placeholder="Notes..." v-model="field.notes"></textarea>
 							</form-group>
@@ -124,6 +126,8 @@
 											Can't upload images when offline
 										</div>
 									</div>
+
+									<textarea v-if="subSectionField.type == 'textarea'" v-model="subSectionField.value" v-on:change="autoSave" class="form-control"></textarea>
 
 									<textarea v-if="subSectionField.hasNotes" class="form-control" placeholder="Notes..." v-model="subSectionField.notes"></textarea>
 								</form-group>

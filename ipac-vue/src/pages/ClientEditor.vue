@@ -13,19 +13,23 @@
 				<div class="col-md-6">
 					<div class="form-horizontal">
 						<form-group label="Company" col-class="col-md-3">
-							<input type="text" v-model='client.company' class="form-control">
+							<input v-if="!isOffline" type="text" v-model='client.company' class="form-control">
+							<p v-else class="form-control-static">{{ client.company }}</p>
 						</form-group>
 
 						<form-group label="Contact Name" col-class="col-md-3">
-							<input type="text" v-model='client.contact_name' class="form-control">
+							<input v-if="!isOffline" type="text" v-model='client.contact_name' class="form-control">
+							<p v-else class="form-control-static">{{ client.contact_name }}</p>
 						</form-group>
 
 						<form-group label="Primary Phone" col-class="col-md-3">
-							<input type="tel" v-model='client.primary_phone' class="form-control">
+							<input v-if="!isOffline" type="tel" v-model='client.primary_phone' class="form-control">
+							<p v-else class="form-control-static">{{ client.primary_phone }}</p>
 						</form-group>
 
 						<form-group label="Email" col-class="col-md-3">
-							<input type="text" v-model='client.email' class="form-control">
+							<input v-if="!isOffline" type="text" v-model='client.email' class="form-control">
+							<p v-else class="form-control-static">{{ client.email }}</p>
 						</form-group>
 					</div>
 				</div>
@@ -33,22 +37,26 @@
 				<div class="col-md-6">
 					<div class="form-horizontal">
 						<form-group label="Address" col-class="col-md-3">
-							<input type="text" v-model='client.address' class="form-control">
+							<input v-if="!isOffline" type="text" v-model='client.address' class="form-control">
+							<p v-else class="form-control-static">{{ client.address }}</p>
 						</form-group>
 
 						<form-group label="City" col-class="col-md-3">
-							<input type="text" v-model='client.city' class="form-control">
+							<input v-if="!isOffline" type="text" v-model='client.city' class="form-control">
+							<p v-else class="form-control-static">{{ client.city }}</p>
 						</form-group>
 
 						<form-group label="Province" col-class="col-md-3">
-							<input type="text" v-model='client.province' class="form-control">
+							<input v-if="!isOffline" type="text" v-model='client.province' class="form-control">
+							<p v-else class="form-control-static">{{ client.province }}</p>
 						</form-group>
 
 						<form-group label="Postal Code" col-class="col-md-3">
-							<input type="text" v-model='client.postal_code' class="form-control">
+							<input v-if="!isOffline" type="text" v-model='client.postal_code' class="form-control">
+							<p v-else class="form-control-static">{{ client.postal_code }}</p>
 						</form-group>
 
-						<button class="pull-right btn btn-success"><i class="fa fa-save"></i> Save</button>
+						<button v-if="!isOffline" class="pull-right btn btn-success"><i class="fa fa-save"></i> Save</button>
 					</div>
 				</div>
 
@@ -74,7 +82,7 @@
 				
 				<div v-if="activeTab == 'locations'">
 					<h2>Locations</h2>
-					<button class="btn btn-success" v-on:click="newLocation"><i class="fa fa-plus"></i> New Location</button>
+					<button v-if="!isOffline" class="btn btn-success" v-on:click="newLocation"><i class="fa fa-plus"></i> New Location</button>
 
 					<search-widget v-model="locationFilterTerms" v-on:submit="filterLocations"></search-widget>
 
@@ -110,7 +118,7 @@
 					<div v-if="!$root.isOffline">
 						<h2>Reports</h2>
 
-						<router-link class="btn btn-success" to="/reports/new"><i class="fa fa-plus"></i> New Report</router-link>
+						<router-link v-if="!isOffline" class="btn btn-success" to="/reports/new"><i class="fa fa-plus"></i> New Report</router-link>
 
 						<!--<search-widget v-model="reportFilterTerms" v-on:submit="filterReports"></search-widget>-->
 
