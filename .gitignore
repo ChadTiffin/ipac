@@ -11,7 +11,7 @@ api/application/logs/*
 api/application/config/config.php
 api/application/config/database.php
 api/application/config/production/database.php
-api/application/config/production/config.php
+api/application/config/production/constants.php
 
 api/application/sftp-config.json
 
