@@ -72,6 +72,10 @@ function __construct($orientation='P', $unit='mm', $format='A4',$api_base="")
 	$this->api_base = $api_base;
 }
 
+function AcceptPageBreak() {
+    $this->addReportPage();
+}
+
 function addReportPage() {
 	$this->AddPage();
 
@@ -165,10 +169,11 @@ function OpenTag($tag, $attr,$lineheight=0.25)
                     $this->SetY($this->getY() + $width*0.75);
                 }
 
+                //check if page break needs to occur
                 if ($this->getPageHeight() - ($this->GetY() + ($width*0.75)) - 2 <= 0) {
                     $this->addReportPage();
                     //$this->last_element = null;
-                    $setLastElement = false;
+                    //$setLastElement = false;
                 }
 
 				

@@ -242,6 +242,8 @@ class Report extends Base_Controller {
 
 		$pdf->Image("assets/logo.jpg",6,9.5,0,1,'');
 
+		$pdf->SetAutoPageBreak(true, 1.5);
+
 		//Preface Page
 		/////////////////////////////
 		$pdf->SetTextColor(1,1,1);
