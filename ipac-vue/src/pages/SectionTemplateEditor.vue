@@ -74,7 +74,7 @@
 					</form-group>
 
 					<form-group label="Form Section" col-class="col-md-2">
-						<select class="form-control" v-model="section.findings_section_name">
+						<select class="form-control" v-model="section.findings_section_name" multiple>
 							<option v-for="section in selectedFormTemplateSections">{{ section }}</option>
 						</select>
 					</form-group>
@@ -111,6 +111,7 @@
 		data () {
 			return {
 				section: {},
+				sectionBindings: [],
 				formTemplates: [],
 				varHelpVisible: false
 			}
@@ -145,11 +146,18 @@
 
 				if (id != "new") {
 					
-
 					this.getJSON(window.apiBase+"sectionTemplate/find/"+id).then(function(response){
 						vm.section = response
+
 						for (var key in response) {
-							vm.$set(vm.section,key,response[key])
+
+							if (!(key in vm.section)) {
+								if (key == 'pull_findings_from_sections') 
+									vm.$set(vm.section,key,JSON.parse(response[key]))
+								else
+									vm.$set(vm.section,key,response[key])
+							}
+
 						}
 
 						vm.$emit("toggleSpinner",false)

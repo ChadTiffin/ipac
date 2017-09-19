@@ -92,6 +92,7 @@
 		},
 		created() {
 			this.$emit("toggleSpinner",false)
+			this.$emit("clientsChanged")
 		}
 	}
 </script>

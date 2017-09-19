@@ -88,6 +88,7 @@
 				variables: {
 					client: {},
 					company: {},
+					location: {},
 					report_date: ""
 				},
 				company: {},
@@ -177,6 +178,7 @@
 
 					vm.variables.client = response.client
 					vm.variables.report_date = response.date_issued
+					vm.variables.location = response.location
 
 					vm.$emit("toggleSpinner",false)
 

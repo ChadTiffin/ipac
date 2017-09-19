@@ -1,5 +1,8 @@
 <?php
 
+ini_set('display_errors', 'On');
+error_reporting(E_ALL);
+
 require_once '../application/libraries/dompdf/autoload.inc.php';
 
 require_once '../application/libraries/Mustache/src/Mustache/Autoloader.php';
@@ -14,7 +17,7 @@ class Report extends Base_Controller {
 	public $validation_rules = [];
 	public $model = "ReportModel";
 
-	public $pdf_line_height = 0.25;
+	public $pdf_line_height = 0.05;
 	public $pdf_font_family = "Arial";
 	public $pdf_margin_side = 0.8;
 	public $pdf_margin_vertical = 0.3;
@@ -45,10 +48,12 @@ class Report extends Base_Controller {
 			->where("report_templates.id",$report['report_template_id'])
 			->get()->result_array();*/
 
+		$report['location'] = $this->db->get_where("locations",["id"=>$report['location_id']])->row_array();
+
 		$report['sections'] = $this->db
 			->select("*")
 			->from("report_template_sections")
-			->join("section_templates", "section_templates.id = report_template_sections.section_template_id")
+			->join("section_templates", "section_templates.id = report_template_sections.section_template_id","right")
 			->where("report_template_sections.report_template_id",$report['report_template_id'])
 			->order_by("order_index","ASC")
 			->get()->result_array();
@@ -106,8 +111,8 @@ class Report extends Base_Controller {
 
 	private function setTextFormat($pdf, $format) {
 		if ($format == 'text') {
-			$pdf->SetFont($this->pdf_font_family, '', 10);
-			$this->pdf_line_height = 0.2;
+			$pdf->SetFont($this->pdf_font_family, '', 9);
+			$this->pdf_line_height = 0.18;
 			$pdf->SetTextColor(1,1,1);
 		}
 		elseif ($format == 'heading') {
@@ -118,7 +123,7 @@ class Report extends Base_Controller {
 		}
 		elseif ($format == 'subheading') {
 			$pdf->SetFont($this->pdf_font_family,'', 12);
-			$this->pdf_line_height = 0.32;
+			$this->pdf_line_height = 0.20;
 			$pdf->SetLineWidth(0.01);
 			$pdf->SetTextColor(60,85,75);
 		}
@@ -174,7 +179,7 @@ class Report extends Base_Controller {
 
 		$pdf->setY($pdf->getY()+$this->pdf_line_height);
 		$pdf->Line($this->pdf_margin_side,$pdf->GetY(),$pdf->GetPageWidth() - $this->pdf_margin_side,$pdf->GetY());
-		$pdf->setY($pdf->getY()+($this->pdf_line_height / 2));
+		//$pdf->setY($pdf->getY()+($this->pdf_line_height / 2));
 	}
 
 	private function writeHeading($pdf,$text) {
@@ -211,6 +216,7 @@ class Report extends Base_Controller {
 		$variables = [
 			'client' => $report['client'],
 			'company' => $company_vars,
+			'location'=> $report['location'],
 			'report_date' => $report['date_issued']
 		];
 

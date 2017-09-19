@@ -78,4 +78,9 @@
 		border-radius: 3px;
 	}
 
+	.modal-body {
+		overflow-y: auto;
+		max-height: calc(100vh - 180px);
+	}
+
 </style>

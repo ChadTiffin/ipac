@@ -62,7 +62,7 @@
 					
 					<div v-show="activeSection == section.id" class="section-editor" v-for="section in sections">
 
-						<button type="button" class="btn btn-primary pull-right" v-on:click="importAuditData(section)"><i class="fa fa-download"></i> Import Audit Data Into Findings</button>
+						<button type="button" class="btn btn-primary pull-right" :class="{ disabled : includedAudits.length == 0 }" v-on:click="importAuditData(section)"><i class="fa fa-download"></i> Import Audit Data Into Findings</button>
 
 						<h3><small>Findings:</small> {{ section.heading }}</h3>
 
@@ -263,6 +263,13 @@
 				this.getJSON(window.apiBase+"report/find/"+this.$route.params.id).then(function(response){
 
 					vm.sections = response.sections
+
+					vm.sections = []
+					response.sections.forEach(function(section, index){
+						if (section.has_findings == 1)
+							vm.sections.push(section)
+					})
+
 					vm.report.date_issued = response.date_issued
 					vm.report.report_title = response.report_title
 					vm.report.location_id = response.location_id

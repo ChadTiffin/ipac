@@ -37,7 +37,7 @@
 
 					
 					<ul class="list-group">
-						<draggable v-model="includedSections" :options="{group:'sections'}"  style="min-height: 200px">
+						<draggable v-model="includedSections" :options="{group:'sections'}"  style="min-height: 200px" v-on:change="save">
 						
 							<li class="list-group-item" v-for="section in includedSections">
 								{{ section.heading }}
@@ -53,7 +53,7 @@
 				<div class="col-md-5">
 					<h2>Available Sections</h2>
 					<ul class="list-group">
-						<draggable v-model="availableSections" :options="{group:'sections'}" style="min-height: 200px">
+						<draggable v-model="availableSections" :options="{group:'sections'}" style="min-height: 200px" >
 
 							<li class="list-group-item" v-for="section in availableSections">
 								{{ section.heading }}
@@ -108,7 +108,8 @@
 			}
 		},
 		methods: {
-			autoSave() {
+			sortChange() {
+				console.log("sort-change")
 			},
 			computeAvailableSections() {
 				let vm = this
@@ -163,11 +164,16 @@
 			},
 			save() {
 
+				let includedSections = []
+				this.includedSections.forEach(function(section, index){
+					includedSections.push(section.id)
+				})
+
 				let payload = {
 					id: this.report.id,
 					template_name: this.report.template_name,
 					preface_text: this.report.preface_text,
-					includedSections: JSON.stringify(this.includedSections)
+					includedSections: JSON.stringify(includedSections)
 				}
 
 				let vm = this
@@ -176,7 +182,8 @@
 
 					if (response.status == "success") {
 
-						vm.$router.replace("/templates/reports/edit/"+response.id)
+						if (vm.$route.params.id == "new")
+							vm.$router.replace("/templates/reports/edit/"+response.id)
 
 						vm.report.id = response.id
 

@@ -6,72 +6,8 @@
 				<router-link to="/clients" class='router-link'><i class="fa fa-angle-double-left"></i> Back to Clients</router-link>
 			</div>
 
-			<h2>Client Details</h2>
-
-			<form class="row" v-on:submit.prevent="save">
-
-				<div class="col-md-6">
-					<div class="form-horizontal">
-						<form-group label="Company" col-class="col-md-3">
-							<input v-if="!isOffline" type="text" v-model='client.company' class="form-control">
-							<p v-else class="form-control-static">{{ client.company }}</p>
-						</form-group>
-
-						<form-group label="Contact Name" col-class="col-md-3">
-							<input v-if="!isOffline" type="text" v-model='client.contact_name' class="form-control">
-							<p v-else class="form-control-static">{{ client.contact_name }}</p>
-						</form-group>
-
-						<form-group label="Primary Phone" col-class="col-md-3">
-							<input v-if="!isOffline" type="tel" v-model='client.primary_phone' class="form-control">
-							<p v-else class="form-control-static">{{ client.primary_phone }}</p>
-						</form-group>
-
-						<form-group label="Email" col-class="col-md-3">
-							<input v-if="!isOffline" type="text" v-model='client.email' class="form-control">
-							<p v-else class="form-control-static">{{ client.email }}</p>
-						</form-group>
-					</div>
-				</div>
-
-				<div class="col-md-6">
-					<div class="form-horizontal">
-						<form-group label="Address" col-class="col-md-3">
-							<input v-if="!isOffline" type="text" v-model='client.address' class="form-control">
-							<p v-else class="form-control-static">{{ client.address }}</p>
-						</form-group>
-
-						<form-group label="City" col-class="col-md-3">
-							<input v-if="!isOffline" type="text" v-model='client.city' class="form-control">
-							<p v-else class="form-control-static">{{ client.city }}</p>
-						</form-group>
-
-						<form-group label="Province" col-class="col-md-3">
-							<input v-if="!isOffline" type="text" v-model='client.province' class="form-control">
-							<p v-else class="form-control-static">{{ client.province }}</p>
-						</form-group>
-
-						<form-group label="Postal Code" col-class="col-md-3">
-							<input v-if="!isOffline" type="text" v-model='client.postal_code' class="form-control">
-							<p v-else class="form-control-static">{{ client.postal_code }}</p>
-						</form-group>
-
-						<button v-if="!isOffline" class="pull-right btn btn-success"><i class="fa fa-save"></i> Save</button>
-					</div>
-				</div>
-
-			</form>
-			<div class="alert" :class="alert.class" v-if="alert.visible">
-				{{ clientDialog.alert.msg }}
-				<p v-if="alert.hasErrors" v-for="error in alert.errors">
-					{{error}}
-				</p>
-			</div>
-
-		</section>
-
-		<section v-if="$route.params.id != 'new'">
-			<ul class="nav nav-tabs">
+			<ul class="nav nav-tabs" v-if="$route.params.id != 'new'">
+				<li :class="{active: activeTab == 'details'}"><a href="#" v-on:click="activeTab = 'details'">Details</a></li>
 				<li :class="{active: activeTab == 'locations'}"><a href="#" v-on:click="activeTab = 'locations'">Locations</a></li>
 				<li :class="{active: activeTab == 'audits'}"><a href="#" v-on:click="activeTab = 'audits'">Audits</a></li>
 				<li :class="{active: activeTab == 'reports'}"><a href="#" v-on:click="activeTab = 'reports'">Reports</a></li>
@@ -79,10 +15,74 @@
 			</ul>
 
 			<div class="tab-content">
+
+				<div v-if="activeTab == 'details'">
+					<h2>Client Details</h2>
+
+					<form class="row" v-on:submit.prevent="save">
+
+						<div class="col-md-6">
+							<div class="form-horizontal">
+								<form-group label="Company" col-class="col-md-3">
+									<input v-if="!$root.isOffline" type="text" v-model='client.company' class="form-control">
+									<p v-else class="form-control-static">{{ client.company }}</p>
+								</form-group>
+
+								<form-group label="Contact Name" col-class="col-md-3">
+									<input v-if="!$root.isOffline" type="text" v-model='client.contact_name' class="form-control">
+									<p v-else class="form-control-static">{{ client.contact_name }}</p>
+								</form-group>
+
+								<form-group label="Primary Phone" col-class="col-md-3">
+									<input v-if="!$root.isOffline" type="tel" v-model='client.primary_phone' class="form-control">
+									<p v-else class="form-control-static">{{ client.primary_phone }}</p>
+								</form-group>
+
+								<form-group label="Email" col-class="col-md-3">
+									<input v-if="!$root.isOffline" type="text" v-model='client.email' class="form-control">
+									<p v-else class="form-control-static">{{ client.email }}</p>
+								</form-group>
+							</div>
+						</div>
+
+						<div class="col-md-6">
+							<div class="form-horizontal">
+								<form-group label="Address" col-class="col-md-3">
+									<input v-if="!$root.isOffline" type="text" v-model='client.address' class="form-control">
+									<p v-else class="form-control-static">{{ client.address }}</p>
+								</form-group>
+
+								<form-group label="City" col-class="col-md-3">
+									<input v-if="!$root.isOffline" type="text" v-model='client.city' class="form-control">
+									<p v-else class="form-control-static">{{ client.city }}</p>
+								</form-group>
+
+								<form-group label="Province" col-class="col-md-3">
+									<input v-if="!$root.isOffline" type="text" v-model='client.province' class="form-control">
+									<p v-else class="form-control-static">{{ client.province }}</p>
+								</form-group>
+
+								<form-group label="Postal Code" col-class="col-md-3">
+									<input v-if="!$root.isOffline" type="text" v-model='client.postal_code' class="form-control">
+									<p v-else class="form-control-static">{{ client.postal_code }}</p>
+								</form-group>
+
+								<button v-if="!$root.isOffline" class="pull-right btn btn-success"><i class="fa fa-save"></i> Save</button>
+							</div>
+						</div>
+
+					</form>
+					<div class="alert" :class="alert.class" v-if="alert.visible">
+						{{ clientDialog.alert.msg }}
+						<p v-if="alert.hasErrors" v-for="error in alert.errors">
+							{{error}}
+						</p>
+					</div>
+				</div>
 				
 				<div v-if="activeTab == 'locations'">
 					<h2>Locations</h2>
-					<button v-if="!isOffline" class="btn btn-success" v-on:click="newLocation"><i class="fa fa-plus"></i> New Location</button>
+					<button v-if="!$root.isOffline" class="btn btn-success" v-on:click="newLocation"><i class="fa fa-plus"></i> New Location</button>
 
 					<search-widget v-model="locationFilterTerms" v-on:submit="filterLocations"></search-widget>
 
@@ -118,7 +118,7 @@
 					<div v-if="!$root.isOffline">
 						<h2>Reports</h2>
 
-						<router-link v-if="!isOffline" class="btn btn-success" to="/reports/new"><i class="fa fa-plus"></i> New Report</router-link>
+						<router-link v-if="!$root.isOffline" class="btn btn-success" to="/reports/new"><i class="fa fa-plus"></i> New Report</router-link>
 
 						<!--<search-widget v-model="reportFilterTerms" v-on:submit="filterReports"></search-widget>-->
 
@@ -294,7 +294,7 @@
 
 				],
 				reports: [],
-				activeTab: 'locations',
+				activeTab: 'details',
 				auditTemplates: []
 			}
 		},
@@ -372,12 +372,16 @@
 				let vm = this
 
 				let filters = JSON.stringify([
-					["client_id",this.$route.params.id,'and'],
+					["client_id",this.$route.params.id],
 					['location_name',this.locationFilterTerms,'and','like'],
-					['address',this.locationFilterTerms,'or','like'],
-					['province',this.locationFilterTerms,'or','like'],
-					['city',this.locationFilterTerms,'or','like'],
-					['postal_code',this.locationFilterTerms,'or','like']
+					["client_id",this.$route.params.id,'or'],
+					['address',this.locationFilterTerms,'and','like'],
+					["client_id",this.$route.params.id,'or'],
+					['province',this.locationFilterTerms,'and','like'],
+					["client_id",this.$route.params.id,'or'],
+					['city',this.locationFilterTerms,'and','like'],
+					["client_id",this.$route.params.id,'or'],
+					['postal_code',this.locationFilterTerms,'and','like']
 
 				])
 
@@ -395,8 +399,11 @@
 					filters = JSON.stringify([
 						["audits.client_id",this.$route.params.id,'and'],
 						["location_name",this.auditFilterTerms,'and','like'],
+						["audits.client_id",this.$route.params.id,'and'],
 						["company",this.auditFilterTerms,'or','like'],
+						["audits.client_id",this.$route.params.id,'and'],
 						["audit_date",this.auditFilterTerms,'or','like'],
+						["audits.client_id",this.$route.params.id,'and'],
 						["form_name",this.auditFilterTerms,'or','like']
 					])
 				}
@@ -444,7 +451,7 @@
 		created() {
 			if (this.$route.params.id != "new") {
 				this.fetchClient()
-				this.fetchLocations()
+				this.filterLocations()
 				this.filterAudits()
 				this.filterReports()
 				this.fetchAuditTemplates()

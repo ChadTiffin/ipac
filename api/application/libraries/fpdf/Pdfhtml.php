@@ -54,6 +54,8 @@ protected $absolute_left_margin = 0.8;
 protected $left_margin = 0.8;
 protected $top_margin = 0.3;
 protected $api_base = "";
+protected $last_element = "";
+protected $image_width = 250/72;
 
 function __construct($orientation='P', $unit='mm', $format='A4',$api_base="")
 {
@@ -80,7 +82,7 @@ function addReportPage() {
 	$this->setDrawColor(60,85,75);
 	$this->Line($this->absolute_left_margin,$this->top_margin+1.05,8.5-$this->absolute_left_margin,$this->top_margin+1.05);
 	// end header
-
+    $this->setY(1.4);
 	//create footer
 	$this->Image("assets/report_footer.png",0,9.3,8.5,0,'PNG');
 }
@@ -94,7 +96,6 @@ function WriteHTML($html,$lineheight=0.25)
 	$html=str_replace("&nbsp;", " ", $html);
 	$html=str_replace("<br>", "\n", $html);
 	$html=str_replace("<br />", "\n", $html);
-
 
 	$a=preg_split('/<(.*)>/U',$html,-1,PREG_SPLIT_DELIM_CAPTURE); //éclate la chaîne avec les balises
 	foreach($a as $i=>$e)
@@ -132,6 +133,8 @@ function WriteHTML($html,$lineheight=0.25)
 
 function OpenTag($tag, $attr,$lineheight=0.25)
 {
+
+    $setLastElement = true;
 	//Opening tag
 	switch($tag){
 		case 'STRONG':
@@ -155,37 +158,65 @@ function OpenTag($tag, $attr,$lineheight=0.25)
 					$attr['SRC'] = $this->api_base."image/image/".$attr['SRC'];
 				}
 
-				$width = 250/72; //pixels / dpi = inches
+                $width = $this->image_width;
 
-                if (file_exists($attr['SRC'])) {
+                //check if line wrap needs to occur
+                if ($this->getPageWidth() - ($this->GetX() + $width) <= 0) {
+                    $this->SetY($this->getY() + $width*0.75);
+                }
+
+                if ($this->getPageHeight() - ($this->GetY() + ($width*0.75)) - 2 <= 0) {
+                    $this->addReportPage();
+                    //$this->last_element = null;
+                    $setLastElement = false;
+                }
+
+				
+
+//                if (file_exists($attr['SRC'])) {
+
 				    $this->Image($attr['SRC'], $this->GetX(), $this->GetY(), $width, 0);
             
     				$this->SetX($this->GetX()+$width);
 
-    				//check if line wrap needs to occur
-    				if ($this->getPageWidth() - ($this->GetX() + $width) <= 0) {
-    					$this->SetY($this->getY() + $width*0.75);
-    				}
-    				if ($this->getPageHeight() - ($this->GetY() + ($width*0.75)) - 2 <= 0) {
-    					$this->addReportPage();
-    				}
-                }
+    				
+    				
+                //}
 			}
 			break;
 		case 'TR':
 		case 'BLOCKQUOTE':
+            if ($this->last_element == "IMG") 
+                $this->SetY($this->getY() + ($this->image_width)*0.75);
+            else 
+                $this->Ln($lineheight);
+
 		case 'BR':
-			$this->Ln($lineheight);
+			if ($this->last_element == "IMG") 
+                $this->SetY($this->getY() + ($this->image_width)*0.75);
+            else 
+                $this->Ln($lineheight);
+
 			break;
 		case 'P':
-			$this->Ln($lineheight);
+            if ($this->last_element == "IMG") 
+                $this->SetY($this->getY() + ($this->image_width)*0.75);
+            else 
+                $this->Ln($lineheight);
+
 			break;
 		case 'UL':
+            if ($this->last_element == "IMG") 
+                $this->SetY($this->getY() + ($this->image_width)*0.75);
+
 			$this->left_margin += $this->margin_indent;
 			$this->list_point = "bullet";
 			$this->setLeftMargin($this->left_margin);
 			break;
 		case 'OL':
+            if ($this->last_element == "IMG") 
+                $this->SetY($this->getY() + ($this->image_width)*0.75);
+
 			$this->left_margin += $this->margin_indent;
 			$this->list_point = "number";
 			$this->list_count = 1;
@@ -211,6 +242,11 @@ function OpenTag($tag, $attr,$lineheight=0.25)
 			$this->Ln($lineheight);
 			break;
         case "HR":
+            if ($this->last_element == "IMG") 
+                $this->SetY($this->getY() + ($this->image_width)*0.75);
+            else 
+                $this->Ln($lineheight);
+
             $this->Line($this->left_margin,$this->getY(),$this->getPageWidth() - $this->left_margin,$this->getY());
 
             break;
@@ -226,6 +262,9 @@ function OpenTag($tag, $attr,$lineheight=0.25)
 			}
 			break;
 	}
+
+    if ($setLastElement)
+        $this->last_element = $tag;
 }
 
 function CloseTag($tag,$lineheight = 0.25)

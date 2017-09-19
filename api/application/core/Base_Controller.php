@@ -248,6 +248,7 @@ class Base_Controller extends CI_Controller {
 						$this->db->where($filter[0],$filter[1]);
 				}
 
+				//var_dump($this->db->get_compiled_select());die;
 				$records = $this->db
 					->get($this->table)
 					->result_array();

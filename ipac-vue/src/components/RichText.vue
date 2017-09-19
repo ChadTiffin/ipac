@@ -21,51 +21,63 @@
 		},
 		data () {
 			return {
-				
+				initialized: false
 			}
 		},
 		methods: {
 			input() {
-				this.$emit("input",new_value)
+				this.$emit("input",editor.getContent())
 			},
+			initEditor() {
+				this.initialized = true
+				let vm = this
+				tinymce.init({
+					selector: '#'+vm.id,
+					setup: function(editor) {
+						editor.on('keyup',function(e){
+							let new_value = editor.getContent()
+
+							vm.$emit("input",new_value)
+						});
+						editor.on('init',function(){
+							if (vm.value != null)
+								this.setContent(vm.value)
+							else 
+								this.setContent("")
+
+						});
+						editor.on('change undo redo paste keydown',function(){
+							vm.$emit("input",editor.getContent())
+						});
+
+					},
+					plugins: 'link lists advlist hr code',
+					menubar : false,
+					toolbar: 'undo redo | alignleft aligncenter alignright | bold italic bullist numlist hr | code',
+					formats: {
+						custom_format: {block : 'p', styles : {margin: '0px'}}
+					}
+				});
+			}
 		},
 		watch: {
-			/*value() {
-				tinymce.activeEditor.setContent(this.value)
-			}*/
+			value() {
+				this.initEditor()
+				if (!this.initialized) {
+					tinymce.activeEditor.setContent(this.value)
+					this.initialized = true
+				}
+				
+			}
 		},
 		mounted() {
 			let vm = this
 
-			tinymce.init({
-				selector: '#'+vm.id,
-				setup: function(editor) {
-					editor.on('keyup',function(e){
-						let new_value = editor.getContent()
-
-						vm.$emit("input",new_value)
-					});
-					editor.on('init',function(){
-						
-						if (vm.value != null)
-							this.setContent(vm.value)
-						else 
-							this.setContent("")
-
-					});
-					editor.on('change undo redo paste keypress',function(){
-						vm.$emit("input",editor.getContent())
-						console.log("change")
-					});
-
-				},
-				plugins: 'link lists advlist hr code',
-				menubar : false,
-				toolbar: 'undo redo | alignleft aligncenter alignright | bold italic bullist numlist hr | code',
-				formats: {
-					custom_format: {block : 'p', styles : {margin: '0px'}}
-				}
-			});
+			//fallback if it takes too long to receive value property change (assume value is blank)
+			setTimeout(function(){
+				if (!vm.initialized)
+					vm.initEditor()
+			},500)
 
 		},
 		beforeDestroy () {

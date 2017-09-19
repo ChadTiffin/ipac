@@ -20,6 +20,12 @@
         		<tr v-for="field in client">
         			<td>{{ field }}</td>
         		</tr>
+                <tr>
+                    <td :rowspan="location.length+1">location.</td>
+                </tr>
+                <tr v-for="field in location">
+                    <td>{{ field }}</td>
+                </tr>
         		<tr>
         			<td :rowspan="company.length+1">company.</td>
         		</tr>
@@ -50,6 +56,7 @@
 			return {
 				visible: false,
 				client: ["address","city","company","contact_name","email","postal_code","primary_phone","province"],
+                location: ["location_name","address","city","province","postal_code", "phone"],
 				company: ["address","city","company_name","email","personal_name","postal_code","province","websites"]
 			}
 		},

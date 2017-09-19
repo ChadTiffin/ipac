@@ -32,6 +32,7 @@ class ReportTemplate extends Base_Controller {
 			->from("report_template_sections")
 			->join("section_templates","section_templates.id = report_template_sections.section_template_id")
 			->where("report_template_id",$id)
+			->order_by("order_index","ASC")
 			->get()
 			->result_array();
 
@@ -50,6 +51,8 @@ class ReportTemplate extends Base_Controller {
 				'preface_text' => $post['preface_text'],
 				'updated_at' => date("Y-m-d H:i:s")
 			]);
+
+			$post['id'] = $this->db->insert_id();
 		}
 		else {
 
@@ -59,39 +62,27 @@ class ReportTemplate extends Base_Controller {
 				->set("updated_at",date("Y-m-d H:i:s"))
 				->where("id",$post['id'])
 				->update($this->table);
-
-			$this->db
-				->where("report_template_id",$post['id'])
-				->delete("report_template_sections");
 		}
+
+		$this->db
+			->where("report_template_id",$post['id'])
+			->delete("report_template_sections");
 
 		$cnt_order = 0;
 		foreach ($sections as $section) {
 
-			$section['section_template_id'] = $section['id'];
-			$section['report_template_id'] = $post['id'];
+			$saved_section['section_template_id'] = $section;
+			$saved_section['report_template_id'] = $post['id'];
 
-			unset($section['id']);
-			unset($section['heading']);
-			unset($section['description_text']);
-			unset($section['template_description']);
-			unset($section['has_guidelines']);
-			unset($section['has_findings']);
-			unset($section['guidelines_text']);
-			unset($section['pull_findings_from_section']);
-			unset($section['findings_form_template_id']);
-			unset($section['findings_section_name']);
-			unset($section['updated_at']);
-			unset($section['deleted']);
-
-			$section['order_index'] = $cnt_order;
+			$saved_section['order_index'] = $cnt_order;
 			$cnt_order++;
 
-			$this->db->insert("report_template_sections",$section);
+			$this->db->insert("report_template_sections",$saved_section);
 		}
 
 		echo json_encode([
-			'status' => 'success'
+			'status' => 'success',
+			'id' => $post['id']
 		]);
 	}
 }
