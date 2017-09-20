@@ -116,7 +116,8 @@ class Auth extends Base_Controller {
 			}
 			else {
 				//validate token
-				$token_record = $this->db->get_where("user_tokens",['token' => $post['token']])->row();
+				$now = date("Y-m-d H:i:s");
+				$token_record = $this->db->get_where("user_tokens",['token' => $post['token'], 'expiry >' => $now])->row();
 
 				$booTokenValid = false;
 				if ($token_record) {
@@ -157,19 +158,9 @@ class Auth extends Base_Controller {
 			$user = $this->db->get_where($this->$usermodel->table, ['email' => $post['email']])->row();
 
 			if ($user) {
-				$token = $this->$usermodel->generateUserToken($user->id,1);
+				$token = $this->$usermodel->generateUserToken($user->id,2);
 
-				$data = [
-					'token' => $token['token'],
-					'expiry' => $token['expiry'],
-					'issued' => date("Y-m-d H:i:s"),
-					'user_id' => $user->id
-				];
-
-				//insert into pw_reset_table
-				$r = $this->db->insert('user_tokens',$data);
-
-				$this->$usermodel->sendEmail($user->email, 'emails/password_reset', $data, "Password Reset Request for ".APP_NAME);
+				$this->$usermodel->sendEmail($user->email, 'emails/password_reset', $token, "Password Reset Request for ".APP_NAME);
 
 			}
 			$response = [

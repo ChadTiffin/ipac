@@ -5,7 +5,7 @@
 
 	<p><a href='https://<?=FRONT_END_DOMAIN?>/reset-password/<?=$token?>'>https://<?=FRONT_END_DOMAIN?>/reset-password/<?=$token?></a></p>
 
-	<p>This link will expire in 1 hour.</p>
+	<p>This link will expire in 2 hours.</p>
 	<hr>
 
 </div>

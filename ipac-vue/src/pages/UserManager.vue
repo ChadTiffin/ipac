@@ -39,7 +39,7 @@
 			title="Edit User" 
 			:modal-visible="userDialog.visible" 
 			confirm-button-text="Save"
-			v-on:closeModal="userDialog.visible = false"
+			v-on:closeModal="userDialog.visible = false; resetSent = false"
 			v-on:confirm="submitUser">
 
 			<p v-if="userDialog.newUser">
@@ -75,9 +75,26 @@
 				<button class="btn btn-danger" type="button" v-on:click="genNewAPIKey(userDialog.fields.id)"><i class="fa fa-refresh"></i> Generate New API Key</button>
 			</FormGroup>
 
-			<FormGroup label="Send Password Reset" col-class="col-md-3">
-				<div v-if="resetSent" class="form-control-static text-success"><i class="fa fa-check"></i> Password Reset Sent</div>
-				<button v-else class="btn btn-warning" type="button" v-on:click="sendResetInstructions(userDialog.fields.email)"><i class="fa fa-refresh"></i> Send Password Reset Instructions</button>
+			<FormGroup label="Password Reset" col-class="col-md-3">
+				<div v-if="resetSent" class="form-control-static text-success">
+					<i class="fa fa-check"></i>
+					Password Reset Sent
+				</div>
+
+				<div v-else-if="!userDialog.resetPassword">
+					<button class="btn btn-warning" type="button" v-on:click="sendResetInstructions(userDialog.fields.email)"><i class="fa fa-refresh"></i> Send Password Reset Instructions</button>
+
+					<button class="btn btn-danger" type="button" v-on:click="userDialog.resetPassword = true">Reset Password</button>
+				</div>
+
+				<div v-if="userDialog.resetPassword">
+					<div class="input-group">
+						<input type="text" class="form-control" placeholder="Enter a new password">
+						<span class="input-group-btn">
+							<button type="button" class="btn btn-primary">Reset Password</button>
+						</span>
+					</div>
+				</div>
 			</FormGroup>
 
 			<div class="alert" :class="userDialog.alert.class" v-if="userDialog.alert.visible">
@@ -134,6 +151,7 @@
 					visible: false,
 					newUser: false,
 					fields: {},
+					resetPassword: false,
 					alert : {
 						visible: false,
 						class : "",
@@ -216,6 +234,9 @@
 
 
 				})
+			},
+			resetPassword() {
+
 			},
 			sendResetInstructions(email) {
 				let vm = this
