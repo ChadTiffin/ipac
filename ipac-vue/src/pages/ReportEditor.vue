@@ -52,7 +52,7 @@
 
 			<div class="row">
 				<div class="col-md-4">
-					<h3>Report Sections</h3>
+					<h2>Report Sections</h2>
 					<ul class="nav nav-pills nav-stacked report-sections">
 						<li v-for="section in sections" :class="{active: activeSection == section.id}"><a href="#" v-on:click="activeSection = section.id">{{ section.heading }}</a></li>
 					</ul>
@@ -64,7 +64,7 @@
 
 						<button type="button" class="btn btn-primary pull-right" :class="{ disabled : includedAudits.length == 0 }" v-on:click="importAuditData(section)"><i class="fa fa-download"></i> Import Audit Data Into Findings</button>
 
-						<h3><small>Findings:</small> {{ section.heading }}</h3>
+						<h2><small>Findings:</small> {{ section.heading }}</h2>
 
 						<rich-text :id="'editor-'+section.id" v-model="section.findings"></rich-text>
 					</div>
@@ -117,8 +117,9 @@
 			importAuditData(section) {
 
 				let vm = this
-				let findings_html = "<ul>";
+				let findings_html = "";
 				let findings_images = "";
+
 				this.audits.forEach(function(audit,index){
 
 					if (vm.includedAudits.indexOf(audit.id) >= 0) {
@@ -129,15 +130,18 @@
 
 							fields.forEach(function(field_section, index) {
 
-								if (field_section.heading == section.findings_section_name) {
+								if (section.findings_section_names.indexOf(field_section.heading) >= 0) { //search for field section heading in array of titles of bound sections
 									//we've found it, pull in all the photos and negative answer notes
 
+									findings_html += "<strong>" + field_section.heading + "</strong>"
+									findings_html += "<ul>"
+
 									if ("fields" in field_section) {
-										console.log("searching main fields...")
+										//console.log("searching main fields...")
 										field_section.fields.forEach(function(field, index){
 											
 											if (field.type == 'images' || field.type =='image') {
-												console.log("images found")
+												//console.log("images found")
 												if (field.value) {
 													field.value.forEach(function(image,index){
 														findings_images += "<img style='width:320px' src='"+window.apiBase+"image/image/"+image+"'>"
@@ -146,16 +150,16 @@
 											}
 											else if (field.type == 'yes/no') {
 												if (field.value == "no" && field.notes) {
-													findings_html += "<li><strong>"+field.question+":</strong> "+field.notes+"</li>"
+													findings_html += "<li><em>"+field.question+"</em>: <strong>"+field.notes+"</strong></li>"
 												}
 												else if (field.value == "no") {
-													findings_html += "<li><strong>"+field.question+":</strong> NO</li>"
+													findings_html += "<li><em>"+field.question+"</em>: <strong>NO</strong></li>"
 												}
 											}
 										})
 									}
 									if ("subSections" in field_section) {
-										console.log("searching subsection fields...")
+										//console.log("searching subsection fields...")
 										field_section.subSections.forEach(function(subSection, index) {
 											if ("fields" in subSection) {
 												subSection.fields.forEach(function(field, index) {
@@ -170,16 +174,18 @@
 													}
 													else if (field.type == 'yes/no') {
 														if (field.value == "no" && field.notes) {
-															findings_html += "<li><strong>"+field.question+":</strong> "+field.notes+"</li>"
+															findings_html += "<li><em>"+field.question+"</em>: <strong>"+field.notes+"</strong></li>"
 														}
 														else if (field.value == "no") {
-															findings_html += "<li><strong>NO</strong> "+field.question+"</li>"
+															findings_html += "<li><em>"+field.question+"</em>: <strong>NO</strong></li>"
 														}
 													}
 												})
 											}
 										})
 									}
+
+									findings_html += "</ul>";
 								}
 							})
 						}
@@ -188,7 +194,7 @@
 				findings_html += "</ul>"
 
 				if (findings_html == "<ul></ul>") {
-					findings_html = "<p>No violations found</p>"
+					findings_html = "<p>No negative findings found on Audit</p>"
 				}
 
 				let editor = tinymce.get("editor-"+section.id)

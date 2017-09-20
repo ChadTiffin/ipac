@@ -10,7 +10,8 @@
         v-on:toggleMenu="menuShowing ? menuShowing = false : menuShowing = true"
         v-on:newAudit="auditDialog.visible = true"
         :is-offline="$root.isOffline"
-
+        :updateAvailable="updateAvailable"
+        :page-title="pageTitle"
         >
       </DashboardHeader>
 
@@ -34,6 +35,8 @@
           v-on:toggleSpinner="toggleSpinner" 
           v-on:clientsChanged="fetchClients"
           v-on:newAudit="auditDialog.visible = true"
+          v-on:pageTitle="setPageTitle"
+
           :is-offline="$root.isOffline"
           :clients="clients">
         </router-view>
@@ -101,8 +104,13 @@ export default {
   },
   data() {
     return {
+      updateAvailable: false,
       loggedIn: false,
       menuShowing: true,
+      pageTitle: {
+        mainTitle: this.$route.meta.titleText,
+        subTitle: false
+      },
       alert: {
         visible: false,
         msg: "",
@@ -131,6 +139,11 @@ export default {
     '$route': function() {
       if (window.innerWidth <= 1400)
           this.menuShowing = false
+
+      this.pageTitle = {
+        mainTitle: this.$route.meta.titleText,
+        subTitle: false
+      }
     }
   },
   computed: {
@@ -166,6 +179,9 @@ export default {
     },
     toggleSpinner(visibility) {
       this.spinnerVisible = visibility
+    },
+    setPageTitle(title) {
+      this.pageTitle = title
     },
     createNewAudit() {
       let vm = this
@@ -234,7 +250,7 @@ export default {
         }
       }
 
-    }
+    },
     /*fetchRecentAudits($days_back) {
       let vm = this
 
@@ -267,8 +283,23 @@ export default {
 
       })
     }*/
+    checkAppVersion()
+    {
+      let vm = this
+
+      this.getJSON(window.apiBase + "tools/app-version").then(function(response){
+        if (!("appVersion" in localStorage)) {
+          vm.updateAvailable = true
+        }
+        else {
+          if (localStorage.appVersion != response.version) 
+            vm.updateAvailable = true
+        }
+      })
+    }
   },
   created() {
+
     if ("apiKey" in localStorage) {
       this.loggedIn = true
       this.fetchClients()
@@ -277,6 +308,7 @@ export default {
       //this.fetchRecentAudits(7)
 
       this.syncLocalStorage()
+      this.checkAppVersion()
     }
     else
       this.loggedIn = false
@@ -313,7 +345,7 @@ export default {
   }
 
   h2 {
-    font-size: 16pt;
+    font-size: 18pt;
     margin-top: 10px;
 
   }

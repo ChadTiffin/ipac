@@ -125,9 +125,6 @@ class BaseModel extends CI_Model {
 				$this->db->where($filter[0],$filter[1]);
 		}
 
-		//var_dump($this->db->get_compiled_select());
-		//die;
-
 		$results = $this->db->get()->result_array();
 
 		$with_children = [];

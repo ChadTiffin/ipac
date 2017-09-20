@@ -3,10 +3,20 @@
 		<div class="page-heading" :class="{ menuShowing: menuShowing }">
 			<div class="menu-button" v-on:click="toggleMenu"><i class="fa fa-navicon"></i></div>
 			<div class="side-menu-button menu-button" v-on:click="toggleMenu"><i class="fa fa-navicon"></i></div>
-			<h1><i class='fa' :class="$route.meta.icon"></i> {{ $route.meta.titleText }}</h1>
+			<h1>
+				<i class='fa' :class="$route.meta.icon"></i> 
+				{{ pageTitle.mainTitle }} 
+				<span v-if="pageTitle.small">{{ pageTitle.subTitle }}</span>
+			</h1>
 		</div>
 
 		<nav class="menu" :class="{ menuShowing: menuShowing }">
+			
+			<div v-if="updateAvailable" v-on:click="installUpdate" class="alert alert-info update-alert" style="text-align: center;margin-top: 10px;padding: 3px;">
+				<i class="fa fa-refresh"></i>
+				Update Available<br>
+				<small>Click to install update</small>
+			</div>
 			<h2 
 				class="menu-heading">		
 				Menu 
@@ -27,6 +37,7 @@
 					</router-link>
 				</li>
 			</ul>
+			<p style="text-align: center;"><small>Version #{{appVersion}}</small></p>
 		</nav>
 	</header>
 </template>
@@ -35,10 +46,11 @@
 
 	export default {
 		name: 'DashboardHeader',
-		props: ['menuShowing','spinnerVisible',"isOffline"],
+		props: ['menuShowing','spinnerVisible',"isOffline","updateAvailable","pageTitle"],
 		data () {
 			return {
-				userType: localStorage.userType
+				userType: localStorage.userType,
+				appVersion: localStorage.appVersion
 			}
 		},
 		computed: {
@@ -64,6 +76,16 @@
 			},
 			newAudit() {
 				this.$emit("newAudit");
+			},
+			installUpdate() {
+				let vm = this
+
+				//request the server generate a new app cache manifest
+				this.getJSON(window.apiBase+"tools/update-app").then(function(response){
+					localStorage.appVersion = response.version
+					location.reload()
+				})
+
 			},
 			logout () {
 				localStorage.removeItem("apiKey");
@@ -130,6 +152,11 @@
 		color: white;
 	}
 
+	.update-alert:hover {
+		cursor: pointer;
+		box-shadow: 0 0 5px white;
+	}
+
 	.menu {
 		width: 250px;
 		padding: 10px;
@@ -145,8 +172,6 @@
 		transition: left 0.5s;
 		z-index: 10;
 	}
-
-
 
 	.menu-button-heading {
 		cursor: pointer;

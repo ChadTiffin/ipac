@@ -7,10 +7,10 @@
 			</div>
 
 			<ul class="nav nav-tabs" v-if="$route.params.id != 'new'">
-				<li :class="{active: activeTab == 'details'}"><a href="#" v-on:click="activeTab = 'details'">Details</a></li>
-				<li :class="{active: activeTab == 'locations'}"><a href="#" v-on:click="activeTab = 'locations'">Locations</a></li>
-				<li :class="{active: activeTab == 'audits'}"><a href="#" v-on:click="activeTab = 'audits'">Audits</a></li>
-				<li :class="{active: activeTab == 'reports'}"><a href="#" v-on:click="activeTab = 'reports'">Reports</a></li>
+				<li :class="{active: activeTab == 'details'}"><a href="#" v-on:click.prevent="activeTab = 'details'">Details</a></li>
+				<li :class="{active: activeTab == 'locations'}"><a href="#" v-on:click.prevent="activeTab = 'locations'">Locations</a></li>
+				<li :class="{active: activeTab == 'audits'}"><a href="#" v-on:click.prevent="activeTab = 'audits'">Audits</a></li>
+				<li :class="{active: activeTab == 'reports'}"><a href="#" v-on:click.prevent="activeTab = 'reports'">Reports</a></li>
 
 			</ul>
 
@@ -306,6 +306,11 @@
 					report['contact_name'] = report.clients.contact_name
 					report['company'] = report.clients.company
 
+					console.log(report)
+					report['location_name'] = "[Not set]"
+					if (report.locations && "location_name" in report.locations)
+						report['location_name'] = report.locations.location_name
+
 					amended.push(report)
 				})
 
@@ -445,6 +450,12 @@
 				this.getJSON(window.apiBase + "client/find/"+id).then(function(response){
 					vm.client = response
 					vm.$emit("toggleSpinner",false)
+
+					let pageTitle = {
+						mainTitle: response.company,
+						subTitle: "Clients"
+					}
+					vm.$emit("pageTitle",pageTitle)
 				})
 			}
 		},

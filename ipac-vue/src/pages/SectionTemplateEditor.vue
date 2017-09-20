@@ -31,7 +31,7 @@
 		
 			<form-group label="Introduction Template" col-class="col-md-2">
 				<p class="help-block">This text will appear in every report that contains this section</p>
-				<rich-text id="intro-text" v-model="section.description_text" v-on:input="logChange"></rich-text>
+				<rich-text id="intro-text" v-model="section.description_text" v-on:input="richTextChange"></rich-text>
 			</form-group>
 
 			<hr>
@@ -74,8 +74,8 @@
 					</form-group>
 
 					<form-group label="Form Section" col-class="col-md-2">
-						<select class="form-control" v-model="section.findings_section_name" multiple>
-							<option v-for="section in selectedFormTemplateSections">{{ section }}</option>
+						<select class="form-control" v-model="findingsSectionNames" multiple>
+							<option v-for="templateSection in selectedFormTemplateSections">{{ templateSection }}</option>
 						</select>
 					</form-group>
 				</div>
@@ -111,7 +111,7 @@
 		data () {
 			return {
 				section: {},
-				sectionBindings: [],
+				findingsSectionNames: [],
 				formTemplates: [],
 				varHelpVisible: false
 			}
@@ -135,9 +135,7 @@
 			}
 		},
 		methods: {
-			logChange() {
-				//console.log(this.section.description_text)
-			},
+			richTextChange () {},
 			fetchTemplate() {
 				
 				let id = this.$route.params.id
@@ -147,24 +145,27 @@
 				if (id != "new") {
 					
 					this.getJSON(window.apiBase+"sectionTemplate/find/"+id).then(function(response){
+
+						if (typeof response.findings_section_names == "string")
+							vm.findingsSectionNames = []
+						else
+							vm.findingsSectionNames = JSON.parse(response.findings_section_names)
+
 						vm.section = response
 
 						for (var key in response) {
 
 							if (!(key in vm.section)) {
-								if (key == 'pull_findings_from_sections') 
-									vm.$set(vm.section,key,JSON.parse(response[key]))
-								else
-									vm.$set(vm.section,key,response[key])
+
+								vm.$set(vm.section,key,response[key])
 							}
 
 						}
 
-						vm.$emit("toggleSpinner",false)
 					});
 				}
-				else 
-					vm.$emit("toggleSpinner",false)
+
+				vm.$emit("toggleSpinner",false)
 			},
 			fetchFormTemplates() {
 				let vm = this
@@ -174,12 +175,17 @@
 				})
 			},
 			save() {
+
 				let payload = this.section
 
 				delete payload.updated_at
 
+				payload.findings_section_names = JSON.stringify(this.findingsSectionNames)
+
 				let vm = this
+
 				this.postData(window.apiBase+ "sectionTemplate/save",payload).then(function(response){
+
 					if (response.status == "success") {
 
 						vm.$router.replace("/templates/sections/edit/"+response.id)
