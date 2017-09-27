@@ -33,8 +33,6 @@ class Auth extends Base_Controller {
 			}
 			else {
 
-				$this->$usermodel->setSession($user_details);
-
 				//create new API key
 				//$key = hash("sha256", mt_rand(10000,1000000000).time().$user_details->id);
 
@@ -42,10 +40,15 @@ class Auth extends Base_Controller {
 				$q = "UPDATE ".$this->$usermodel->table." SET last_login=NOW() WHERE id=?";
 				$r = $this->db->query($q, array($user_details->id));
 
+				unset($user_details->pw_hash);
+				unset($user_details->allow_access);
+				unset($user_details->deleted);
+
 				$response = [
 					'status' => "success",
 					'userType' => $user_details->user_level,
 					"apiKey" => $user_details->api_key,
+					'userDetails' => $user_details,
 					'msg' => "Login successful."
 				];
 			}
@@ -62,8 +65,6 @@ class Auth extends Base_Controller {
 
 	public function logout() {
 		$usermodel = $this->user_model;
-
-		$this->$usermodel->sessionDestroy();
 
 		echo json_encode([
 			"status" => "success",
@@ -187,8 +188,18 @@ class Auth extends Base_Controller {
 			}
 			else {
 				//validate old password
-				if ($this->$usermodel->authenticate($_SESSION['user_email'],$post['password'])) {
-					$result = $this->$usermodel->changePassword($_SESSION['user_id'],$post['new-password']);
+				$headers = getallheaders();
+
+				$user_id = 0;
+				$user_email = "";
+				if (isset($headers['x-api-key']))  {
+					$user = $this->db->get_where("users",["api_key" => $headers['x-api-key']])->row();
+					$user_id = $user->id;
+					$user_email = $user->email;
+				}
+
+				if ($this->$usermodel->authenticate($user_email,$post['password'])) {
+					$result = $this->$usermodel->changePassword($user_id,$post['new-password']);
 
 					$response = [
 						'status' => "success",

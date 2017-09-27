@@ -4,20 +4,51 @@
 		<section>
 			<div class="button-bar">
 				<router-link to="/clients" class='router-link'><i class="fa fa-angle-double-left"></i> Back to Clients</router-link>
+
+				<nav-tabs classes="pull-right" v-if="$route.params.id != 'new'">
+					<li :class="{active: activeTab == 'details'}"><router-link to="details">
+						<i class="fa fa-address-card-o"></i>
+						Client Details
+					</router-link></li>
+
+					<li :class="{active: activeTab == 'locations'}"><router-link to="locations">
+						<i class="fa fa-map-marker"></i>
+						Locations
+					</router-link></li>
+					<li :class="{active: activeTab == 'audits'}"><router-link to="audits" >
+						<i class="fa fa-balance-scale"></i>
+						Audits
+					</router-link></li>
+					<li :class="{active: activeTab == 'reports'}"><router-link to="reports">
+						<i class="fa fa-file-pdf-o"></i>
+						Reports
+					</router-link></li>
+
+					<li :class="{active: activeTab == 'phases'}"><router-link to="phases" >
+						<i class="fa fa-forward"></i>
+						Phases
+					</router-link></li>
+
+					<li :class="{active: activeTab == 'tasks'}"><router-link to="tasks">
+						<i class="fa fa-check-square-o"></i>
+						Tasks
+					</router-link></li>
+
+				</nav-tabs>
+
+				<div style="clear: both;"></div>
+				
 			</div>
-
-			<ul class="nav nav-tabs" v-if="$route.params.id != 'new'">
-				<li :class="{active: activeTab == 'details'}"><a href="#" v-on:click.prevent="activeTab = 'details'">Details</a></li>
-				<li :class="{active: activeTab == 'locations'}"><a href="#" v-on:click.prevent="activeTab = 'locations'">Locations</a></li>
-				<li :class="{active: activeTab == 'audits'}"><a href="#" v-on:click.prevent="activeTab = 'audits'">Audits</a></li>
-				<li :class="{active: activeTab == 'reports'}"><a href="#" v-on:click.prevent="activeTab = 'reports'">Reports</a></li>
-
-			</ul>
 
 			<div class="tab-content">
 
 				<div v-if="activeTab == 'details'">
+
+					<button v-if="$route.params.id != 'new'" class="btn btn-danger pull-right" style="margin-bottom: 10px;" v-on:click="deleteClient"><i class="fa fa-times"></i> Delete Client</button>
+
 					<h2>Client Details</h2>
+
+					<div style="clear: both;"></div>
 
 					<form class="row" v-on:submit.prevent="save">
 
@@ -67,7 +98,12 @@
 									<p v-else class="form-control-static">{{ client.postal_code }}</p>
 								</form-group>
 
-								<button v-if="!$root.isOffline" class="pull-right btn btn-success"><i class="fa fa-save"></i> Save</button>
+								<div class="pull-right">
+
+									<router-link v-if="$route.params.id == 'new'" to="/clients" class="btn btn-default">Cancel</router-link>
+									<button v-if="!$root.isOffline" class="btn btn-success"><i class="fa fa-save"></i> Save</button>
+
+								</div>
 							</div>
 						</div>
 
@@ -135,6 +171,40 @@
 					<page-offline-alert v-else></page-offline-alert>
 				</div>
 
+				<div v-if="activeTab == 'tasks'">
+					<div v-if="!$root.isOffline">
+
+						<div class="row">
+							<div class="col-md-3">
+								<div class="well">
+									<h3>Filter Tasks</h3>
+									<button-group
+										vertical="true" 
+										:buttons="taskFilter.buttons" 
+										:full-width="true"
+										v-model="taskFilter.value">
+									</button-group>
+								</div>
+							</div>
+							<div class="col-md-9">
+								<task-list :editable="true" :heading="taskFilter.value + ' Tasks'" :include-new-button="true" :tasks="filteredTasks"  v-on:modelChanged="fetchTasks"></task-list>
+							</div>
+
+						</div>
+						
+					</div>
+					<page-offline-alert v-else></page-offline-alert>
+				</div>
+
+				<div v-if="activeTab == 'phases'">
+					<div v-if="!$root.isOffline">
+
+						<phase-list :phases="clientPhases" :editable="true" owner-type="client" v-on:phasesChanged="fetchPhases"></phase-list>
+
+					</div>
+					<page-offline-alert v-else></page-offline-alert>
+				</div>
+
 			</div>
 			
 		</section>
@@ -179,6 +249,24 @@
             	</select>
             </form-group>
 
+            <div class="col-md-offset-4 checkbox">
+            	<label>
+            		<input type="checkbox" v-model="auditDialog.generateTask">
+            		Generate a task that is linked to this Audit
+            	</label>
+            </div>
+
+        </modal-dialog>
+
+        <modal-dialog
+            v-if="confirmDialog.visible" 
+            :title="confirmDialog.title" 
+            :modal-visible="confirmDialog.visible" 
+            :confirm-button-text="confirmDialog.buttonText"
+            :button-class="confirmDialog.buttonClass"
+            v-on:confirm="executeDelete(confirmDialog.parameters)"
+            v-on:closeModal="confirmDialog.visible = false">
+            {{ confirmDialog.message }}
         </modal-dialog>
 	</div>
 
@@ -191,6 +279,10 @@
 	import SearchWidget from '../components/SearchWidget'
 	import DateField from '../components/DateField'
 	import PageOfflineAlert from '../components/PageOfflineAlert'
+	import NavTabs from '../components/NavTabs'
+	import TaskList from '../components/TaskList'
+	import ButtonGroup from '../components/ButtonGroup'
+	import PhaseList from '../components/PhaseList'
 
 	export default {
 		name: "ClientEditor",
@@ -201,7 +293,11 @@
 			ModalDialog,
 			SearchWidget,
 			DateField,
-			PageOfflineAlert
+			PageOfflineAlert,
+			NavTabs,
+			TaskList,
+			ButtonGroup,
+			PhaseList
 		},
 		data () {
 			return {
@@ -258,9 +354,11 @@
 					fields: {
 						location_id: null,
 						client_id: this.$route.params.id,
-						audit_date: null,
-						form_template_id: null
-					}
+						audit_date: new Date(),
+						form_template_id: null,
+						task_id: 0
+					},
+					generateTask: false
 				},
 				auditFields: [
 					{
@@ -294,8 +392,40 @@
 
 				],
 				reports: [],
-				activeTab: 'details',
-				auditTemplates: []
+				activeTab: this.$route.params.tab,
+				auditTemplates: [],
+				confirmDialog: {
+                    visible: false,
+                    title: "",
+                    buttonText: "Delete",
+                    buttonClass: "btn-danger",
+                    parameters: "",
+                    successFunction: ""
+                },
+                tasks: [],
+                taskFilter: {
+                	value: "To-Do",
+                	buttons: [
+                		{
+                			text: "To-Do",
+                			value: "To-Do"
+                		},
+                		{
+                			text: "Needs Billing",
+                			value: "Needs Billing"
+                		},
+                		{
+                			text: "Completed",
+                			value: "Completed"
+                		}
+                	]
+                },
+                clientPhases: []
+			}
+		},
+		watch: {
+			'$route': function(to, from) {
+				this.activeTab = to.params.tab
 			}
 		},
 		computed: {
@@ -306,7 +436,6 @@
 					report['contact_name'] = report.clients.contact_name
 					report['company'] = report.clients.company
 
-					console.log(report)
 					report['location_name'] = "[Not set]"
 					if (report.locations && "location_name" in report.locations)
 						report['location_name'] = report.locations.location_name
@@ -315,9 +444,42 @@
 				})
 
 				return amended
+			},
+			filteredTasks() {
+				let filtered = [] 
+
+				let vm = this
+				this.tasks.forEach(function(task, index){
+					if (vm.taskFilter.value == "To-Do" && task.is_complete == 0) {
+						filtered.push(task)
+					}
+					else if (vm.taskFilter.value == 'Needs Billing' && task.is_complete == 1 && task.billable == 1 && task.billed == 0) {
+						filtered.push(task)
+					}
+					else if (vm.taskFilter.value == "Completed" && task.is_complete == 1 && task.billable == 0
+					 || vm.taskFilter.value == "Completed" && task.is_complete == 1 && task.billable == 1 && task.billed == 1) {
+						filtered.push(task)
+					}
+				})
+
+				return filtered
+				
 			}
 		},
 		methods: {
+			activateTasksTab() {
+				this.activeTab = 'tasks'
+				this.fetchTasks()
+			},
+			activateLocationsTab() {
+				this.activeTab = 'locations'
+				this.filterLocations()
+			},
+			activateAuditsTab() {
+				this.activeTab = 'audits'
+				this.filterAudits()
+				this.filterLocations()
+			},
 			save() {
 				let payload = this.client;
 
@@ -337,6 +499,35 @@
 					vm.$emit("clientListUpdate")
 				})
 			},
+			deleteClient() {
+                this.confirmDialog.title = "Delete "+this.client.company
+                this.confirmDialog.message = "Are you sure you want to delete this client?"
+                this.confirmDialog.successFunction = "executeDelete"
+                this.confirmDialog.buttonText = "Delete"
+                this.confirmDialog.buttonClass = "btn-danger"
+
+                this.confirmDialog.visible = true
+            },
+            executeDelete() {
+				let payload = {
+                    id: this.client.id
+                }
+
+                let vm = this
+
+                this.postData(window.apiBase+"client/delete",payload).then(function(response){
+                    vm.$emit("modelChange")
+                    vm.confirmDialog.visible = false
+
+                    vm.$emit("updateAlert",{
+                        visible: true,
+                        class: "alert-danger",
+                        msg: "Client deleted"
+                    })
+
+                    vm.$router.push("/clients")
+                })
+            },
 			editLocation(record) {
 				this.locationDialog.fields = record
 				this.locationDialog.visible = true
@@ -359,18 +550,54 @@
 				this.postData(window.apiBase+"location/save",record).then(function(response){
 					vm.locationDialog.visible = false
 
-					vm.fetchLocations()
+					vm.filterLocations()
 
 				})
 			},
 			createNewAudit() {
 				let vm = this
 
-				this.postData(window.apiBase+"auditForm/save",this.auditDialog.fields).then(function(response){
-					vm.auditDialog.visible = false
+				if (this.auditDialog.generateTask) {
 
-					vm.filterAudits()
-				})
+					//get template form name
+					let templateName = ""
+					this.auditTemplates.forEach(function(temp, index){
+						if (temp.id == vm.auditDialog.fields.form_template_id)
+							templateName = temp.form_name
+					})
+
+					let locationName = ""
+					this.locations.forEach(function(loc, index){
+						if (loc.id == vm.auditDialog.fields.location_id)
+							locationName = loc.location_name
+					})
+
+					let task_payload = {
+						owner_type: "client",
+						owner_id: this.$route.params.id,
+						description: "'"+templateName+"' Audit at "+locationName + " on "+ moment(this.auditDialog.fields.audit_date).format("YYYY-MM-DD"),
+						priority: 1,
+						created_by: "{{{current_user}}}",
+						created_at: "{{{server_now}}}",
+						assigned_to: "{{{current_user}}}"
+
+					}
+
+					this.postData(window.apiBase+"task/save",task_payload).then(function(response){
+						vm.auditDialog.fields.task_id = response.id
+
+						//got to wait until server comes back with task id so we can link it to audit form
+						vm.postData(window.apiBase+"auditForm/save",vm.auditDialog.fields).then(function(response){
+							vm.auditDialog.visible = false
+
+							vm.auditDialog.fields.location_id = 0
+							vm.auditDialog.fields.form_template_id = 0
+							vm.auditDialog.fields.audit_date = new Date()
+
+							vm.filterAudits()
+						})
+					})
+				}
 			},
 			filterLocations()
 			{
@@ -392,8 +619,12 @@
 
 				let order = JSON.stringify(["location_name","ASC"]);
 
+				vm.$emit("toggleSpinner",true)
+
 				this.getJSON(window.apiBase + "location/get?filters="+filters+"&order="+order).then(function(response){
 					vm.locations = response
+
+					vm.$emit("toggleSpinner",false)
 				})
 			},
 			filterAudits() {
@@ -417,6 +648,8 @@
 						["audits.client_id",this.$route.params.id]
 					])
 				}
+
+				vm.$emit("toggleSpinner",true)
 
 				this.getJSON(window.apiBase + "auditForm/get?filters="+filters).then(function(response){
 					vm.audits = response
@@ -453,24 +686,52 @@
 
 					let pageTitle = {
 						mainTitle: response.company,
-						subTitle: "Clients"
+						subTitle: "Client"
 					}
 					vm.$emit("pageTitle",pageTitle)
+				})
+			},
+			fetchTasks() {
+				let vm = this
+
+				vm.$emit("toggleSpinner",true)
+
+				this.getJSON(window.apiBase + "task/filter/client/"+this.$route.params.id).then(function(response){
+					vm.tasks = response
+
+					vm.$emit("toggleSpinner",false)
+				})
+			},
+			fetchPhases() {
+				let vm = this
+
+				let filter = JSON.stringify([
+					["owner_type","client"],
+					["owner_id",this.$route.params.id]
+				]);
+
+				let order = JSON.stringify(["priority","ASC"]);
+
+				this.getJSON(window.apiBase + "ownerPhase/get?filters="+filter+"&order="+order).then(function(response) {
+					vm.clientPhases = response
 				})
 			}
 		},
 		created() {
 			if (this.$route.params.id != "new") {
 				this.fetchClient()
-				this.filterLocations()
 				this.filterAudits()
 				this.filterReports()
 				this.fetchAuditTemplates()
+				this.fetchPhases()
 
 				localStorage.currentClientId = this.$route.params.id
 			}
 			else
 				this.$emit("toggleSpinner",false)
+
+			if (typeof this.$route.params.tab == 'undefined')
+				this.$router.replace("/clients/"+this.$route.params.id+"/details")
 		}
 	}
 </script>

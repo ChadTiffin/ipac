@@ -1,14 +1,14 @@
 <template>
 	<section>
-		<router-link to="/clients/new" class="btn btn-success"><i class="fa fa-plus"></i> New Client</router-link>
+		<div class="button-bar">
+			<router-link to="/clients/new" class="btn btn-success"><i class="fa fa-plus"></i> Client</router-link>
+		</div>
 
 		<table-list 
 			:records="clients" 
 			:fields="fields" 
-			deleteEndpoint="client/delete"
 			has-edit="/clients/" 
-			has-delete="true"
-			
+			row-clickable="true"
 			v-on:modelChange="clientsChanged">
 		</table-list>
 

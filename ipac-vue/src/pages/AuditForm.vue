@@ -1,7 +1,7 @@
 <template>
 	<section>
 		<div class="button-bar">
-			<router-link :to="'/clients/'+currentClientId" class='router-link'><i class="fa fa-angle-double-left"></i> Back to Client</router-link>
+			<router-link :to="'/clients/'+currentClientId+'/audits'" class='router-link'><i class="fa fa-angle-double-left"></i> Back to Client</router-link>
 		</div>
 
 		<div class="row">
@@ -48,7 +48,7 @@
 						</form-group>
 
 						<form-group label="Audit Date" col-class="col-md-4">
-							<date-field extra-classes='form-control' v-model="audit.audit_date" v-on:change="autoSave"></date-field>
+							<date-field v-model="audit.audit_date" v-on:change="autoSave"></date-field>
 						</form-group>
 
 						<button v-on:click="activeSection++" type="button" class="btn btn-default pull-right">
@@ -150,7 +150,16 @@
 			</div>
 		</div>
 
-
+		<modal-dialog
+	        v-if="confirmDialog.visible" 
+	        title="Mark Task as Completed" 
+	        :modal-visible="confirmDialog.visible" 
+	        confirm-button-text="Yes"
+	        button-class="btn-primary"
+	        v-on:confirm="completeTask"
+	        v-on:closeModal="confirmDialog.visible = false">
+	        You've completed your audit form! Would you like to mark the linked task as complete?
+	    </modal-dialog>
 
 	</section>
 
@@ -161,6 +170,7 @@
 	import YesNoNaButtons from '../components/YesNoNaButtons'
 	import DateField from '../components/DateField'
 	import UploadField from '../components/UploadField'
+	import ModalDialog from '../components/ModalDialog'
 
 	export default {
 		name: "AuditForm",
@@ -168,7 +178,8 @@
 			FormGroup,
 			YesNoNaButtons,
 			DateField,
-			UploadField
+			UploadField,
+			ModalDialog
 		},
 		props: ["clients"],
 		data () {
@@ -180,7 +191,29 @@
 				autoSaveActive: false,
 				apiBase: window.apiBase,
 				currentClientId: localStorage.currentClientId,
-				tocCollapsed: false
+				tocCollapsed: false,
+				confirmDialog: {
+					visible: false,
+				}
+			}
+		},
+		watch: {
+			'audit.form_values': function() {
+				let totalAnswered = 0
+
+				let totalFields = 0;
+				this.form.forEach(function(section, index){
+					totalFields += section.totalFields
+					totalAnswered += section.totalFieldsAnswered
+				})
+
+				let totalUnanswered = totalFields - totalAnswered
+
+				console.log(this.audit.task_id)
+
+				if (totalUnanswered == 0 && this.audit.task_id != 0) 
+					this.confirmDialog.visible = true
+
 			}
 		},
 		computed: {
@@ -200,6 +233,19 @@
 			}
 		},
 		methods: {
+			completeTask() {
+				let vm = this
+
+				let payload = {
+					id: this.audit.task_id,
+					completed_at: "{{{server_now}}}",
+					completed_by: "{{{current_user}}}"
+				}
+
+				this.postData(window.apiBase+"task/save",payload).then(function(response){
+					vm.confirmDialog.visible = false
+				})
+			},
 			deleteImage(index,images) {
 				let payload = {
 					filename: images[index]
@@ -312,6 +358,8 @@
 
 					}
 					else {
+						vm.audit.performed_by = "{{{current_user}}}"
+
 						vm.postData(window.apiBase+"auditForm/save",vm.audit).then(function(response){
 							vm.$emit("updateAlert",{
 								visible:true,
@@ -351,7 +399,8 @@
 										client_id: audit.client_id,
 										form_template_id: audit.form_template_id,
 										location_id: audit.location_id,
-										id: audit.id
+										id: audit.id,
+										task_id: audit.task_id
 									}
 
 									if ("form_values" in audit)
@@ -393,6 +442,7 @@
 							form_values: response.form_values,
 							id: response.id,
 							location_id: response.location_id,
+							task_id: response.task_id
 						}
 					}
 

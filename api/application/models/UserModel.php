@@ -13,25 +13,6 @@ class UserModel extends BaseModel {
 		"Root"
 	];
 
-	public function sessionDestroy()
-	{
-		unset($_SESSION['user_id']);
-		unset($_SESSION['first_name']);
-		unset($_SESSION['auth_level_name']);
-		unset($_SESSION['user_email']);
-		unset($_SESSION['last_login']);
-		session_destroy();
-	}
-
-	public function setSession($user_details)
-	{
-		$_SESSION['user_id'] = $user_details->id;
-		$_SESSION['first_name'] = $user_details->first_name;
-		$_SESSION['auth_level_name'] = $user_details->user_level;
-		$_SESSION['last_login'] = $user_details->last_login;
-		$_SESSION['user_email'] = $user_details->email;
-	}
-
 	//check user's password is valid
 	public function authenticate($username, $password)
 	{

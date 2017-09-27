@@ -57,7 +57,6 @@
 
 	export default {
 		name: "MyProfile",
-		props: ["bankAccounts"],
 		components: {
 			Spinner,
 			ModalDialog,

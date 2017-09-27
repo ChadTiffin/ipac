@@ -1,12 +1,9 @@
 <?php
 
-class SectionTemplate extends Base_Controller {
+class OwnerPhase extends Base_Controller {
 
-	public $table = "section_templates";
-
-	public $model = "SectionTemplateModel";
-
-	public $soft_delete = true;
+	public $table = "owner_phases";
+	public $model = "OwnerPhaseModel";
 
 	public $validation_rules = [];
 

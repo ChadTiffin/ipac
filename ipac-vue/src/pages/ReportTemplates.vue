@@ -1,30 +1,25 @@
 <template><div>
-	<section v-if="!$root.isOffline">
-		<router-link to="/templates/reports/edit/new" class="btn btn-success"><i class="fa fa-plus"></i> New Report Template</router-link>
+	<h2>Report Templates</h2>
 
-		<table-list 
-			:records="templates" 
-			:fields="fields" 
-			has-edit="/templates/reports/edit/" 
-			delete-endpoint="reportTemplate/delete"
-			:has-delete="true"
-			v-on:modelChange="fetchTemplates">
-		</table-list>
-	</section>
-	<page-offline-alert v-else></page-offline-alert>
+	<table-list 
+		:records="templates" 
+		:fields="fields" 
+		has-edit="/templates/reports/edit/" 
+		delete-endpoint="reportTemplate/delete"
+		:has-delete="true"
+		v-on:modelChange="fetchTemplates">
+	</table-list>
 
 </div></template>
 
 <script type="text/javascript">
 	import TableList from '../components/TableList'
-	import PageOfflineAlert from '../components/PageOfflineAlert'
 
 	export default {
 		name: "ReportTemplatesList",
 		props: [],
 		components: {
 			TableList,
-			PageOfflineAlert
 		},
 		data () {
 			return {

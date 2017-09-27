@@ -1,16 +1,18 @@
 <template>
     <div style="overflow-x: auto;">
 
-    	<table class="table table-striped">
+    	<table class="table table-striped" :class="{'table-hover': rowClickable}">
             <thead>
                 <tr>
                     <th v-for="field in fields">{{field.label}}</th>
                     <th v-if="hasEdit || hasDelete"></th>
                 </tr>
             </thead>
-            <tbody>
-                <tr v-for="record in records">
-                    <td v-for="field in fields">{{ record[field.key] }}</td>
+            <tbody >
+                <tr v-for="record in records" v-on:click="editRecord(record)">
+                    <td v-for="field in fields">
+                        {{ record[field.key] }}
+                    </td>
                     <td v-if="hasEdit || hasDelete">
 
                         <div class="other-buttons" v-for="button in otherButtons" v-if="otherButtons">
@@ -67,7 +69,8 @@
             "hasDelete",
             "otherButtons",
             "recordName",
-            "deleteEndpoint"
+            "deleteEndpoint",
+            "rowClickable"
         ],
         data() {
             return {
@@ -91,7 +94,14 @@
         },
 		methods: {
             editRecord(record) {
-                this.$emit("edit",record)
+                
+                if (this.hasEdit === true)
+                    this.$emit("edit",record)
+                else  {
+                    if (this.rowClickable)
+                        this.$router.push(this.hasEdit + record.id)
+                }
+                
             },
             deleteRecord(record) {
                 this.confirmDialog.title = "Delete "+this.resolvedRecordName
@@ -119,7 +129,7 @@
                     vm.$emit("updateAlert",{
                         visible: true,
                         class: "alert-danger",
-                        msg: "Report deleted"
+                        msg: "Record deleted"
                     })
                 })
             },

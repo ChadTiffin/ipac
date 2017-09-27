@@ -1,9 +1,9 @@
 <template><div>
 	<section v-if="!$root.isOffline">
 
-		<p><button class="btn btn-success" v-on:click="newUser"><i class="fa fa-plus"></i> New User</button></p>
-
-		<div style="clear: both;"></div>
+		<div class="button-bar">
+			<button class="btn btn-success" v-on:click="newUser"><i class="fa fa-plus"></i> User</button>
+		</div>
 
 		<table class="table table-striped table-condensed">
 			<thead>
@@ -14,7 +14,6 @@
 					<th>Email</th>
 					<th>Permissions</th>
 					<th>Last Login</th>
-					<th>API Key</th>
 					<th class="btn-col"></th>
 				</tr>	
 			</thead>
@@ -26,7 +25,6 @@
 					<td>{{ user.email }}</td>
 					<td>{{ user.user_level }}</td>
 					<td>{{ user.last_login }}</td>
-					<td>{{ user.api_key }}</td>
 					<td>
 						<button class="btn btn-sm btn-default" v-on:click="editUser(user)"><i class="fa fa-pencil"></i></button>
 					</td>
@@ -84,7 +82,7 @@
 				<div v-else-if="!userDialog.resetPassword">
 					<button class="btn btn-warning" type="button" v-on:click="sendResetInstructions(userDialog.fields.email)"><i class="fa fa-refresh"></i> Send Password Reset Instructions</button>
 
-					<button class="btn btn-danger" type="button" v-on:click="userDialog.resetPassword = true">Reset Password</button>
+					<!--<button class="btn btn-danger" type="button" v-on:click="userDialog.resetPassword = true">Reset Password</button>-->
 				</div>
 
 				<div v-if="userDialog.resetPassword">

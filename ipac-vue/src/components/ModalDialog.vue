@@ -21,6 +21,7 @@
 					<slot></slot>
 				</div>
 				<div class="modal-footer">
+					<slot name="footer"></slot>
 					<button type="button" class="btn btn-default" v-on:click="closeModal">Cancel</button>
 					<button type="submit" class="btn" :class="buttonClass ? buttonClass : 'btn-primary'" v-if="localSubmitVisible">{{ confirmButtonText }}</button>
 				</div>

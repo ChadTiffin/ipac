@@ -1,6 +1,21 @@
 export default {
 	methods: {
+		fetchUsers() {
+			let vm = this
 
+			let order = JSON.stringify(["first_name","ASC"])
+
+			this.getJSON(window.apiBase+"user/get?order="+order).then(function(response){
+				if (!("status" in response)) { //not offline
+					vm.$root.users = response
+					localStorage.users = JSON.stringify(response)
+				}
+				else {
+					vm.$root.users = JSON.parse(localStorage.users)
+					vm.$root.isOffline = true
+				}
+			})
+		},
 		fetchLocations() {
 			let vm = this
 

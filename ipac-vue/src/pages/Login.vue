@@ -92,6 +92,8 @@
 						if (response.status == "success") {
 							localStorage.setItem("apiKey",response.apiKey);
 
+							localStorage.userDetails = JSON.stringify(response.userDetails)
+
 							vm.loginAlert.visible = true;
 							vm.loginAlert.msg = "Login successful, redirecting..."
 							vm.loginAlert.class = "alert-success"

@@ -120,6 +120,7 @@ export default {
       spinnerVisible: true,
       clients: [],
       locations: [],
+      users: [],
       recentAudits: [],
       auditDialog: {
         visible: false,
@@ -292,7 +293,7 @@ export default {
           vm.updateAvailable = true
         }
         else {
-          if (localStorage.appVersion != response.version) 
+          if (localStorage.appVersion != response.version && !vm.$root.isOffline) 
             vm.updateAvailable = true
         }
       })
@@ -312,6 +313,12 @@ export default {
     }
     else
       this.loggedIn = false
+
+    let vm = this
+
+    bus.$on("updateAlert", function(params){
+      vm.updateAlert(params)
+    })
     
   }
 }
@@ -320,9 +327,7 @@ export default {
 <style>
 
   .section-wrapper {
-    margin-top: 40px;
-    overflow: hidden;
-
+    margin-top: 47px;
   }
 
   .section-outer {
@@ -344,14 +349,44 @@ export default {
     margin-left: 0;
   }
 
+  h1 {
+    font-size: 22pt;
+    margin-top: 10px;
+    margin-bottom: 0;
+    font-family: 'Roboto', sans-serif;
+  }
+
   h2 {
     font-size: 18pt;
     margin-top: 10px;
+    text-transform: uppercase;
+    color: #424546;
+    font-family: 'Roboto', sans-serif;
 
   }
 
+  h3 {
+    margin: 0;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    font-size: 14pt;
+    color: #424546;
+    font-family: 'Roboto', sans-serif;
+  }
+
+  h4 {
+    font-size: 12pt;
+    font-weight: bold;
+    color: #515556;
+  }
+
+  hr {
+    margin-top: 10px;
+    margin-bottom: 20px;
+  }
+
   .button-bar {
-    background-color: #dbe3e4;
+    background-color: #daf2f7;
     margin: -20px;
     margin-bottom: 20px;
     z-index: 3;
@@ -365,6 +400,16 @@ export default {
     margin-bottom: 5px;
     display: inline-block;
     cursor: pointer;
+  }
+
+  .button-bar a.btn {
+    margin-bottom: -1px;
+  }
+
+  .btn.block-button {
+    display: block;
+    width: 100%;
+    margin-bottom: 5px;
   }
 
   .table {
@@ -446,6 +491,10 @@ export default {
     padding: 5px;
     text-align: center;
     z-index: 5;
+  }
+
+  .well {
+    padding: 10px;
   }
 
   @media (max-width: 1200px) {

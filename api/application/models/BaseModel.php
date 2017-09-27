@@ -27,51 +27,59 @@ class BaseModel extends CI_Model {
 		if ($result) {
 			foreach ($relations as $rel) {
 
-				$this->db
-					->select("*")
-					->from($rel['table']);
+				if (isset($rel['model'])) {
+					$this->load->model($rel['model']);
 
-				//if any joins are declared, join and merge them into the child record
-				if (isset($rel['joins'])) { //child of child is set
-					foreach ($rel['joins'] as $join) {
-						$this->db->join($join['table'],$rel['table'].".".$join['key']." = ".$join['table'].".id",'left');
+					$model = $rel['model'];
+
+					if (isset($rel['hasMany']) && $rel['hasMany'] == true) {
+						$filters = [
+							[$rel['table'].".".$rel['key'],$result['id']]
+						];
+
+						$child = $this->$model->get(false, $filters);
 					}
-				}
+					else {
+						$child = $this->$model->find($rel['table'].".id", $result[$rel['key']]);
+					}	
 
-				if (isset($rel['hasMany']) && $rel['hasMany']) {
-					$child = $this->db
-						->where($rel['table'].".".$rel['key'],$result['id'])
-						->get()->result_array();
-
-					if (isset($rel['model'])) {
-						$this->load->model($rel['model']);
-
-						if (isset($this->$rel['model']->hidden_fields)) {
-							foreach ($child as $record) {
-								foreach ($this->$rel['model']->hidden_fields as $hidden) {
-									unset($record[$hidden]);
-								}
-							}
-						}
-					}
 				}
 				else {
-					$child = $this->db
-						->where($rel['table'].".id",$result[$rel['key']])
-						->get()->row_array();
+					$this->db
+						->select($rel['table'].".*")
+						->from($rel['table']);
 
-					if (isset($rel['model'])) {
-						$this->load->model($rel['model']);
-
-						$model = $rel['model'];
-
-						if (isset($this->$model->hidden_fields)) {
-
-							foreach ($this->$model->hidden_fields as $hidden) {
-								unset($child[$hidden]);
-							}
-							
+					//if any joins are declared, join and merge them into the child record
+					if (isset($rel['joins'])) { //child of child is set
+						foreach ($rel['joins'] as $join) {
+							$this->db->join($join['table'],$rel['table'].".".$join['key']." = ".$join['table'].".id",'left');
 						}
+					}
+
+					if (isset($rel['hasMany']) && $rel['hasMany']) {
+						if (isset($rel['model'])) {
+							$this->load->model($rel['model']);
+
+							$filters = [
+								[$rel['table'].".".$rel['key'],$result['id']]
+							];
+
+							$model = $rel['model'];
+
+							$child = $this->$model->get(false, $filters);
+
+						}
+						else {
+							$child = $this->db
+								->where($rel['table'].".".$rel['key'],$result['id'])
+								->get()->result_array();
+						}
+					
+					}
+					else {
+						$child = $this->db
+							->where($rel['table'].".id",$result[$rel['key']])
+							->get()->row_array();
 					}
 				}
 					
@@ -97,7 +105,7 @@ class BaseModel extends CI_Model {
 
 		//do not include deleted records if soft delete enabled on model
 		if ($this->soft_delete)
-			$filters[] = ['deleted',0];
+			$filters[] = [$this->table.'.deleted',0];
 
 		if ($this->relations) {
 			foreach ($this->relations as $rel) {
@@ -159,7 +167,12 @@ class BaseModel extends CI_Model {
 
 	public function find($field, $id, $include_children = true) {
 
-		$result = $this->db->get_where($this->table,["id" => $id])->row_array();
+		$condition["id"] = $id;
+
+		if ($this->soft_delete)
+			$condition["deleted"] = 0;
+
+		$result = $this->db->get_where($this->table,$condition)->row_array();
 
 		if ($this->relations && $include_children) {
 			$result = $this->appendChildren($result, $this->relations);

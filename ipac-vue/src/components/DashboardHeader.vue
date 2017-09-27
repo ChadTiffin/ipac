@@ -6,37 +6,83 @@
 			<h1>
 				<i class='fa' :class="$route.meta.icon"></i> 
 				{{ pageTitle.mainTitle }} 
-				<span v-if="pageTitle.small">{{ pageTitle.subTitle }}</span>
+				<small v-if="pageTitle.subTitle">{{ pageTitle.subTitle }}</small>
 			</h1>
+
+			<ul class="menu-list">
+
+				<li v-for="route in mutatedRoutes" 
+					v-if="route.showRoute && route.meta.navGroup.indexOf('top') >= 0">
+					<router-link :to="route.path">
+						<i class="fa fa-fw" :class="route.meta.icon"></i>
+						<div>{{ route.meta.titleText }}</div>
+					</router-link>
+				</li>
+
+				<!--<li>
+					<a href="#" v-on:mouseover="settingsMenuVisible = true" v-on:mouseleave="settingsMenuVisible = false">
+						<i class="fa fa-gear"></i>
+						<div>Settings</div>
+					</a>
+
+					<ul v-if="settingsMenuVisible" class="menu-list-dropdown">
+
+						<li v-for="route in mutatedRoutes" 
+							v-if="route.showRoute && route.meta.navGroup == 'app'">
+							<router-link :to="route.path">
+								<i class="fa fa-fw" :class="route.meta.icon"></i>
+								{{ route.meta.titleText }}
+							</router-link>
+						</li>
+					</ul>
+				</li>-->
+			</ul>
+
+
 		</div>
 
 		<nav class="menu" :class="{ menuShowing: menuShowing }">
 			
-			<div v-if="updateAvailable" v-on:click="installUpdate" class="alert alert-info update-alert" style="text-align: center;margin-top: 10px;padding: 3px;">
-				<i class="fa fa-refresh"></i>
-				Update Available<br>
-				<small>Click to install update</small>
+			<div class="menu-block">
+				<h2 class="menu-heading">		
+					Manage 
+				</h2>
+
+				<div v-if="updateAvailable" v-on:click="installUpdate" class="alert alert-info update-alert" style="text-align: center;margin-top: 10px;padding: 3px;">
+					<i class="fa fa-refresh"></i>
+					Update Available<br>
+					<small>Click to install update</small>
+				</div>
+
+				<ul class="menu-list">
+
+					<li v-for="route in mutatedRoutes" 
+						v-if="route.showRoute && route.meta.navGroup.indexOf('main') >= 0">
+						<router-link :to="route.path">
+							<i class="fa fa-fw" :class="route.meta.icon"></i>
+							{{ route.meta.titleText }}
+						</router-link>
+					</li>
+				</ul>
 			</div>
-			<h2 
-				class="menu-heading">		
-				Menu 
-			</h2>
-			<ul class="menu-list">
 
-				<li v-if="isOffline">
-					<a href="#" v-on:click.prevent="newAudit">
-						<i class="fa fa-fw fa-balance-scale"></i>
-						New Audit
-					</a>
-				</li>
+			<div class="menu-block">
+				<h2 class="menu-heading">		
+					Settings 
+				</h2>
 
-				<li v-for="route in $root.$data.routes" v-if="('meta' in route) && route.meta.navbar && !isOffline || isOffline && ('meta' in route) && isOffline && ('offline' in route.meta) && route.meta.offline">
-					<router-link :to="route.path">
-						<i class="fa fa-fw" :class="route.meta.icon"></i>
-						{{ route.meta.titleText }}
-					</router-link>
-				</li>
-			</ul>
+				<ul class="menu-list">
+
+					<li v-for="route in mutatedRoutes" 
+						v-if="route.showRoute && route.meta.navGroup.indexOf('app') >= 0">
+						<router-link :to="route.path">
+							<i class="fa fa-fw" :class="route.meta.icon"></i>
+							{{ route.meta.titleText }}
+						</router-link>
+					</li>
+				</ul>
+			</div>
+
 			<p style="text-align: center;"><small>Version #{{appVersion}}</small></p>
 		</nav>
 	</header>
@@ -50,7 +96,8 @@
 		data () {
 			return {
 				userType: localStorage.userType,
-				appVersion: localStorage.appVersion
+				appVersion: localStorage.appVersion,
+				settingsMenuVisible: false
 			}
 		},
 		computed: {
@@ -68,8 +115,43 @@
 				});
 
 				return localBankAccounts
+			},
+			mutatedRoutes() {
+				let routes = []
+
+				let vm = this
+
+				this.$root.$data.routes.forEach(function(route, index){
+					let showRouteInMenu = false
+
+					//route must be listed as navbar = true
+					if ("meta" in route && "navbar" in route.meta && route.meta.navbar) {
+
+						//app must either be offline, or have offline access for this route enabled
+						if (!vm.isOffline || vm.isOffline && 'offline' in route.meta && route.meta.offline) {
+							showRouteInMenu = true
+						}
+
+						//if perm property exists in route, array must contain the user type
+						if ("perm" in route.meta) {
+							showRouteInMenu = false
+
+							if (route.meta.perm.indexOf(localStorage.userType) >= 0)
+								showRouteInMenu = true
+						}
+						
+					}
+
+					route['showRoute'] = showRouteInMenu
+
+					routes.push(route);
+
+				})
+
+				return routes
 			}
 		},
+
 		methods: {
 			toggleMenu: function(e) {
 				this.$emit("toggleMenu");
@@ -91,10 +173,15 @@
 				localStorage.removeItem("apiKey");
 			}
 		}
+		
 	}
 </script>
 
 <style type="text/css" >
+	header {
+		font-family: 'Roboto', sans-serif;
+	}
+
 	.section-wrapper.menuShowing {
 		margin-left: 250px;
 	}
@@ -122,10 +209,44 @@
 		display: inline-block;
 		vertical-align: top;
 		margin: 0;
-		margin-top: 5px;
+		margin-top: 8px;
 		margin-left: 20px;
 		font-size: 22px;
 
+	}
+
+	.page-heading h1 small {
+		color: #9a9a9a
+	}
+
+	.page-heading .menu-list {
+		float: right;
+		color: #e8e8e8;
+		margin: -5px;
+	}
+
+	.page-heading .menu-list li {
+		display: inline-block;
+		text-align: center;
+		
+	}
+
+	.page-heading .menu-list li i {
+		font-size: 20px;
+	}
+
+	.page-heading .menu-list li a {
+		font-size: 12px;
+		color: inherit;
+		padding: 5px;
+		display: block;
+	}
+
+	.page-heading .menu-list li:hover a, .page-heading .menu-list .router-link-exact-active {
+		text-decoration: none;
+		cursor: pointer;
+		color: #003540;
+		background-color: #daf2f7;
 	}
 
 	.new-transaction-button-container {
@@ -159,7 +280,7 @@
 
 	.menu {
 		width: 250px;
-		padding: 10px;
+		padding: 0;
 		padding-top: 0;
 		background-color: rgba(20,15,10,1);
 		background-color: #003540;
@@ -171,6 +292,13 @@
 		overflow-y: auto;
 		transition: left 0.5s;
 		z-index: 10;
+	}
+
+	.menu-block {
+		border-left: 3px solid #2fff96;
+		padding: 10px;
+		padding-top: 0;
+		padding-bottom: 0;
 	}
 
 	.menu-button-heading {
@@ -197,11 +325,19 @@
 		padding: 0;
 	}
 
+	.navbar-logo {
+		background-color: white;
+		margin-left: -10px;
+		margin-right: -10px;
+		width: calc(50% + 20px);
+	}
+
 	header nav h2 {
 		font-size: 12pt;
 		text-transform: uppercase;
 		margin-top: 20px;
 		text-decoration: underline;
+		color: inherit;
 	}
 
 	header nav h3 {
@@ -211,7 +347,7 @@
 	}
 
 	.menu li a {
-		color: #fff;
+		color: #e8e8e8;
 		display: block;
 		padding: 5px;
 		text-decoration: none;
@@ -231,6 +367,7 @@
 		cursor: pointer;
 		display: inline-block;
 		line-height: 0;
+		margin-top: 4px;
 	}
 
 	.menu .menu-button {

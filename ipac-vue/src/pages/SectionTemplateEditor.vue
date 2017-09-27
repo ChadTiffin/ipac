@@ -146,10 +146,13 @@
 					
 					this.getJSON(window.apiBase+"sectionTemplate/find/"+id).then(function(response){
 
-						if (typeof response.findings_section_names == "string")
+						let findingsSectionNames = JSON.parse(response.findings_section_names)
+
+
+						if (typeof findingsSectionNames == "string")
 							vm.findingsSectionNames = []
 						else
-							vm.findingsSectionNames = JSON.parse(response.findings_section_names)
+							vm.findingsSectionNames = findingsSectionNames
 
 						vm.section = response
 
@@ -162,7 +165,7 @@
 
 						}
 
-					});
+					}); 
 				}
 
 				vm.$emit("toggleSpinner",false)

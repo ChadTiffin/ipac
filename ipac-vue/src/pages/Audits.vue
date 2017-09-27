@@ -1,8 +1,10 @@
 <template>
 	<section>
-		<button class="btn btn-success" v-on:click="newAudit"><i class="fa fa-plus"></i> New Audit</button>
+		<div class="button-bar">
+			<button class="btn btn-success" v-on:click="newAudit"><i class="fa fa-plus"></i> Audit</button>
 
-		<search-widget v-model="searchTerms" v-on:submit="fetchAudits"></search-widget>
+			<search-widget v-model="searchTerms" v-on:submit="fetchAudits"></search-widget>
+		</div>
 
 		<table-list 
 			:records="audits" 

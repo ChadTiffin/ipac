@@ -15,7 +15,7 @@ class User extends Base_Controller {
 			'rules' => "is_unique[users.email]"
 		]
 	];
-	public $api_excluded_fields = ["pw_hash","updated_at","deleted","allow_access"];
+	public $api_excluded_fields = ["pw_hash","updated_at","deleted","allow_access","api_key"];
 	public $model = "UserModel";
 
 	public function __construct()
@@ -48,7 +48,7 @@ class User extends Base_Controller {
 	}
 
 	public function get() {
-		$this->gatekeep(["Admin","Root"]);
+		$this->gatekeep(["Admin","Root","User"]);
 
 		parent::get();
 	}

@@ -1,17 +1,17 @@
 <template>
 
-	<datepicker :name="name" :value="valueDate" v-on:input="input($event)" :input-class="extraClasses" format="yyyy/MM/dd"></datepicker>
+	<date-picker v-model="valueDate" width="100%" lang="en" v-on:input="input($event)" ></date-picker>
 
 </template>
 
 <script type="text/javascript">
-	import Datepicker from 'vuejs-datepicker'
+	import DatePicker from 'vue2-datepicker'
 
 	export default {
 		name: "DateField",
-		props: ["name","extraClasses","value"],
+		props: ["value"],
 		components: {
-			Datepicker
+			DatePicker
 		},
 		data() {
 			return {
@@ -20,7 +20,12 @@
 		},
 		watch: {
 			value() {
+				this.setValueDate()
 				
+			}
+		},
+		methods: {
+			setValueDate() {
 				//correct for timezone
 				this.valueDate = new Date(this.value)
 
@@ -30,27 +35,26 @@
 				let difference = offset - minutes
 
 				this.valueDate.setMinutes(difference)
-			}
-		},
-		methods: {
+
+			},
 			input(value) {
 
-				let date_string = value.getFullYear()+"-"+(value.getMonth()+1)+"-"+value.getDate()
+				let date_string = ""
+				if (value != "")
+					date_string = value.getFullYear()+"-"+(value.getMonth()+1)+"-"+value.getDate()
 
 				this.$emit("input",date_string)
 				this.$emit("change")
 			}
+		},
+		created() {
+			this.setValueDate()
 		}
 	}
 </script>
 
-<style type="text/css">
-	.vdp-datepicker .vdp-datepicker__calendar .cell {
-		line-height: 30px;
-		height: 30px;
-	}
-
-	.vdp-datepicker .vdp-datepicker__calendar {
-		width: 250px;
+<style type="text/css" scoped>
+	.datepicker {
+		width: 100%;
 	}
 </style>

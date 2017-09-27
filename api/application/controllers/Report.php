@@ -217,7 +217,7 @@ class Report extends Base_Controller {
 			'client' => $report['client'],
 			'company' => $company_vars,
 			'location'=> $report['location'],
-			'report_date' => $report['date_issued']
+			'date_issued' => $report['date_issued']
 		];
 
 		$page_num = 0;

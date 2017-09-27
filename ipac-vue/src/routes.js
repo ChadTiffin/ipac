@@ -15,12 +15,23 @@ import CompanySettings from './pages/CompanySettings'
 import ClientEditor from './pages/ClientEditor'
 import Audits from './pages/Audits'
 import AuditForm from './pages/AuditForm'
+import Projects from './pages/Projects'
+import ProjectEditor from './pages/ProjectEditor'
+import Templating from './pages/Templating'
+import Dashboard from './pages/Dashboard'
+import Phases from './pages/Phases'
 
 export default [
 
   {
     path: '/', 
-    component: Login, 
+    component: Dashboard, 
+    meta: {
+      icon: "fa-dashboard",
+      navbar: true,
+      titleText: "Dashboard",
+      navGroup: ["main",'top']
+    }
   },
   {
     path: '/login' ,
@@ -54,6 +65,7 @@ export default [
     meta: {
       icon: "fa-balance-scale",
       navbar: true,
+      navGroup: ["main"],
       titleText: "Recent Audits",
       offline: true
     }
@@ -73,8 +85,18 @@ export default [
     meta: {
       icon: "fa-users",
       navbar: true,
+      navGroup: ["main","top"],
       titleText: "Clients",
       offline: true
+    }
+  },
+  {
+    path: '/clients/:id/:tab' , 
+    component: ClientEditor,
+    meta: {
+      icon: "fa-user",
+      navbar: false,
+      titleText: "Edit Client"
     }
   },
   {
@@ -87,11 +109,39 @@ export default [
     }
   },
   {
-    path: '/templates/sections' , 
-    component: SectionTemplates,
+    path: '/projects' , 
+    component: Projects,
+    meta: {
+      icon: "fa-cube",
+      navbar: true,
+      navGroup: ["main","top"],
+      titleText: "Projects"
+    }
+  },
+  {
+    path: '/projects/:id/:tab' , 
+    component: ProjectEditor,
+    meta: {
+      icon: "fa-cube",
+      navbar: false,
+      titleText: "Project"
+    }
+  },
+  {
+    path: '/templates' , 
+    component: Templating,
     meta: {
       icon: "fa-clone",
       navbar: true,
+      navGroup: ["main"],
+      titleText: "Report Templating"
+    }
+  },
+  {
+    path: '/templates/sections' , 
+    component: Templating,
+    meta: {
+      icon: "fa-clone",
       titleText: "Section Templates"
     }
   },
@@ -106,10 +156,9 @@ export default [
   },
   {
     path: '/templates/reports' , 
-    component: ReportTemplates,
+    component: Templating,
     meta: {
       icon: "fa-clone",
-      navbar: true,
       titleText: "Report Templates"
     }
   },
@@ -123,11 +172,22 @@ export default [
     }
   },
   {
+    path: '/phases' , 
+    component: Phases,
+    meta: {
+      icon: "fa-cube",
+      navbar: true,
+      navGroup: ['main'],
+      titleText: "Phases Master List"
+    }
+  },
+  {
     path: '/settings',
     component: CompanySettings,
     meta: {
       icon: "fa-gear",
       navbar: true,
+      navGroup: ["app"],
       titleText: "Company Settings"
     }
   },
@@ -137,6 +197,7 @@ export default [
     meta: {
       icon: "fa-user-circle-o",
       navbar: true,
+      navGroup: ["app"],
       titleText: "My Profile"
     }
   },
@@ -146,7 +207,9 @@ export default [
     meta: {
       icon: "fa-users",
       navbar: true,
-      titleText: "Users"
+      navGroup: ["app"],
+      titleText: "Users",
+      perm: ["Admin","Root"]
     }
   },
   {
@@ -155,6 +218,7 @@ export default [
     meta: {
       icon: "fa-sign-out",
       navbar: true,
+      navGroup: ["app"],
       titleText: "Logout",
       offline: true
     }

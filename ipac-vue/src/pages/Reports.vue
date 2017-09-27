@@ -1,6 +1,6 @@
 <template>
 	<section>
-		<router-link class="btn btn-success" to="reports/new"><i class="fa fa-plus"></i> New Report</router-link>
+		<router-link class="btn btn-success" to="reports/new"><i class="fa fa-plus"></i> Report</router-link>
 
 		<table-list 
 			:records="amendedReports" 

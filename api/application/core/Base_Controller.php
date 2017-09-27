@@ -25,6 +25,7 @@ class Base_Controller extends CI_Controller {
 		header('Access-Control-Allow-Credentials: true');
 		header("Access-Control-Allow-Headers: Content-Type, Content-Length, Accept-Encoding, X-API-KEY");
 		header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+		header("Access-Control-Max-Age: 600");
 		if ( "OPTIONS" === $_SERVER['REQUEST_METHOD'] ) {
 			die();
 		}
@@ -81,6 +82,31 @@ class Base_Controller extends CI_Controller {
 		$data = $this->input->post();
 
 		unset($data['key']);
+
+		//check for any requests for server timestamp
+		$new_data = [];
+		foreach ($data as $key => $value) {
+			if ($value == "{{{server_now}}}")
+				$value = date("Y-m-d H:i:s");
+			elseif ($value == "{{{current_user}}}") {
+				$headers = getallheaders();
+
+				if (isset($headers['x-api-key']))  {
+					$user = $this->db->get_where("users",["api_key" => $headers['x-api-key']])->row();
+					$value = $user->id;
+				}
+				else {
+					$user = false;
+					$value = 0;
+				}
+
+			}
+			elseif ($value == "null")
+				$value = null;
+
+			$new_data[$key] = $value;
+		}
+		$data = $new_data;
 
 		if ($this->validation_rules != null) {
 

@@ -51,12 +51,15 @@ export default {
 				let url = form_el.getAttribute("action")
 				let payload = new FormData(form_el)
 
-				if (typeof localStorage.apiKey != 'undefined')
-					payload.append("key",localStorage.apiKey);
+				//if (typeof localStorage.apiKey != 'undefined')
+					//payload.append("key",localStorage.apiKey);
 
 				fetch(url,{
 					method: "POST",
 					credentials: 'include',
+					headers: new Headers({
+						'x-api-key': localStorage.apiKey
+					}),
 					body: payload,
 					/*headers: new Headers({
 						'Content-Type': 'multipart/form-data',
@@ -103,12 +106,15 @@ export default {
 					payload.append(key, data[key])
 				}
 
-				if (typeof localStorage.apiKey != 'undefined')
-					payload.append("key",localStorage.apiKey);
+				//if (typeof localStorage.apiKey != 'undefined')
+					//payload.append("key",localStorage.apiKey);
 
 				fetch(url, {
 					method: "POST",
 					credentials: 'include',
+					headers: new Headers({
+						'x-api-key': localStorage.apiKey
+					}),
 					body: payload,
 					/*headers: new Headers({
 						'Content-Type': 'multipart/form-data',

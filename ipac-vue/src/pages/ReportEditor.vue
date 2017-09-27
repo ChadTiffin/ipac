@@ -1,7 +1,7 @@
 <template>
 	<section>
 		<div class="button-bar">
-			<router-link :to="'/clients/'+currentClientId" class='router-link'><i class="fa fa-angle-double-left"></i> Back to Client</router-link>
+			<router-link :to="'/clients/'+currentClientId+'/reports'" class='router-link'><i class="fa fa-angle-double-left"></i> Back to Client</router-link>
 
 			<div class="pull-right">
 				<button class="btn btn-info" type="button" v-on:click="varHelpVisible = true">
@@ -156,6 +156,9 @@
 													findings_html += "<li><em>"+field.question+"</em>: <strong>NO</strong></li>"
 												}
 											}
+											else if (field.type == 'textarea') {
+												findings_html += "<li><em>"+field.question+"</em>: "+field.value+"</li>"
+											}
 										})
 									}
 									if ("subSections" in field_section) {
@@ -191,9 +194,8 @@
 						}
 					}
 				})
-				findings_html += "</ul>"
 
-				if (findings_html == "<ul></ul>") {
+				if (findings_html == "") {
 					findings_html = "<p>No negative findings found on Audit</p>"
 				}
 
