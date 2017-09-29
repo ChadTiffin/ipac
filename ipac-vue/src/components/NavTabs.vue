@@ -21,6 +21,7 @@
 		margin: 0;
 		margin-bottom: -5px;
 		margin-top: -3px;
+		padding: 0;
 	}
 
 	.tab-buttons li {
@@ -46,5 +47,15 @@
 
 	.tab-buttons li.active a {
 		background-color: white;
+	}
+
+	@media (max-width: 700px) {
+		.tab-buttons li {
+			width: calc(50% - 2px)
+		}
+
+		.tab-buttons {
+			margin-top: 10px;
+		}
 	}
 </style>

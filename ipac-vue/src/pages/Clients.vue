@@ -7,7 +7,7 @@
 		<table-list 
 			:records="clients" 
 			:fields="fields" 
-			has-edit="/clients/" 
+			has-edit="/clients/{?}/locations" 
 			row-clickable="true"
 			v-on:modelChange="clientsChanged">
 		</table-list>

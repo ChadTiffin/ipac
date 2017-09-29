@@ -24,7 +24,17 @@ new Vue({
   data() {
   	return {
   		routes: routes,
-  		isOffline: false
-	}  		
+  		isOffline: false,
+      userFullName: ""
+	  }  		
+  },
+  created() {
+    if ("userDetails" in localStorage) {
+      let user = JSON.parse(localStorage.userDetails)
+
+      this.userFullName = user.first_name + " " + user.last_name
+    }
+    else
+      this.userFullName = "You"
   }
 })

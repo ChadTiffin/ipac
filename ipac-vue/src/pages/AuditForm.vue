@@ -63,26 +63,12 @@
 						<h2 v-if="section.heading">{{ index+1 }}.0 {{section.heading}}</h2>
 
 						<div v-if="section.fields">
-							<form-group v-for="(field, fieldIndex) in section.fields" :key="field.question" :label="field.question" :col-class="field.type == 'textarea' ? 'col-md-2' : 'col-md-6'" >
+							<form-group v-for="(field, fieldIndex) in section.fields" :key="field.question" :label="field.question" :col-class="field.type == 'textarea' || field.type == 'images' ? 'col-md-2' : 'col-md-6'" >
 
 								<yes-no-na-buttons v-if="field.type=='yes/no'" v-model="field.value" v-on:input="autoSave"></yes-no-na-buttons>
 
 								<div v-if="field.type=='images' || field.type == 'image'">
-									<div v-if="!$root.isOffline">
-										<div class="thumbs">
-											<div 
-												v-for="(image,index) in field.value" 
-												class="thumb" 
-												:style="{backgroundImage: 'url('+apiBase+'image/image/'+image+')'}">
-
-												<button type="button" class="btn btn-danger btn-sm" v-on:click="deleteImage(index, field.value)">
-													<i class="fa fa-remove"></i>
-												</button>
-											</div>
-										</div>
-
-										<upload-field v-on:uploaded="saveUpload($event,field)"></upload-field>
-									</div>
+									<image-upload-field v-if="!$root.isOffline" :api-base="apiBase" v-on:imageListChanged="saveUpload" :field="field" :multi="true" upload-type="audit-image"></image-upload-field>
 									<div v-else class="alert alert-warning">
 										<i class="fa fa-warning"></i>
 										Can't upload images when offline
@@ -106,20 +92,7 @@
 									<yes-no-na-buttons v-if="subSectionField.type=='yes/no'" v-model="subSectionField.value" v-on:input="autoSave"></yes-no-na-buttons>
 
 									<div v-if="subSectionField.type=='images' || subSectionField.type == 'image'">
-										<div v-if="!$root.isOffline">
-											<div class="thumbs">
-												<div 
-													v-for="(image,index) in field.value" 
-													class="thumb" 
-													:style="{backgroundImage: 'url('+apiBase+'image/image/'+image+')'}">
-
-													<button type="button" class="btn btn-danger btn-sm" v-on:click="deleteImage(index, subSectionField.value)">
-														<i class="fa fa-remove"></i>
-													</button>
-												</div>
-											</div>
-											<upload-field v-on:uploaded="saveUpload($event,subSectionField)"></upload-field>
-										</div>
+										<image-upload-field v-if="!$root.isOffline" api-base="apiBase" v-on:imageListChanged="saveUpload" :field="subSectionField" :multi="true" upload-type="audit-image"></image-upload-field>
 
 										<div v-else class="alert alert-warning">
 											<i class="fa fa-warning"></i>
@@ -169,7 +142,7 @@
 	import FormGroup from '../components/FormGroup'
 	import YesNoNaButtons from '../components/YesNoNaButtons'
 	import DateField from '../components/DateField'
-	import UploadField from '../components/UploadField'
+	import ImageUploadField from '../components/ImageUploadField'
 	import ModalDialog from '../components/ModalDialog'
 
 	export default {
@@ -178,7 +151,7 @@
 			FormGroup,
 			YesNoNaButtons,
 			DateField,
-			UploadField,
+			ImageUploadField,
 			ModalDialog
 		},
 		props: ["clients"],
@@ -208,8 +181,6 @@
 				})
 
 				let totalUnanswered = totalFields - totalAnswered
-
-				console.log(this.audit.task_id)
 
 				if (totalUnanswered == 0 && this.audit.task_id != 0) 
 					this.confirmDialog.visible = true
@@ -246,31 +217,7 @@
 					vm.confirmDialog.visible = false
 				})
 			},
-			deleteImage(index,images) {
-				let payload = {
-					filename: images[index]
-				}
-
-				let vm = this
-
-				this.postData(window.apiBase+"image/delete",payload).then(function(response){
-					if (response.status == "success") {
-						images.splice(index,1)
-					}
-
-					vm.autoSave()
-				})
-			},
-			saveUpload(response, field) {
-				
-				if (!field.value)
-					field.value = []
-
-				field.value.push(response.filename)
-
-				this.autoSave()
-
-			},
+			
 			calcTotalFieldsAnswered() {
 				//calculate total fields and total fields answered
 				let vm = this
@@ -306,6 +253,16 @@
 					else
 						vm.$set(section,"totalFieldsAnswered",sectionTotalAnswered)
 				})
+			},
+			saveUpload(response, field) {
+				
+				if (!field.value)
+					field.value = []
+
+				field.value.push(response.filename)
+
+				this.autoSave()
+
 			},
 			autoSave() {
 
@@ -493,22 +450,6 @@
 	h3 {
 		font-size: 14pt;
 		text-decoration: underline;
-	}
-
-	.thumbs .thumb {
-		display: inline-block;
-		height: 80px;
-		width: 100px;
-		background-size: cover;
-		background-position: center center;
-		background-repeat: no-repeat;
-		position: relative;
-	}
-
-	.thumbs .thumb button {
-		position: absolute;
-		top: 0;
-		right: 0;
 	}
 
 	.alert-bubble {

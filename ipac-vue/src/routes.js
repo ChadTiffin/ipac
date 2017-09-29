@@ -20,6 +20,7 @@ import ProjectEditor from './pages/ProjectEditor'
 import Templating from './pages/Templating'
 import Dashboard from './pages/Dashboard'
 import Phases from './pages/Phases'
+import Expenses from './pages/Expenses'
 
 export default [
 
@@ -239,6 +240,17 @@ export default [
       icon: "fa-eye",
       navbar: false,
       titleText: "Report Viewer"
+    }
+  },
+  {
+    path: '/expenses',
+    component: Expenses,
+    meta: {
+      icon: "fa-money",
+      navbar: true,
+      navGroup: ["main"],
+      titleText: "Expenses",
+      perm: ["Admin", "Root"]
     }
   },
 ]

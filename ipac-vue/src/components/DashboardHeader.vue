@@ -198,6 +198,7 @@
 		transition: left 0.5s;
 		min-width: 320px;
 		z-index: 11;
+		min-height: 50px;
 	}
 
 	.page-heading.menuShowing {
@@ -431,7 +432,15 @@
 		}
 	}
 
+	@media (max-width: 800px) {
+		.page-heading .menu-list {
+			display: none;
+		}
+	}
+
 	@media (max-width: 450px) {
+
+
 		.header-flag span {
 			display: none;
 		}

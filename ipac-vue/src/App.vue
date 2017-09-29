@@ -133,7 +133,7 @@ export default {
           audit_date: null,
           form_template_id: null
         }
-      },
+      }
     }
   }, 
   watch: {
@@ -325,6 +325,11 @@ export default {
 </script>
 
 <style>
+
+.v-select .dropdown-toggle {
+  position: relative;
+  background-color: white;
+}
 
   .section-wrapper {
     margin-top: 47px;

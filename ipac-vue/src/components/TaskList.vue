@@ -38,12 +38,12 @@
 
 					{{ task.description }}
 					<div v-if="!task.is_complete" class="task-meta">
-						<div v-if="task.due_date" class="due-date">Due {{ task.due_date }}</div>
+						<div v-if="task.due_date" class="due-date">Due {{ formatDate(task.due_date,'long') }}</div>
 						<div class="assigned-to">Assigned to {{ task.assigned_to_user.first_name }} {{ task.assigned_to_user.last_name }}</div>
 					</div>
 
 					<div v-else class="task-meta">
-						<div class="completed-date">Completed {{ task.completed_at }}</div>
+						<div class="completed-date">Completed {{ formatDate(task.completed_at,'long, minutes') }}</div>
 						<div class="assigned-to">Completed By {{ task.completed_by_user.first_name }} {{ task.completed_by_user.last_name }}</div>
 					</div>
 				</div>

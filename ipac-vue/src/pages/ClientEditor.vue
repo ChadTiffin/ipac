@@ -6,10 +6,6 @@
 				<router-link to="/clients" class='router-link'><i class="fa fa-angle-double-left"></i> Back to Clients</router-link>
 
 				<nav-tabs classes="pull-right" v-if="$route.params.id != 'new'">
-					<li :class="{active: activeTab == 'details'}"><router-link to="details">
-						<i class="fa fa-address-card-o"></i>
-						Client Details
-					</router-link></li>
 
 					<li :class="{active: activeTab == 'locations'}"><router-link to="locations">
 						<i class="fa fa-map-marker"></i>
@@ -34,177 +30,188 @@
 						Tasks
 					</router-link></li>
 
+					<li :class="{active: activeTab == 'expenses'}"><router-link to='expenses' >
+						<i class="fa fa-money"></i>
+						Expenses
+					</router-link></li>
+
 				</nav-tabs>
 
 				<div style="clear: both;"></div>
 				
 			</div>
 
-			<div class="tab-content">
+			<div class="row">
+				<div class="col-md-4">
+					<div class="well">
 
-				<div v-if="activeTab == 'details'">
+						<div class="pull-right">
 
-					<button v-if="$route.params.id != 'new'" class="btn btn-danger pull-right" style="margin-bottom: 10px;" v-on:click="deleteClient"><i class="fa fa-times"></i> Delete Client</button>
+							<router-link v-if="$route.params.id == 'new'" to="/clients" class="btn btn-default">Cancel</router-link>
+							<button v-if="!$root.isOffline" class="btn btn-success"><i class="fa fa-save"></i> Save</button>
 
-					<h2>Client Details</h2>
-
-					<div style="clear: both;"></div>
-
-					<form class="row" v-on:submit.prevent="save">
-
-						<div class="col-md-6">
-							<div class="form-horizontal">
-								<form-group label="Company" col-class="col-md-3">
-									<input v-if="!$root.isOffline" type="text" v-model='client.company' class="form-control">
-									<p v-else class="form-control-static">{{ client.company }}</p>
-								</form-group>
-
-								<form-group label="Contact Name" col-class="col-md-3">
-									<input v-if="!$root.isOffline" type="text" v-model='client.contact_name' class="form-control">
-									<p v-else class="form-control-static">{{ client.contact_name }}</p>
-								</form-group>
-
-								<form-group label="Primary Phone" col-class="col-md-3">
-									<input v-if="!$root.isOffline" type="tel" v-model='client.primary_phone' class="form-control">
-									<p v-else class="form-control-static">{{ client.primary_phone }}</p>
-								</form-group>
-
-								<form-group label="Email" col-class="col-md-3">
-									<input v-if="!$root.isOffline" type="text" v-model='client.email' class="form-control">
-									<p v-else class="form-control-static">{{ client.email }}</p>
-								</form-group>
-							</div>
 						</div>
 
-						<div class="col-md-6">
-							<div class="form-horizontal">
-								<form-group label="Address" col-class="col-md-3">
-									<input v-if="!$root.isOffline" type="text" v-model='client.address' class="form-control">
-									<p v-else class="form-control-static">{{ client.address }}</p>
-								</form-group>
+						<h2>Client Details</h2>
 
-								<form-group label="City" col-class="col-md-3">
-									<input v-if="!$root.isOffline" type="text" v-model='client.city' class="form-control">
-									<p v-else class="form-control-static">{{ client.city }}</p>
-								</form-group>
+						<div style="clear: both;"></div>
+						<form class="form-horizontal" v-on:submit.prevent="saveClientDetails">
 
-								<form-group label="Province" col-class="col-md-3">
-									<input v-if="!$root.isOffline" type="text" v-model='client.province' class="form-control">
-									<p v-else class="form-control-static">{{ client.province }}</p>
-								</form-group>
+							<form-group label="Company" col-class="col-md-3">
+								<input v-if="!$root.isOffline" type="text" v-model='client.company' class="form-control">
+								<p v-else class="form-control-static">{{ client.company }}</p>
+							</form-group>
 
-								<form-group label="Postal Code" col-class="col-md-3">
-									<input v-if="!$root.isOffline" type="text" v-model='client.postal_code' class="form-control">
-									<p v-else class="form-control-static">{{ client.postal_code }}</p>
-								</form-group>
+							<form-group label="Contact Name" col-class="col-md-3">
+								<input v-if="!$root.isOffline" type="text" v-model='client.contact_name' class="form-control">
+								<p v-else class="form-control-static">{{ client.contact_name }}</p>
+							</form-group>
 
-								<div class="pull-right">
+							<form-group label="Primary Phone" col-class="col-md-3">
+								<input v-if="!$root.isOffline" type="tel" v-model='client.primary_phone' class="form-control">
+								<p v-else class="form-control-static">{{ client.primary_phone }}</p>
+							</form-group>
 
-									<router-link v-if="$route.params.id == 'new'" to="/clients" class="btn btn-default">Cancel</router-link>
-									<button v-if="!$root.isOffline" class="btn btn-success"><i class="fa fa-save"></i> Save</button>
+							<form-group label="Email" col-class="col-md-3">
+								<input v-if="!$root.isOffline" type="text" v-model='client.email' class="form-control">
+								<p v-else class="form-control-static">{{ client.email }}</p>
+							</form-group>
 
-								</div>
-							</div>
-						</div>
+							<form-group label="Address" col-class="col-md-3">
+								<input v-if="!$root.isOffline" type="text" v-model='client.address' class="form-control">
+								<p v-else class="form-control-static">{{ client.address }}</p>
+							</form-group>
 
-					</form>
-					<div class="alert" :class="alert.class" v-if="alert.visible">
-						{{ clientDialog.alert.msg }}
-						<p v-if="alert.hasErrors" v-for="error in alert.errors">
-							{{error}}
-						</p>
-					</div>
-				</div>
-				
-				<div v-if="activeTab == 'locations'">
-					<h2>Locations</h2>
-					<button v-if="!$root.isOffline" class="btn btn-success" v-on:click="newLocation"><i class="fa fa-plus"></i> New Location</button>
+							<form-group label="City" col-class="col-md-3">
+								<input v-if="!$root.isOffline" type="text" v-model='client.city' class="form-control">
+								<p v-else class="form-control-static">{{ client.city }}</p>
+							</form-group>
 
-					<search-widget v-model="locationFilterTerms" v-on:submit="filterLocations"></search-widget>
+							<form-group label="Province" col-class="col-md-3">
+								<input v-if="!$root.isOffline" type="text" v-model='client.province' class="form-control">
+								<p v-else class="form-control-static">{{ client.province }}</p>
+							</form-group>
 
-					<table-list
-						:records="locations"
-						:fields="locationFields"
-						:has-edit="true"
-						delete-endpoint="location/delete"
-						:has-delete="true"
-						v-on:edit="editLocation">
-					</table-list>
-				</div>
+							<form-group label="Postal Code" col-class="col-md-3">
+								<input v-if="!$root.isOffline" type="text" v-model='client.postal_code' class="form-control">
+								<p v-else class="form-control-static">{{ client.postal_code }}</p>
+							</form-group>
 
-				<div v-if="activeTab == 'audits'">
-					<h2>Audits</h2>
-
-					<button class="btn btn-success" v-on:click="auditDialog.visible = true"><i class="fa fa-plus"></i> New Audit</button>
-
-					<search-widget v-model="auditFilterTerms" v-on:submit="filterAudits"></search-widget>
-
-					<table-list 
-						:records="audits" 
-						:fields="auditFields" 
-						has-edit="/audits/form/" 
-						:has-delete="true" 
-						v-on:modelChange="filterAudits" 
-						delete-endpoint="auditForm/delete">
-						
-					</table-list>
-				</div>
-
-				<div v-if="activeTab == 'reports'">
-					<div v-if="!$root.isOffline">
-						<h2>Reports</h2>
-
-						<router-link v-if="!$root.isOffline" class="btn btn-success" to="/reports/new"><i class="fa fa-plus"></i> New Report</router-link>
-
-						<!--<search-widget v-model="reportFilterTerms" v-on:submit="filterReports"></search-widget>-->
-
-						<table-list 
-							:records="amendedReports" 
-							:fields="reportFields" 
-							has-edit="/reports/edit/" 
-							:has-delete="true" 
-							v-on:modelChange="filterReports" 
-							delete-endpoint="/report/delete">
 							
-						</table-list>
-					</div>
-					<page-offline-alert v-else></page-offline-alert>
-				</div>
+							<div style="clear: both;"></div>
 
-				<div v-if="activeTab == 'tasks'">
-					<div v-if="!$root.isOffline">
-
-						<div class="row">
-							<div class="col-md-3">
-								<div class="well">
-									<h3>Filter Tasks</h3>
-									<button-group
-										vertical="true" 
-										:buttons="taskFilter.buttons" 
-										:full-width="true"
-										v-model="taskFilter.value">
-									</button-group>
-								</div>
-							</div>
-							<div class="col-md-9">
-								<task-list :editable="true" :heading="taskFilter.value + ' Tasks'" :include-new-button="true" :tasks="filteredTasks"  v-on:modelChanged="fetchTasks"></task-list>
-							</div>
-
+						</form>
+						<div class="alert" :class="alert.class" v-if="alert.visible">
+							{{ clientDialog.alert.msg }}
+							<p v-if="alert.hasErrors" v-for="error in alert.errors">
+								{{error}}
+							</p>
 						</div>
+						<button v-if="$route.params.id != 'new'" class="btn btn-danger block-button" style="margin-bottom: 10px;" v-on:click="deleteClient"><i class="fa fa-times"></i> Delete Client</button>
+					</div>
+
+					<div class="well" v-if="activeTab == 'tasks'">
+						<h3>Filter Tasks</h3>
+						<button-group
+							vertical="true" 
+							:buttons="taskFilter.buttons" 
+							:full-width="true"
+							v-model="taskFilter.value">
+						</button-group>
+					</div>
+				</div>
+
+				<div class="col-md-8">
+
+					<div class="tab-content">
 						
+						<div v-if="activeTab == 'locations'">
+							<h2>Locations</h2>
+							<button v-if="!$root.isOffline" class="btn btn-success" v-on:click="newLocation"><i class="fa fa-plus"></i> New Location</button>
+
+							<search-widget v-model="locationFilterTerms" v-on:submit="filterLocations"></search-widget>
+
+							<table-list
+								:records="locations"
+								:fields="locationFields"
+								:has-edit="true"
+								delete-endpoint="location/delete"
+								:has-delete="true"
+								v-on:modelChange="filterLocations" 
+								v-on:edit="editLocation">
+							</table-list>
+						</div>
+
+						<div v-if="activeTab == 'audits'">
+							<h2>Audits</h2>
+
+							<button class="btn btn-success" v-on:click="auditDialog.visible = true"><i class="fa fa-plus"></i> New Audit</button>
+
+							<search-widget v-model="auditFilterTerms" v-on:submit="filterAudits"></search-widget>
+
+							<table-list 
+								:records="audits" 
+								:fields="auditFields" 
+								has-edit="/audits/form/" 
+								:has-delete="true" 
+								v-on:modelChange="filterAudits" 
+								delete-endpoint="auditForm/delete">
+								
+							</table-list>
+						</div>
+
+						<div v-if="activeTab == 'reports'">
+							<div v-if="!$root.isOffline">
+								<h2>Reports</h2>
+
+								<router-link v-if="!$root.isOffline" class="btn btn-success" to="/reports/new"><i class="fa fa-plus"></i> New Report</router-link>
+
+								<!--<search-widget v-model="reportFilterTerms" v-on:submit="filterReports"></search-widget>-->
+
+								<table-list 
+									:records="amendedReports" 
+									:fields="reportFields" 
+									has-edit="/reports/edit/" 
+									:has-delete="true" 
+									v-on:modelChange="filterReports" 
+									delete-endpoint="/report/delete">
+									
+								</table-list>
+							</div>
+							<page-offline-alert v-else></page-offline-alert>
+						</div>
+
+						<div v-if="activeTab == 'tasks'">
+							<div v-if="!$root.isOffline">
+
+								<task-list :editable="true" :heading="taskFilter.value + ' Tasks'" :include-new-button="true" :tasks="filteredTasks"  v-on:modelChanged="fetchTasks"></task-list>
+	
+							</div>
+							<page-offline-alert v-else></page-offline-alert>
+						</div>
+
+						<div v-if="activeTab == 'phases'">
+							<div v-if="!$root.isOffline">
+
+								<phase-list :phases="clientPhases" :editable="true" owner-type="client" v-on:phasesChanged="fetchPhases"></phase-list>
+
+							</div>
+							<page-offline-alert v-else></page-offline-alert>
+						</div>
+
+						<div v-if="activeTab == 'expenses'">
+							<div v-if="!$root.isOffline">
+								
+								<h2>Client Expenses for {{ $root.userFullName }}</h2>
+
+								<expense-list owner-type="client" :locations="locations"></expense-list>
+
+							</div>
+							<page-offline-alert v-else></page-offline-alert>
+						</div>
+
 					</div>
-					<page-offline-alert v-else></page-offline-alert>
 				</div>
-
-				<div v-if="activeTab == 'phases'">
-					<div v-if="!$root.isOffline">
-
-						<phase-list :phases="clientPhases" :editable="true" owner-type="client" v-on:phasesChanged="fetchPhases"></phase-list>
-
-					</div>
-					<page-offline-alert v-else></page-offline-alert>
-				</div>
-
 			</div>
 			
 		</section>
@@ -283,6 +290,7 @@
 	import TaskList from '../components/TaskList'
 	import ButtonGroup from '../components/ButtonGroup'
 	import PhaseList from '../components/PhaseList'
+	import ExpenseList from '../components/ExpenseList'
 
 	export default {
 		name: "ClientEditor",
@@ -297,7 +305,8 @@
 			NavTabs,
 			TaskList,
 			ButtonGroup,
-			PhaseList
+			PhaseList,
+			ExpenseList
 		},
 		data () {
 			return {
@@ -426,6 +435,15 @@
 		watch: {
 			'$route': function(to, from) {
 				this.activeTab = to.params.tab
+
+				if (to.params.tab == "locations" || this.$route.params.tab == "expenses")
+					this.filterLocations()
+				else if (to.params.tab == "tasks") 
+					this.fetchTasks()
+				else if (to.params.tab == "audits") {
+					this.filterAudits()
+					this.filterLocations()
+				}
 			}
 		},
 		computed: {
@@ -467,20 +485,7 @@
 			}
 		},
 		methods: {
-			activateTasksTab() {
-				this.activeTab = 'tasks'
-				this.fetchTasks()
-			},
-			activateLocationsTab() {
-				this.activeTab = 'locations'
-				this.filterLocations()
-			},
-			activateAuditsTab() {
-				this.activeTab = 'audits'
-				this.filterAudits()
-				this.filterLocations()
-			},
-			save() {
+			saveClientDetails() {
 				let payload = this.client;
 
 				delete payload.locations;
@@ -494,7 +499,15 @@
 						msg: "Client saved"
 					})
 
-					vm.$router.replace("/clients/"+response.id)
+					if (vm.$route.params.id == "new") {
+						vm.$router.replace("/clients/"+response.id+"/locations")
+
+						let pageTitle = {
+							mainTitle: payload.company_name,
+							subTitle: "Client"
+						}
+						vm.$emit("pageTitle",pageTitle)
+					}
 
 					vm.$emit("clientListUpdate")
 				})
@@ -726,12 +739,21 @@
 				this.fetchPhases()
 
 				localStorage.currentClientId = this.$route.params.id
+
+				if (this.$route.params.tab == "locations" || this.$route.params.tab == "expenses")
+					this.filterLocations()
+				else if (this.$route.params.tab == "tasks") 
+					this.fetchTasks()
+				else if (this.$route.params.tab == "audits") {
+					this.filterAudits()
+					this.filterLocations()
+				}
 			}
 			else
 				this.$emit("toggleSpinner",false)
 
-			if (typeof this.$route.params.tab == 'undefined')
-				this.$router.replace("/clients/"+this.$route.params.id+"/details")
+			if (typeof this.$route.params.tab == 'undefined' && this.$route.params.id != "new")
+				this.$router.replace("/clients/"+this.$route.params.id+"/locations")
 		}
 	}
 </script>

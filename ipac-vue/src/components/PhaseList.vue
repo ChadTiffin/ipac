@@ -18,7 +18,7 @@
 					    }
 				" class="list-group-item">
 
-				<span class="pull-right" v-if="phase.completed_at != null">Completed at {{ phase.completed_at }}</span>
+				<span class="pull-right" v-if="phase.completed_at != null">Completed at {{ formatDate(phase.completed_at,'long, minutes') }}</span>
 
 				<span class="pull-right" v-else-if="phase.active == 1">In Progress</span>
 

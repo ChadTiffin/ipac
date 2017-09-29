@@ -1,7 +1,7 @@
 <template>
-    <div style="overflow-x: auto;">
+    <div style="overflow-x: auto;clear:both">
 
-    	<table class="table table-striped" :class="{'table-hover': rowClickable}">
+    	<table class="table table-striped" :class="{'table-hover': rowClickable == true}">
             <thead>
                 <tr>
                     <th v-for="field in fields">{{field.label}}</th>
@@ -9,7 +9,7 @@
                 </tr>
             </thead>
             <tbody >
-                <tr v-for="record in records" v-on:click="editRecord(record)">
+                <tr v-for="record in mutatedRecords" v-on:click="editRecord(record,'row')">
                     <td v-for="field in fields">
                         {{ record[field.key] }}
                     </td>
@@ -22,11 +22,11 @@
                             </router-link>
                         </div>
 
-                        <button v-if="hasEdit == true" class="btn btn-default btn-sm" v-on:click="editRecord(record)">
+                        <button v-if="hasEdit == true" class="btn btn-default btn-sm" v-on:click="editRecord(record,'button')">
                             <i class="fa fa-pencil"></i>
                         </button>
 
-                        <router-link v-else :to="hasEdit + record.id" class="btn btn-default btn-sm">
+                        <router-link v-else :to="record.editUrl" class="btn btn-default btn-sm">
                             <i class="fa fa-pencil"></i>
                         </router-link>
 
@@ -34,7 +34,7 @@
                         
                     </td>
                 </tr>
-                <tr v-if="records.length == 0">
+                <tr v-if="mutatedRecords.length == 0">
                     <td :colspan="fields.length">No records</td>
                     <td v-if="hasEdit || hasDelete"></td>
                 </tr>
@@ -90,16 +90,43 @@
                     return this.recordName
                 else
                     return "Record"
+            },
+            mutatedRecords() {
+                let mutated = []
+
+                let vm = this
+
+                this.records.forEach(function(record,index){
+                    let url = vm.hasEdit
+
+                    if (typeof url == "string") {
+
+                        if (url.search("{?}") >= 0)
+                            url = url.replace("{?}",record.id)
+                        else 
+                            url = url + record.id
+
+                        record['editUrl'] = url
+                    }
+
+                    mutated.push(record)
+                    
+                })
+
+                return mutated
             }
         },
 		methods: {
-            editRecord(record) {
+            editRecord(record,source) {
                 
-                if (this.hasEdit === true)
-                    this.$emit("edit",record)
-                else  {
-                    if (this.rowClickable)
-                        this.$router.push(this.hasEdit + record.id)
+                if (source == "row" && this.rowClickable || source == "button") {
+                    if (this.hasEdit === true)
+                        this.$emit("edit",record)
+                    else  {
+                        if (this.rowClickable) {
+                            this.$router.push(record.editUrl)
+                        }
+                    }
                 }
                 
             },

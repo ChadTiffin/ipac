@@ -159,7 +159,7 @@ function OpenTag($tag, $attr,$lineheight=0.25)
 			if (isset($attr['SRC'])) {
 				if (strpos($attr['SRC'], "http") == -1) {
 					//append the path to the source
-					$attr['SRC'] = $this->api_base."image/image/".$attr['SRC'];
+					$attr['SRC'] = $this->api_base."image/serve/".$attr['SRC'];
 				}
 
                 $width = $this->image_width;

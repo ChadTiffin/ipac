@@ -133,7 +133,7 @@
 								if (section.findings_section_names.indexOf(field_section.heading) >= 0) { //search for field section heading in array of titles of bound sections
 									//we've found it, pull in all the photos and negative answer notes
 
-									findings_html += "<strong>" + field_section.heading + "</strong>"
+									findings_html += "<p><strong>" + field_section.heading + "</strong></p>"
 									findings_html += "<ul>"
 
 									if ("fields" in field_section) {
@@ -144,7 +144,7 @@
 												//console.log("images found")
 												if (field.value) {
 													field.value.forEach(function(image,index){
-														findings_images += "<img style='width:320px' src='"+window.apiBase+"image/image/"+image+"'>"
+														findings_images += "<img style='width:320px' src='"+window.apiBase+"image/serve/"+image+"'>"
 													})
 												}
 											}
@@ -171,7 +171,7 @@
 														console.log("images found")
 														if (field.value) {
 															field.value.forEach(function(image,index){
-																findings_images += "<img style='width:320px' src='"+window.apiBase+"image/image/"+image+"'>"
+																findings_images += "<img style='width:320px' src='"+window.apiBase+"image/serve/"+image+"'>"
 															})
 														}
 													}

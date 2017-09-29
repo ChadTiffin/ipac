@@ -2,7 +2,7 @@
 	<div>
 		<div class="file-drop">
 			<div class="file-label" :class="fileUpload.class">{{ fileUpload.msg }}</div>
-			<div class="progress-bar" :style="{width: fileUpload.progress+'%'}"></div>
+			<div class="prog-bar" :class="{'prog-transition': fileUpload.transitionClass}" :style="{width: fileUpload.progress+'%'}"></div>
 			<fileupload 
 				class="input-file"
 				:target="fileUpload.target" 
@@ -21,7 +21,7 @@
 
 	export default {
 		name: "UploadField",
-		props: ["value"],
+		props: ["value","uploadMsg","uploadType"],
 		components: {
 			'fileupload': FileUpload
 		},
@@ -29,19 +29,21 @@
 			return {
 				activeValue: this.value,
 				fileUpload: {
-					msg: "Click or drag your file here",
-					target: window.apiBase+"auditForm/upload-image?key="+localStorage.apiKey,
+					msg: this.uploadMsg ? this.uploadMsg : "Click or drag your file here",
+					target: window.apiBase+"image/upload/"+this.uploadType+"?key="+localStorage.apiKey,
 					responseFilename: "",
 					fileFormat: "",
 					progress: 0,
-					class: "text-primary"
+					class: "text-primary",
+					transitionClass: true
 				},
 			}
 		},
 		methods: {
 			startUpload(e) {
 				this.fileUpload.msg = "Uploading..."
-				console.log(e)
+				this.transitionClass = true
+				//console.log(e)
 			},
 			finishUpload(e){
 				
@@ -62,12 +64,14 @@
 				let vm = this
 
 				setTimeout(function(){
+					vm.transitionClass = false
+
 					vm.fileUpload = {
 						msg: "Click or drag your file here",
 						progress: 0,
 						class: "text-primary",
 						width: 0,
-						target: window.apiBase+"auditForm/upload-image?key="+localStorage.apiKey,
+						target: window.apiBase+"image/upload?key="+localStorage.apiKey,
 					}
 				},1000)
 				
@@ -126,12 +130,17 @@
 		z-index: 3;
 	}
 
-	.progress-bar {
+	.prog-bar {
 		position: absolute;
 		top: 0;
 		left: 0;
 		background-color: #5bc8f9;
 		width: 0%;
 		z-index: 1;
+		height: 100%;
+	}
+
+	.prog-transition {
+		transition: 1s width;
 	}
 </style>

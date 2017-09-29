@@ -64,6 +64,22 @@ class UserModel extends BaseModel {
 		}
 	}
 
+	public function getUserByAuth() {
+		$user = false;
+		//check for API key
+		if (isset($_REQUEST['key']))
+			$user = $this->db->get_where("users",["api_key" => $_REQUEST['key']])->row();
+		else {
+			$headers = getallheaders();
+
+			if (isset($headers['x-api-key']))  {
+				$user = $this->db->get_where("users",["api_key" => $headers['x-api-key']])->row();
+			}
+		}
+
+		return $user;
+	}
+
 	public function createPasswordHash($plaintext)
 	{
 		return password_hash($plaintext, PASSWORD_BCRYPT);
@@ -128,6 +144,24 @@ class UserModel extends BaseModel {
 			'token' => $login_token,
 			'expiry' => $token_expiry
 		];
+	}
+
+	public function validateToken($token)
+	{
+		//validate token
+		$now = date("Y-m-d H:i:s");
+		$token_record = $this->db->get_where("user_tokens",['token' => $token, 'expiry >' => $now])->row();
+
+		$booTokenValid = false;
+		if ($token_record) {
+			$user_details = $this->db->get_where('users',['id' => $token_record->user_id])->row();
+
+			if ($user_details) {
+				$booTokenValid = true;
+			}
+		}
+
+		return $booTokenValid;
 	}
 
 }

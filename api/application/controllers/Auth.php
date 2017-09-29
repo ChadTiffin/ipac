@@ -117,17 +117,7 @@ class Auth extends Base_Controller {
 			}
 			else {
 				//validate token
-				$now = date("Y-m-d H:i:s");
-				$token_record = $this->db->get_where("user_tokens",['token' => $post['token'], 'expiry >' => $now])->row();
-
-				$booTokenValid = false;
-				if ($token_record) {
-					$user_details = $this->db->get_where('users',['id' => $token_record->user_id])->row();
-
-					if ($user_details) {
-						$booTokenValid = true;
-					}
-				}
+				$booTokenValid = $this->user_model->validateToken($post['token']);
 
 				if ($booTokenValid) {
 					//check length

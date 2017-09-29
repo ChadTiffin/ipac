@@ -103,7 +103,11 @@
 
 					</div>
 					<div v-if="activeTab == 'expenses'">
-						<h2>Expenses</h2>
+
+						<h2>Project Expenses for {{ $root.userFullName }}</h2>
+
+						<expense-list owner-type="project"></expense-list>
+
 					</div>
 
 				</div>
@@ -161,6 +165,7 @@
 	import FormGroup from '../components/FormGroup'
 	import ModalDialog from '../components/ModalDialog'
 	import PhaseList from '../components/PhaseList'
+	import ExpenseList from '../components/ExpenseList'
 
 	export default {
 		name: "ProjectEditor",
@@ -170,7 +175,8 @@
 			ButtonGroup,
 			ModalDialog,
 			FormGroup,
-			PhaseList
+			PhaseList,
+			ExpenseList
 		},
 		data () {
 			return {
@@ -218,6 +224,15 @@
 		computed: { 
 			createdAt() {
 				return moment(this.created_at).format("MMMM Do YYYY")
+			},
+			userFullName() {
+				if ("userDetails" in localStorage) {
+					let user = JSON.parse(localStorage.userDetails)
+
+					return user.first_name + " " + user.last_name
+				}
+				else
+					return "You"
 			},
 			projectStatus() {
 				if (this.project.deleted == 1)

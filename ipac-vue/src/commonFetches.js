@@ -70,5 +70,36 @@ export default {
 				vm.$emit("toggleSpinner",false)
 			})
 		},
+		fetchProjects() {
+			let vm = this
+
+			this.getJSON(window.apiBase + "project/get").then(function(response){
+				if (response.status == "offline") {
+					//try to pull from localstorage
+					if (localStorage.projects) {
+						vm.projects = JSON.parse(localStorage.projects)
+					}
+					vm.$root.isOffline = true
+				}
+				else {
+					vm.projects = response
+					localStorage.projects = JSON.stringify(response)
+					vm.$root.isOffline = false
+				}
+
+				vm.$emit("toggleSpinner",false)
+			})
+		},
+		formatDate(date,format) {
+			if (format == "short")
+				return moment(date).format("YYYY-MM-DD")
+			else if (format == "long")
+				return moment(date).format("MMMM Do YYYY")
+			else if (format == "short, minutes")
+				return moment(date).format("YYYY-MM-DD hh:mm")
+			else if (format == "long, minutes")
+				return moment(date).format("MMM Do YYYY hh:mm")
+
+		}
 	}
 }
