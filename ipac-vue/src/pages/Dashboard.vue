@@ -47,7 +47,7 @@
 				</div>
 				<div class="col-md-9">
 
-					<task-list :heading="tasksFiltering.heading" :include-new-button="true" :tasks="filteredTasks" :editable="true"></task-list>
+					<task-list :show-owner="true" :heading="tasksFiltering.heading" :include-new-button="true" :tasks="filteredTasks" :editable="true"></task-list>
 				</div>
 
 			</div>

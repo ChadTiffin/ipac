@@ -47,6 +47,8 @@ class Task extends Base_Controller {
 				->get_where("users",["id" => $task['completed_by']])
 				->row_array();
 
+			$task['owner'] = $this->db->get_where($task['owner_type']."s",["id" => $task['owner_id']])->row_array();
+
 			$task['is_complete'] = 0;
 			if ($task['completed_at'] !== null) {
 				$task['is_complete'] = 1;

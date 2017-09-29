@@ -179,7 +179,8 @@ export default [
       icon: "fa-cube",
       navbar: true,
       navGroup: ['main'],
-      titleText: "Phases Master List"
+      titleText: "Phases Master List",
+      perm: ["Admin", "Root"]
     }
   },
   {
@@ -249,8 +250,7 @@ export default [
       icon: "fa-money",
       navbar: true,
       navGroup: ["main"],
-      titleText: "Expenses",
-      perm: ["Admin", "Root"]
+      titleText: "Expenses"
     }
   },
 ]

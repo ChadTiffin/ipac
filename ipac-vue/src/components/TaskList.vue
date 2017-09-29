@@ -36,6 +36,7 @@
 				<div class="task-description">
 					<i v-if="task.priority == 2" class="fa fa-exclamation important-icon"></i>
 
+					<h4 v-if="showOwner">{{ task.owner_type == 'client' ? task.owner.company : task.owner.project_name }} <small>{{ task.owner_type.toUpperCase() }}</small></h4>
 					{{ task.description }}
 					<div v-if="!task.is_complete" class="task-meta">
 						<div v-if="task.due_date" class="due-date">Due {{ formatDate(task.due_date,'long') }}</div>
@@ -138,7 +139,7 @@
 
 	export default {
 		name: "TaskList",
-		props: ["tasks","filterIsComplete","filterBilled","heading","includeNewButton","editable"],
+		props: ["tasks","filterIsComplete","filterBilled","heading","includeNewButton","editable","showOwner"],
 		components: {
 			ModalDialog,
 			FormGroup,
@@ -265,6 +266,10 @@
 </script>
 
 <style type="text/css" scoped>
+
+h4 {
+	margin-top: 0;
+}
 
 .task.panel {
 	margin-bottom: 5px;
