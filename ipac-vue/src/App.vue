@@ -513,6 +513,11 @@ export default {
       padding: 10px;
     }
 
+    .button-bar {
+      margin: -10px;
+      margin-bottom: 10px;
+    }
+
     .col2-control {
       display: block;
       width: 100%;

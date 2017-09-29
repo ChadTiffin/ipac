@@ -17,6 +17,7 @@
 					Section Templates
 				</a></li>
 			</nav-tabs>
+			<div style="clear: both;"></div>
 		</div>
 
 		<div class="tab-content">
