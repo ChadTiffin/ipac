@@ -34,20 +34,29 @@
 				tinymce.init({
 					selector: '#'+vm.id,
 					setup: function(editor) {
-						editor.on('keyup',function(e){
-							let new_value = editor.getContent()
+						/*editor.on('keyup',function(e){
+							//let new_value = editor.getContent()
+							let container = editor.getContentAreaContainer();
 
-							vm.$emit("input",new_value)
-						});
+							let html = container.querySelector("iframe").contentWindow.document.body.innerHTML
+
+							vm.$emit("input",html)
+						});*/
 						editor.on('init',function(){
-							if (vm.value != null)
+							if (vm.value != null) 
 								this.setContent(vm.value)
+							
 							else 
 								this.setContent("")
 
 						});
-						editor.on('change undo redo paste keydown',function(){
-							vm.$emit("input",editor.getContent())
+						editor.on('change undo redo paste keyup',function(){
+
+							let container = editor.getContentAreaContainer();
+
+							let html = container.querySelector("iframe").contentWindow.document.body.innerHTML
+
+							vm.$emit("input", html)
 						});
 
 					},
@@ -77,7 +86,7 @@
 			setTimeout(function(){
 				if (!vm.initialized)
 					vm.initEditor()
-			},500)
+			},750)
 
 		},
 		beforeDestroy () {
