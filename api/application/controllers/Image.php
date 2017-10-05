@@ -87,7 +87,7 @@ class Image extends Base_Controller {
 			$user = $this->UserModel->getUserByAuth();
 
 			$this->db->insert("uploads",[
-				'original_filename' => $data['orig_name'],
+				'original_filename' => $data['client_name'],
 				'filename' => $data['file_name'],
 				'date_uploaded' => date('Y-m-d H:i:s'),
 				'uploaded_by' => $user->id,
