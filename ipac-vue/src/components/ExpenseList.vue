@@ -105,7 +105,7 @@
 					vm.expenses.forEach(function(expense, index){
 						Array.from(response).forEach(function(image, index) { 
 							if (image.filename == expense.uploads.filename) {
-								expense['receipt_link'] = window.apiBase + "image/serve/" + image.filename+"?token="+image.token
+								expense['receipt_link'] = window.apiBase + "image/serve/" +image.token + "/" + image.filename
 							}
 						})
 

@@ -9,7 +9,7 @@ class Image extends Base_Controller {
 		parent::__construct();
 	}
 
-	private function generateUploadToken($upload_id,$expiry_mins = 3)
+	private function generateUploadToken($upload_id,$expiry_mins = 60)
 	{
 		$token = hash('sha256', mt_rand(1000000,99999999).time());
 		$token_expiry = date("Y-m-d H:i:s", time()+(60*$expiry_mins));
@@ -165,7 +165,7 @@ class Image extends Base_Controller {
 		
 	}
 
-	public function serve($filename) {
+	public function serve($token = 'public',$filename) {
 
 		$show_image = true;
 
@@ -173,8 +173,6 @@ class Image extends Base_Controller {
 
 		if (json_decode($image_record->permissions)) {
 			//this image is restricted, check for token
-
-			$token = $this->input->get("token");
 
 			$tokenValid = $this->validateUploadToken($token, $image_record->id);
 

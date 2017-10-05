@@ -15,13 +15,13 @@
 			<div 
 				v-for="(image,index) in thumbsWithTokens" 
 				class="thumb" 
-				:style="{backgroundImage: 'url('+apiBase+'image/serve/'+image+'&t='+rand+')'}">
+				:style="{backgroundImage: 'url('+apiBase+'image/serve/'+image+'?t='+rand+')'}">
 				<!--<p style="margin-top: 40px;">{{ image }}</p>-->
 				<div class="buttons">
 
 					<!--<button type="button" class="btn btn-sm btn-default" v-on:click="showLightbox(image)"><i class="fa fa-arrows-alt"></i></button>-->
 
-					<button type="button" class="btn btn-default btn-sm" v-clipboard:copy="copyImageUrl(image)"><i class="fa fa-copy"></i></button>
+					<button title="Copy image url to clipboard" type="button" class="btn btn-default btn-sm" v-clipboard:copy="copyImageUrl(image)"><i class="fa fa-copy"></i></button>
 				
 					<button type="button" class="btn btn-default btn-sm" v-on:click="rotate('left',index, images)">
 						<i class="fa fa-rotate-left"></i>
@@ -85,13 +85,13 @@
 						let merged = []
 
 						Array.from(response).forEach(function(image, index) { 
-							let token = "none"
+							let token = ""
 							if (image.token)
-								token = image.token
+								token = image.token+"/"
+							else
+								token = "public/"
 
-							console.log(typeof merged)
-
-							merged.push(image.filename+"?token="+token);
+							merged.push(token+image.filename);
 						})
 
 						vm.thumbsWithTokens = merged;
@@ -107,7 +107,7 @@
 
 			},
 			showLightbox(image) {
-				this.lightboxSrc = this.apiBase+'image/serve/'+image+'&t='+this.rand
+				this.lightboxSrc = this.apiBase+'image/serve/'+image+'?t='+this.rand
 				this.lightboxVisible = true
 			},
 			rotate(direction, index, images) {
