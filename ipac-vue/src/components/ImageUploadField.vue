@@ -16,28 +16,31 @@
 				v-for="(image,index) in thumbsWithTokens" 
 				class="thumb" 
 				:style="{backgroundImage: 'url('+apiBase+'image/serve/'+image+'&t='+rand+')'}">
-
+				<!--<p style="margin-top: 40px;">{{ image }}</p>-->
 				<div class="buttons">
 
 					<!--<button type="button" class="btn btn-sm btn-default" v-on:click="showLightbox(image)"><i class="fa fa-arrows-alt"></i></button>-->
+
+					<button type="button" class="btn btn-default btn-sm" v-clipboard:copy="copyImageUrl(image)"><i class="fa fa-copy"></i></button>
 				
-					<button type="button" class="btn btn-default btn-sm" v-on:click="rotate('left',index, field.value)">
+					<button type="button" class="btn btn-default btn-sm" v-on:click="rotate('left',index, images)">
 						<i class="fa fa-rotate-left"></i>
 					</button>
 
-					<button type="button" class="btn btn-default btn-sm" v-on:click="rotate('right',index, field.value)">
+					<button type="button" class="btn btn-default btn-sm" v-on:click="rotate('right',index, images)">
 						<i class="fa fa-rotate-right"></i>
 					</button>
 
-					<button type="button" class="btn btn-danger btn-sm" v-on:click="deleteImage(index, field.value)">
+					<button type="button" class="btn btn-danger btn-sm" v-on:click="deleteImage(index, images)">
 						<i class="fa fa-remove"></i>
 					</button>
+
 				</div>
 
 			</div>
 		</div>
 
-		<upload-field v-if="!multi && field.value.length == 0 || multi" :upload-type="uploadType" v-on:uploaded="saveUpload($event,field)" :upload-msg="uploadMsg"></upload-field>
+		<upload-field v-if="!multi && images.length == 0 || multi" :upload-type="uploadType" v-on:uploaded="saveUpload($event)" :upload-msg="uploadMsg"></upload-field>
 	</div>
 
 </template>
@@ -48,7 +51,7 @@
 
 	export default {
 		name: "ImageUploadField",
-		props: ["field", "apiBase","multi","uploadMsg","uploadType","noThumbs"],
+		props: ["images", "apiBase","multi","uploadMsg","uploadType","noThumbs"],
 		components: {
 			UploadField,
 			ModalDialog
@@ -62,30 +65,45 @@
 			}
 		},
 		watch: {
-			'field.value': function() {
+			images() {
 				this.getImageTokens();
 			}
 		},
 		methods: {
+			copyImageUrl(image) {
+				let filename = image.split("?")[0]
+
+				return window.apiBase+"image/serve/"+filename
+			},
 			getImageTokens() {
 				let vm = this
 
-				let images = JSON.stringify(this.field.value);
+				if (this.images && this.images.length > 0) {
+					let images = JSON.stringify(this.images);
 
-				this.getJSON(window.apiBase+"image/get-image-tokens?images="+images).then(function(response){
-					let merged = []
+					this.getJSON(window.apiBase+"image/get-image-tokens?images="+images).then(function(response){
+						let merged = []
 
-					Array.from(response).forEach(function(image, index) { 
-						merged.push(image.filename+"?token="+image.token);
+						Array.from(response).forEach(function(image, index) { 
+							let token = "none"
+							if (image.token)
+								token = image.token
+
+							console.log(typeof merged)
+
+							merged.push(image.filename+"?token="+token);
+						})
+
+						vm.thumbsWithTokens = merged;
+						
 					})
-
-					vm.thumbsWithTokens = merged;
-					
-				})
+				}
+				else 
+					vm.thumbsWithTokens = []
 			},
-			saveUpload(response, field) {
-				
-				this.$emit("imageListChanged",response,field)
+			saveUpload(response) {
+
+				this.$emit("imageListChanged",response,this.images,"addition")
 
 			},
 			showLightbox(image) {
@@ -113,10 +131,18 @@
 
 				this.postData(this.apiBase+"image/delete",payload).then(function(response){
 					if (response.status == "success") {
-						images.splice(index,1)
+
+						let new_images = []
+						images.forEach(function(image, arr_index){
+							if (index != arr_index)
+								new_images.push(image)
+						})
+
+						vm.$emit("imageListChanged",response,new_images,"deletion")
+
 					}
 
-					vm.$emit("imageListChanged",response,images)
+					
 				})
 			},
 		},

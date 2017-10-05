@@ -51,9 +51,9 @@
 						});
 
 					},
-					plugins: 'link lists advlist hr code',
+					plugins: 'link lists advlist hr code image',
 					menubar : false,
-					toolbar: 'undo redo | alignleft aligncenter alignright | bold italic bullist numlist hr | code',
+					toolbar: 'undo redo | alignleft aligncenter alignright | bold italic bullist numlist hr| image | code',
 					formats: {
 						custom_format: {block : 'p', styles : {margin: '0px'}}
 					}

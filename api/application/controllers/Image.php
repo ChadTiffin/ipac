@@ -68,6 +68,8 @@ class Image extends Base_Controller {
 			$config['source_image'] = UPLOAD_FOLDER.$data['file_name'];
 			$config['maintain_ratio'] = TRUE;
 
+			$permissions = [];
+
 			if ($type == "audit-image") {
 				$permissions = ["Root","Admin","User"];
 
@@ -126,11 +128,12 @@ class Image extends Base_Controller {
 		$user = $this->UserModel->getUserByAuth();
 
 		if ($images) {
+			$response = [];
 			foreach ($images as $image) {
 				$image_record = $this->db->get_where("uploads",["filename" => $image])->row();
 
 				//check permissions
-				if ($image_record->permissions != "") {
+				if ($image_record && json_decode($image_record->permissions)) {
 					//check that the right permissions exist for this
 					$perms = json_decode($image_record->permissions);
 
@@ -168,7 +171,7 @@ class Image extends Base_Controller {
 
 		$image_record = $this->db->get_where("uploads",["filename" => $filename])->row();
 
-		if ($image_record->permissions != "") {
+		if (json_decode($image_record->permissions)) {
 			//this image is restricted, check for token
 
 			$token = $this->input->get("token");

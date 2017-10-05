@@ -1,7 +1,7 @@
 <template>
 	<div>
 
-    	<image-upload-field :api-base="apiBase" v-on:imageListChanged="saveUpload" :field="expenseUpload" :multi="false" upload-msg="+ UPLOAD EXPENSE RECEIPT" upload-type="expense" :no-thumbs="true"></image-upload-field>
+    	<image-upload-field :api-base="apiBase" v-on:imageListChanged="saveUpload" :images="expenseUpload" :multi="false" upload-msg="+ UPLOAD EXPENSE RECEIPT" upload-type="expense" :no-thumbs="true"></image-upload-field>
 
     	<table class="table table-striped">
     		<thead>
@@ -72,9 +72,7 @@
 		},
 		data() {
 			return {
-				expenseUpload: {
-                    value: []
-                },
+				expenseUpload: [],
                 expenses: [],
                 expensesWithTokens: [],
                 locationSelectDialog : { 
@@ -143,7 +141,7 @@
 					})
 				})
 			},
-			saveUpload(response, field) {
+			saveUpload(response, images, type) {
 				let vm = this
 
 				let payload = {

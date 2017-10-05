@@ -68,7 +68,18 @@
 								<yes-no-na-buttons v-if="field.type=='yes/no'" v-model="field.value" v-on:input="autoSave"></yes-no-na-buttons>
 
 								<div v-if="field.type=='images' || field.type == 'image'">
-									<image-upload-field v-if="!$root.isOffline" :api-base="apiBase" v-on:imageListChanged="saveUpload" :field="field" :multi="true" upload-type="audit-image"></image-upload-field>
+									<image-upload-field
+										v-if="!$root.isOffline" 
+										:api-base="apiBase" 
+										v-on:imageListChanged="function (response, images, type) {
+											 saveImageFieldChange(field.value, response, images, type, index, false, fieldIndex) 
+										}" 
+										:images="field.value" 
+										:multi="true" 
+										upload-type="audit-image">
+										
+									</image-upload-field>
+
 									<div v-else class="alert alert-warning">
 										<i class="fa fa-warning"></i>
 										Can't upload images when offline
@@ -92,7 +103,16 @@
 									<yes-no-na-buttons v-if="subSectionField.type=='yes/no'" v-model="subSectionField.value" v-on:input="autoSave"></yes-no-na-buttons>
 
 									<div v-if="subSectionField.type=='images' || subSectionField.type == 'image'">
-										<image-upload-field v-if="!$root.isOffline" api-base="apiBase" v-on:imageListChanged="saveUpload" :field="subSectionField" :multi="true" upload-type="audit-image"></image-upload-field>
+										<image-upload-field 
+											v-if="!$root.isOffline" 
+											api-base="apiBase" 
+											v-on:imageListChanged="function (response, images, type) { 
+												saveImageFieldChange(subSectionField.value, response, images, type, index, subindex, fieldIndex)
+											}" 
+											:images="subSectionField.value" 
+											:multi="true" 
+											upload-type="audit-image">
+										</image-upload-field>
 
 										<div v-else class="alert alert-warning">
 											<i class="fa fa-warning"></i>
@@ -254,12 +274,25 @@
 						vm.$set(section,"totalFieldsAnswered",sectionTotalAnswered)
 				})
 			},
-			saveUpload(response, field) {
-				
-				if (!field.value)
-					field.value = []
+			saveImageFieldChange(field, response, images, changeType, index, subIndex, fieldIndex) {
 
-				field.value.push(response.filename)
+				if (!images)
+					images = []
+
+				if (changeType == "addition") {
+					if (!field) 
+						field = []
+					
+					field.push(response.filename)
+				}
+				else 
+					field = images
+				
+
+				if (subIndex) 
+					this.form[index].subSections[subIndex].fields[fieldIndex].value = field
+				else
+					this.form[index].fields[fieldIndex].value = field
 
 				this.autoSave()
 

@@ -85,6 +85,8 @@ class Report extends Base_Controller {
 		$report = json_decode($post['report']);
 		$sections = json_decode($post['sections']);
 
+		$report->extra_images = json_encode($report->extra_images);
+
 		if (is_numeric($post['id'])) {
 			//update
 			$this->db->set($report)

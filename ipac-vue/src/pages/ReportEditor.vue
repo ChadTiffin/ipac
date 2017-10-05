@@ -41,11 +41,10 @@
 					</form-group>
 				</div>
 				<div class="col-md-6">
-					<form-group label="Audits to Import From" col-class="col-md-4">
-						<p v-if="auditsLoading" class="form-control-static"><i class="fa fa-spin fa-spinner"></i></p>
-						<select v-else multiple class="form-control" v-model="includedAudits">
-							<option v-for="audit in audits" :value="audit.id">{{ audit.audit_date}} {{ audit.form_templates.form_name }}</option>
-						</select>
+					<form-group label="Report Images" col-class="col-md-4">
+						<image-upload-field :api-base="apiBase" :multi="true" 
+							v-on:imageListChanged="saveImageFieldChange" 
+							:images="report.extra_images" ></image-upload-field>
 					</form-group>
 				</div>
 			</div>
@@ -58,11 +57,10 @@
 					</ul>
 				</div>
 				<div class="col-md-8">
-
 					
 					<div v-show="activeSection == section.id" class="section-editor" v-for="section in sections">
 
-						<button type="button" class="btn btn-primary pull-right" :class="{ disabled : includedAudits.length == 0 }" v-on:click="importAuditData(section)"><i class="fa fa-download"></i> Import Audit Data Into Findings</button>
+						<button type="button" class="btn btn-primary pull-right" v-on:click="importPrompt(section)"><i class="fa fa-download"></i> Import Audit Data Into Findings</button>
 
 						<h2><small>Findings:</small> {{ section.heading }}</h2>
 
@@ -74,6 +72,23 @@
 		</form>
 
 		<variable-help v-if="varHelpVisible" v-on:close="varHelpVisible = false" :modal-visible="varHelpVisible"></variable-help>
+
+		<modal-dialog
+			v-if="importModal.visible"
+			:modal-visible="importModal.visible"
+			title="Audit Import"
+			confirm-button-text="Import"
+			button-class="btn-primary"
+			v-on:confirm="importAuditData(importModal.section)"
+			v-on:closeModal="importModal.visible = false"
+			>
+			<form-group label="Audits to Import From" col-class="col-md-4">
+				<p v-if="auditsLoading" class="form-control-static"><i class="fa fa-spin fa-spinner"></i></p>
+				<select v-else multiple class="form-control" v-model="includedAudits">
+					<option v-for="audit in audits" :value="audit.id">{{ audit.audit_date}} {{ audit.form_templates.form_name }}</option>
+				</select>
+			</form-group>
+		</modal-dialog>
 	</section>
 
 </template>
@@ -84,6 +99,8 @@
 	import DateField from '../components/DateField'
 	import draggable from 'vuedraggable'
 	import VariableHelp from '../components/VariableHelp'
+	import ImageUploadField from '../components/ImageUploadField'
+	import ModalDialog from '../components/ModalDialog'
 
 	export default {
 		name: "ReportEditor",
@@ -92,15 +109,23 @@
 			RichText,
 			DateField,
 			draggable,
-			VariableHelp
+			VariableHelp,
+			ImageUploadField,
+			ModalDialog
 		},
 		data () {
 			return {
+				apiBase: window.apiBase,
 				sections: [],
 				report: {
 					report_title: "",
 					date_issued: "",
-					location_id: null
+					location_id: null,
+					extra_images: []
+				},
+				importModal: {
+					visible: false,
+					section: null
 				},
 				includedAudits: [],
 				reportMeta: {},
@@ -114,7 +139,32 @@
 			}
 		},
 		methods: {
+			saveImageFieldChange(response, images, changeType) {
+
+				if (!images)
+					images = []
+
+				if (changeType == "addition") {
+					if (!this.report.extra_images) 
+						this.report.extra_images = []
+					
+					this.report.extra_images.push(response.filename)
+				}
+				else 
+					this.report.extra_images = images
+
+				this.save()
+
+			},
+			importPrompt(section) {
+				this.importModal = {
+					visible: true,
+					section: section
+				}
+			},
 			importAuditData(section) {
+
+				this.importModal.visible = false
 
 				let vm = this
 				let findings_html = "";
@@ -219,16 +269,25 @@
 				let payload = {
 					sections: sections_payload,
 					report: this.report,
-					id: this.$route.params.id
+					id: this.$route.params.id,
 				}
 
 				this.postData(window.apiBase+"report/save-report",payload).then(function(response){
 
-					vm.$emit("updateAlert",{
-						visible: true,
-						class: "alert-success",
-						msg: "Report saved"
-					})
+					if (response.status == "success") {
+						vm.$emit("updateAlert",{
+							visible: true,
+							class: "alert-success",
+							msg: "Report saved"
+						})
+					}
+					else {
+						vm.$emit("updateAlert",{
+							visible: true,
+							class: "alert-danger",
+							msg: "Oops! Something happened. The Report did not save."
+						})
+					}
 
 				});
 			},
@@ -281,6 +340,11 @@
 					vm.report.date_issued = response.date_issued
 					vm.report.report_title = response.report_title
 					vm.report.location_id = response.location_id
+
+					if (response.extra_images)
+						vm.report.extra_images = JSON.parse(response.extra_images)
+					else
+						vm.report.extra_images = []
 
 					if (response.sections.length > 0)
 						vm.activeSection = response.sections[0].id
