@@ -63,6 +63,7 @@ class Report extends Base_Controller {
 			$report_section = $this->db->get_where("report_sections",["report_id" => $id,"section_template_id" => $section['section_template_id']])->row_array();
 
 			$section['findings'] = $report_section['body_text'];
+			$section['images'] = $report_section['images'];
 
 			$new_sections[] = $section;
 		}
@@ -311,6 +312,37 @@ class Report extends Base_Controller {
 			if ($section['has_findings']) {
 
 				$this->writeSubHeading($pdf,"Findings");
+
+				//are there images?
+				$imageWidth = 250/72;
+
+				$images = json_decode($section['images']);
+				if ($images) {
+					foreach ($images as $image) {
+						
+						//check if line wrap needs to occur
+		                if ($pdf->getPageWidth() - ($pdf->GetX() + $imageWidth) <= 0) {
+		                    $pdf->SetY($pdf->getY() + $imageWidth*0.75);
+		                }
+
+		                //check if page break needs to occur
+		                if ($pdf->getPageHeight() - ($pdf->GetY() + ($imageWidth*0.75)) - 2 <= 0) {
+		                    $pdf->addReportPage();
+		                    //$this->last_element = null;
+		                    //$setLastElement = false;
+		                }
+
+		                if (file_exists(UPLOAD_FOLDER.$image)) {
+
+						    $pdf->Image(UPLOAD_FOLDER.$image, $pdf->GetX(), $pdf->GetY(), $imageWidth, 0);
+		            
+		    				$pdf->SetX($pdf->GetX()+$imageWidth);
+		    			}
+
+					}
+				}
+
+				$pdf->SetY($pdf->GetY() + ($imageWidth*.75));
 
 				$this->setTextFormat($pdf,"text");
 				$rendered_text = $m->render($section['findings'],$variables);

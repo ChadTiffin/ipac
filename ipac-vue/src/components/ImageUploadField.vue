@@ -11,6 +11,22 @@
 
 		</modal-dialog>
 
+		<modal-dialog
+            v-if="deleteDialog.visible" 
+            title="Delete or Remove?" 
+            :modal-visible="deleteDialog.visible" 
+            :submit-visible="true"
+            confirm-button-text="Remove Only"
+            button-class="btn-warning"
+            v-on:confirm="removeImage"
+            v-on:closeModal="deleteDialog.visible = false">
+
+			Would you like to delete this image or just remove it from this list?
+
+			<button slot="footer" type="button" class="btn btn-danger" v-on:click="confirmDeleteImage"><i class="fa fa-remove"></i> Delete</button>
+
+		</modal-dialog>
+
 		<div class="thumbs" v-if="!noThumbs">
 			<div 
 				v-for="(image,index) in thumbsWithTokens" 
@@ -31,7 +47,7 @@
 						<i class="fa fa-rotate-right"></i>
 					</button>
 
-					<button type="button" class="btn btn-danger btn-sm" v-on:click="deleteImage(index, images)">
+					<button type="button" class="btn btn-danger btn-sm" v-on:click="deleteImage(index)">
 						<i class="fa fa-remove"></i>
 					</button>
 
@@ -61,7 +77,11 @@
 				rand: Math.random(),
 				lightboxSrc: "",
 				lightboxVisible: false,
-				thumbsWithTokens: []
+				thumbsWithTokens: [],
+				deleteDialog: {
+					visible: false,
+					index: null
+				}
 			}
 		},
 		watch: {
@@ -122,19 +142,41 @@
 					vm.rand = Math.random()
 				})
 			},
-			deleteImage(index,images) {
+			deleteImage(index, images) {
+				this.deleteDialog = {
+					visible: true,
+					index: index
+				}
+			},
+			removeImage() {
+
+				let vm = this
+				this.deleteDialog.visible = false
+
+				let new_images = []
+				vm.images.forEach(function(image, arr_index){
+					if (vm.deleteDialog.index != arr_index)
+						new_images.push(image)
+				})
+
+				vm.$emit("imageListChanged","",new_images,"deletion")
+
+			},
+			confirmDeleteImage() {
 				let payload = {
-					filename: images[index]
+					filename: this.images[this.deleteDialog.index]
 				}
 
 				let vm = this
+
+				this.deleteDialog.visible = false
 
 				this.postData(this.apiBase+"image/delete",payload).then(function(response){
 					if (response.status == "success") {
 
 						let new_images = []
-						images.forEach(function(image, arr_index){
-							if (index != arr_index)
+						vm.images.forEach(function(image, arr_index){
+							if (vm.deleteDialog.index != arr_index)
 								new_images.push(image)
 						})
 

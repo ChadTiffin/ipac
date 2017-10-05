@@ -34,18 +34,19 @@
 						<date-field v-model="report.date_issued" extra-classes="form-control"></date-field>
 					</form-group>
 
+					
+				</div>
+				<div class="col-md-6">
 					<form-group label="Location" col-class="col-md-4">
 						<select class="form-control" v-model="report.location_id" v-on:change="fetchAudits">
 							<option v-for="location in locations" :value="location.id">{{location.location_name}}</option>
 						</select>
 					</form-group>
-				</div>
-				<div class="col-md-6">
-					<form-group label="Report Images" col-class="col-md-4">
+					<!--<form-group label="Report Images" col-class="col-md-4">
 						<image-upload-field :api-base="apiBase" :multi="true" 
 							v-on:imageListChanged="saveImageFieldChange" 
 							:images="report.extra_images" ></image-upload-field>
-					</form-group>
+					</form-group>-->
 				</div>
 			</div>
 
@@ -63,6 +64,15 @@
 						<button type="button" class="btn btn-primary pull-right" v-on:click="importPrompt(section)"><i class="fa fa-download"></i> Import Audit Data Into Findings</button>
 
 						<h2><small>Findings:</small> {{ section.heading }}</h2>
+
+						<image-upload-field :api-base="apiBase" :multi="true" 
+							v-on:imageListChanged="function(response, images, type) {
+								saveImageFieldChange(section, response, images, type)
+							}" 
+							upload-msg="Upload section images here"
+							:images="section.images" 
+							upload-type="audit-image">
+						</image-upload-field>
 
 						<rich-text :id="'editor-'+section.id" v-on:input="editorChanged" v-model="section.findings"></rich-text>
 					</div>
@@ -165,19 +175,19 @@
 
 				},1000)
 			},
-			saveImageFieldChange(response, images, changeType) {
+			saveImageFieldChange(section, response, images, changeType) {
 
 				if (!images)
 					images = []
 
 				if (changeType == "addition") {
-					if (!this.report.extra_images) 
-						this.report.extra_images = []
+					if (!section.images) 
+						section.images = []
 					
-					this.report.extra_images.push(response.filename)
+					section.images.push(response.filename)
 				}
 				else 
-					this.report.extra_images = images
+					section.images = images
 
 				this.save()
 
@@ -219,10 +229,20 @@
 											if (field.type == 'images' || field.type =='image') {
 												//console.log("images found")
 												if (field.value) {
-													field.value.forEach(function(image,index){
-														findings_images += "<img style='width:320px' src='"+window.apiBase+"image/serve/"+image+"'>"
-													})
+													console.log(field.value)
+
+													if (!section.images)
+														section.images = field.value
+													else
+														section.images = section.images.concat(field.value)
+
+													/*field.value.forEach(function(image,index){
+														findings_images += "<img style='width:320px' src='"+window.apiBase+"image/serve/public/"+image+"'>"
+													})*/
 												}
+												if (field.hasNotes && field.notes != "") 
+													findings_images += "<p>"+field.notes+"</p>"
+												
 											}
 											else if (field.type == 'yes/no') {
 												if (field.value == "no" && field.notes) {
@@ -244,12 +264,20 @@
 												subSection.fields.forEach(function(field, index) {
 
 													if (field.type == 'images' || field.type =='image') {
-														console.log("images found")
+
 														if (field.value) {
-															field.value.forEach(function(image,index){
-																findings_images += "<img style='width:320px' src='"+window.apiBase+"image/serve/"+image+"'>"
-															})
+
+															if (!section.images)
+																section.images = field.value
+															else
+																section.images = section.images.concat(field.value)
+
+															/*field.value.forEach(function(image,index){
+																findings_images += "<img style='width:320px' src='"+window.apiBase+"image/serve/public/"+image+"'>"
+															})*/
 														}
+														if (field.hasNotes && field.notes != "") 
+															findings_images += "<p>"+field.notes+"</p>"
 													}
 													else if (field.type == 'yes/no') {
 														if (field.value == "no" && field.notes) {
@@ -277,6 +305,8 @@
 
 				let editor = tinymce.get("editor-"+section.id)
 
+
+
 				editor.insertContent(findings_images+findings_html)
 			},
 			save() {
@@ -288,7 +318,8 @@
 					sections_payload.push({
 						report_id: vm.$route.params.id,
 						section_template_id: section.section_template_id,
-						body_text: section.findings
+						body_text: section.findings,
+						images: JSON.stringify(section.images)
 					})
 				})
 
@@ -361,8 +392,18 @@
 
 					vm.sections = []
 					response.sections.forEach(function(section, index){
-						if (section.has_findings == 1)
+						if (section.has_findings == 1) {
+
+							if (!vm.activeSection)
+								vm.activeSection = section.id
+
+							if (section.images)
+								section.images = JSON.parse(section.images)
+							else
+								section.images = []
+
 							vm.sections.push(section)
+						}
 					})
 
 					vm.report.date_issued = response.date_issued
@@ -373,9 +414,6 @@
 						vm.report.extra_images = JSON.parse(response.extra_images)
 					else
 						vm.report.extra_images = []
-
-					if (response.sections.length > 0)
-						vm.activeSection = response.sections[0].id
 
 					vm.reportMeta = response
 

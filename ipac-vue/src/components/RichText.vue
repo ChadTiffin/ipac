@@ -6,7 +6,9 @@
       @blur="onBlur($event)" 
       @focus="onFocus($event)">
     </ckeditor>-->
+
     <textarea style="height: 400px" :id="id" :value="content" v-on:input="input" :name="name" v-html="content"></textarea>
+
 </template>
 
 <script type="text/javascript">
@@ -31,6 +33,8 @@
 			initEditor() {
 				this.initialized = true
 				let vm = this
+
+				tinymce.remove("#"+this.id)
 				tinymce.init({
 					selector: '#'+vm.id,
 					setup: function(editor) {
@@ -60,9 +64,9 @@
 						});
 
 					},
-					plugins: 'link lists advlist hr code image',
+					plugins: 'link lists advlist hr code',
 					menubar : false,
-					toolbar: 'undo redo | alignleft aligncenter alignright | bold italic bullist numlist hr| image | code',
+					toolbar: 'undo redo | alignleft aligncenter alignright | bold italic bullist numlist hr | code',
 					formats: {
 						custom_format: {block : 'p', styles : {margin: '0px'}}
 					}
@@ -82,10 +86,15 @@
 		mounted() {
 			let vm = this
 
+			if (!vm.initialized) {
+				vm.initEditor()
+			}
+
 			//fallback if it takes too long to receive value property change (assume value is blank)
 			setTimeout(function(){
-				if (!vm.initialized)
+				if (!vm.initialized) {
 					vm.initEditor()
+				}
 			},750)
 
 		},
