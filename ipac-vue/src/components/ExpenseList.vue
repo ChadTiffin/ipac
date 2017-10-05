@@ -137,7 +137,8 @@
 					vm.$emit("updateAlert",{
 						visible: true,
 						class: "alert-danger",
-						msg: "Expense deleted"
+						msg: "Expense deleted",
+						icon: "fa-times"
 					})
 				})
 			},

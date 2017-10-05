@@ -132,6 +132,7 @@
 					bus.$emit("updateAlert",{
 						class: "alert-success",
 						msg: "Phase notes saved",
+						icon: "fa-save",
 						visible: true
 					})
 				

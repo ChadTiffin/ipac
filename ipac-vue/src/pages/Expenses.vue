@@ -205,7 +205,8 @@
 					vm.$emit("updateAlert",{
 						visible: true,
 						class: "alert-success",
-						msg: "Expense updated"
+						msg: "Expense updated",
+						icon: "fa-save"
 					})
 				});
 			},
@@ -281,7 +282,8 @@
 					vm.$emit("updateAlert",{
 						visible: true,
 						class: "alert-danger",
-						msg: "Expense deleted"
+						msg: "Expense deleted",
+						icon: "fa-times"
 					})
 				})
 			},

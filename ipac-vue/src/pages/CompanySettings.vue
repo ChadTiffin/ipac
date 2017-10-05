@@ -81,7 +81,8 @@
 					vm.$emit("updateAlert",{
 						visible: true,
 						class: "alert-success",
-						msg: "Settings saved"
+						msg: "Settings saved",
+						icon: "fa-save"
 					})
 
 					vm.savedSettings = JSON.parse(JSON.stringify(vm.settings))

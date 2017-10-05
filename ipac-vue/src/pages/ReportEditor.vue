@@ -64,7 +64,7 @@
 
 						<h2><small>Findings:</small> {{ section.heading }}</h2>
 
-						<rich-text :id="'editor-'+section.id" v-model="section.findings"></rich-text>
+						<rich-text :id="'editor-'+section.id" v-on:input="editorChanged" v-model="section.findings"></rich-text>
 					</div>
 					
 				</div>
@@ -135,10 +135,36 @@
 				activeSection: null,
 				varHelpVisible: false,
 				currentClientId: localStorage.currentClientId,
-				pdfUrl: window.apiBase+"report/pdf/"+this.$route.params.id+"?key="+localStorage.apiKey
+				pdfUrl: window.apiBase+"report/pdf/"+this.$route.params.id+"?key="+localStorage.apiKey,
+				typingTimer: null
 			}
 		},
 		methods: {
+			editorChanged() {
+				let vm = this
+
+				vm.$emit("updateAlert",{
+					visible: true,
+					class: "alert-info",
+					msg: "Preparing to save...",
+					icon: "fa-spin fa-spinner"
+				})
+
+				clearTimeout(this.typingTimer);
+
+				this.typingTimer = setTimeout(function(){
+
+					vm.$emit("updateAlert",{
+						visible: true,
+						class: "alert-info",
+						msg: "Saving...",
+						icon: "fa-save"
+					})
+
+					vm.save()
+
+				},1000)
+			},
 			saveImageFieldChange(response, images, changeType) {
 
 				if (!images)
@@ -278,14 +304,16 @@
 						vm.$emit("updateAlert",{
 							visible: true,
 							class: "alert-success",
-							msg: "Report saved"
+							msg: "Report saved",
+							icon: "fa-save"
 						})
 					}
 					else {
 						vm.$emit("updateAlert",{
 							visible: true,
 							class: "alert-danger",
-							msg: "Oops! Something happened. The Report did not save."
+							msg: "Oops! Something happened. The Report did not save.",
+							icon: "fa-warning"
 						})
 					}
 

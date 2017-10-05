@@ -212,7 +212,8 @@
 					vm.$emit("updateAlert",{
                         visible: true,
                         class: "alert-danger",
-                        msg: "Task deleted"
+                        msg: "Task deleted",
+                        icon: "fa-times"
                     })
 				})
 			},

@@ -156,7 +156,8 @@
                     vm.$emit("updateAlert",{
                         visible: true,
                         class: "alert-danger",
-                        msg: "Record deleted"
+                        msg: "Record deleted",
+                        icon: "fa-times"
                     })
                 })
             },

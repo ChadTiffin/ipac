@@ -496,7 +496,8 @@
 					vm.$emit("updateAlert",{
 						visible: true,
 						class: "alert-success",
-						msg: "Client saved"
+						msg: "Client saved",
+						icon: "fa-save"
 					})
 
 					if (vm.$route.params.id == "new") {
@@ -535,7 +536,8 @@
                     vm.$emit("updateAlert",{
                         visible: true,
                         class: "alert-danger",
-                        msg: "Client deleted"
+                        msg: "Client deleted",
+                        icon: "fa-times"
                     })
 
                     vm.$router.push("/clients")
