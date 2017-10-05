@@ -54,6 +54,43 @@
 		</div>
 	</div>
 
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			Your Expenses ({{ fullName }}) from This Month
+		</div>
+		<div class="panel-body">
+
+			<table class="table table-striped">
+				<thead>
+					<th>Date Uploaded</th>
+					<th>User</th>
+					<th>Client/Project</th>
+					<th>Location</th>
+					<th>Processed</th>
+					<th>View</th>
+				</thead>
+				<tbody>
+					<tr v-for="expense in expensesWithTokens" :key="expense.id">
+						<td>{{ formatDate(expense.submitted_at,'short') }}</td>
+						<td>{{ expense.users.first_name }} {{ expense.users.last_name }}</td>
+						<td>{{ expense.owner_type == "client" ? expense.clients.company : expense.projects.project_name }}</td>
+						<td>{{ expense.locations && expense.owner_type == 'client' ? expense.locations.location_name : '' }}</td>
+						<td>
+							<i class="fa" :class="{'fa-check': expense.processed == 1, 'fa-times': expense.processed == 0}"></i>
+						</td>
+						<td><a :href="expense.receipt_link" target="_blank">View Receipt</a></td>
+					</tr>
+					<tr v-if="expensesWithTokens.length == 0">
+						<td colspan="6">
+							No Expenses found
+						</td>
+					</tr>
+				</tbody>
+			</table>
+
+		</div>
+	</div>
+
 
 </section>
 </template>
@@ -73,7 +110,9 @@
 			return {
 				tasks: [], 
 				users: [],
+				expenses: [],
 				userType: localStorage.userType,
+				expensesWithTokens: [],
 				tasksFiltering: {
 					user: JSON.parse(localStorage.userDetails),
 					is_complete: 0,
@@ -95,6 +134,36 @@
                 	],
                 	statusValue: "To-Do",
 				}
+			}
+		},
+		watch: {
+			expenses() {
+				let imageList = []
+
+				let vm = this
+
+				this.expenses.forEach(function(expense, index){
+					imageList.push(expense.uploads.filename)
+				})
+
+				this.getJSON(window.apiBase+"image/get-image-tokens?images="+JSON.stringify(imageList)).then(function(response){
+
+					let mergedExpenses = []
+					vm.expenses.forEach(function(expense, index){
+						Array.from(response).forEach(function(image, index) { 
+							if (image.filename == expense.uploads.filename) {
+								expense['receipt_link'] = window.apiBase + "image/serve/" + image.token + "/" + image.filename
+
+								expense.updated_at = moment(expense.updated_at).format("YYYY-MM-DD")
+							}
+						})
+
+						mergedExpenses.push(expense)
+					})
+
+					vm.expensesWithTokens = mergedExpenses;
+
+				})
 			}
 		},
 		computed: {
@@ -166,6 +235,33 @@
 					vm.$emit("toggleSpinner",false)
 				})
 			},
+			filterExpenses() {
+				let vm = this
+
+				vm.$emit("toggleSpinner",true)
+
+				let user_id = JSON.parse(localStorage.userDetails).id
+
+				let first_of_month = new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+
+				first_of_month = this.formatDate(first_of_month, "short");
+
+				let filter = [
+					["expenses.user_id",user_id],
+					["expenses.submitted_at >=",first_of_month]
+				];
+
+				filter = JSON.stringify(filter)
+
+				let order = JSON.stringify(["submitted_at","DESC"]);
+
+				this.getJSON(window.apiBase+"expense/get?filters="+filter+"&order="+order).then(function(response){
+					vm.expenses = response
+
+					vm.$emit("toggleSpinner",false)
+
+				})
+			},
 			fetchProjects() {
 
 			},
@@ -177,6 +273,7 @@
 			this.users = JSON.parse(localStorage.users)
 
 			this.fetchTasks()
+			this.filterExpenses()
 
 			this.$emit("toggleSpinner",true)
 			

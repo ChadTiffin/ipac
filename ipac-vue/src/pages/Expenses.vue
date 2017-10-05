@@ -314,7 +314,7 @@
 
 				filter = JSON.stringify(filter)
 
-				let order = JSON.stringify(["updated_at","DESC"]);
+				let order = JSON.stringify(["submitted_at","DESC"]);
 
 				this.getJSON(window.apiBase+"expense/get?filters="+filter+"&order="+order).then(function(response){
 					vm.expenses = response
