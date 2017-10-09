@@ -28,10 +28,19 @@ new Vue({
   	return {
   		routes: routes,
   		isOffline: false,
-      userFullName: ""
+      userFullName: "",
+      mobile: true,
+      mobileBreakpoint: 992
 	  }  		
   },
+  methods: {
+    getWindowWidth() {
+
+    }
+  },
   created() {
+    let vm = this
+
     if ("userDetails" in localStorage) {
       let user = JSON.parse(localStorage.userDetails)
 
@@ -39,5 +48,13 @@ new Vue({
     }
     else
       this.userFullName = "You"
+
+    window.addEventListener('resize', function() {
+
+      if (window.innerWidth < vm.mobileBreakpoint)
+        vm.mobile = true
+      else
+        vm.mobile = false
+    });
   }
 })

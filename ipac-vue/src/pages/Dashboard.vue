@@ -58,37 +58,36 @@
 		<div class="panel-heading">
 			Your Expenses ({{ fullName }}) from This Month
 		</div>
-		<div class="panel-body">
 
-			<table class="table table-striped">
-				<thead>
+		<table class="table table-striped">
+			<thead>
+				<tr>
 					<th>Date Uploaded</th>
 					<th>User</th>
 					<th>Client/Project</th>
 					<th>Location</th>
 					<th>Processed</th>
 					<th>View</th>
-				</thead>
-				<tbody>
-					<tr v-for="expense in expensesWithTokens" :key="expense.id">
-						<td>{{ formatDate(expense.submitted_at,'short') }}</td>
-						<td>{{ expense.users.first_name }} {{ expense.users.last_name }}</td>
-						<td>{{ expense.owner_type == "client" ? expense.clients.company : expense.projects.project_name }}</td>
-						<td>{{ expense.locations && expense.owner_type == 'client' ? expense.locations.location_name : '' }}</td>
-						<td>
-							<i class="fa" :class="{'fa-check': expense.processed == 1, 'fa-times': expense.processed == 0}"></i>
-						</td>
-						<td><a :href="expense.receipt_link" target="_blank">View Receipt</a></td>
-					</tr>
-					<tr v-if="expensesWithTokens.length == 0">
-						<td colspan="6">
-							No Expenses found
-						</td>
-					</tr>
-				</tbody>
-			</table>
-
-		</div>
+				</tr>
+			</thead>
+			<tbody>
+				<tr v-for="expense in expensesWithTokens" :key="expense.id">
+					<td>{{ formatDate(expense.submitted_at,'short') }}</td>
+					<td>{{ expense.users.first_name }} {{ expense.users.last_name }}</td>
+					<td>{{ expense.owner_type == "client" ? expense.clients.company : expense.projects.project_name }}</td>
+					<td>{{ expense.locations && expense.owner_type == 'client' ? expense.locations.location_name : '' }}</td>
+					<td>
+						<i class="fa" :class="{'fa-check': expense.processed == 1, 'fa-times': expense.processed == 0}"></i>
+					</td>
+					<td><a :href="expense.receipt_link" target="_blank">View Receipt</a></td>
+				</tr>
+				<tr v-if="expensesWithTokens.length == 0">
+					<td colspan="6">
+						No Expenses found
+					</td>
+				</tr>
+			</tbody>
+		</table>
 	</div>
 
 
@@ -111,12 +110,12 @@
 				tasks: [], 
 				users: [],
 				expenses: [],
-				userType: localStorage.userType,
+				userType: localStorage.userType ? localStorage.userType : null,
 				expensesWithTokens: [],
 				tasksFiltering: {
-					user: JSON.parse(localStorage.userDetails),
+					user: {},
 					is_complete: 0,
-					heading: "To-Do Tasks for "+JSON.parse(localStorage.userDetails).first_name + " " + JSON.parse(localStorage.userDetails).last_name,
+					heading: "",
 					userFilterButtons: [],
 					statusFilterButtons: [
                 		{
@@ -195,7 +194,7 @@
 			},
 			taskUserFilteringButtons () {
 				let buttons = []
-				if (localStorage.userType == 'User') {
+				if (this.userType == 'User') {
 					this.tasksFiltering.userFilterButtons = []
 				}
 				else {
@@ -240,7 +239,7 @@
 
 				vm.$emit("toggleSpinner",true)
 
-				let user_id = JSON.parse(localStorage.userDetails).id
+				let user_id = localStorage.userDetails ? JSON.parse(localStorage.userDetails).id : 0
 
 				let first_of_month = new Date(new Date().getFullYear(), new Date().getMonth(), 1)
 
@@ -270,10 +269,13 @@
 			}
 		},
 		created() {
-			this.users = JSON.parse(localStorage.users)
+			this.users = localStorage.users ? JSON.parse(localStorage.users) : []
 
 			this.fetchTasks()
 			this.filterExpenses()
+
+			this.tasksFiltering.heading = "To-Do Tasks for "+ this.fullName
+			this.tasksFiltering.user = localStorage.userDetails ? JSON.parse(localStorage.userDetails) : null
 
 			this.$emit("toggleSpinner",true)
 			

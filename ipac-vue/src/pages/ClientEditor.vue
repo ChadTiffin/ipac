@@ -52,10 +52,15 @@
 
 						</div>
 
-						<h2>Client Details</h2>
+						<h2 v-on:click="collapseDetails" :title="detailsCollapsed ? 'Show details': 'Collapse details'">
+							<i v-if="$root.mobile" class="fa" :class="{'fa-chevron-down' : detailsCollapsed, 'fa-chevron-up': !detailsCollapsed}"></i> 
+							Client Details 
+						</h2>
+
+						<p v-if="detailsCollapsed" v-on:click="collapseDetails" class="help-block">Click heading to expand details</p>
 
 						<div style="clear: both;"></div>
-						<form class="form-horizontal" v-on:submit.prevent="saveClientDetails">
+						<form v-if="!detailsCollapsed" class="form-horizontal" v-on:submit.prevent="saveClientDetails">
 
 							<form-group label="Company" col-class="col-md-3">
 								<input v-if="!$root.isOffline" type="text" v-model='client.company' class="form-control">
@@ -429,7 +434,8 @@
                 		}
                 	]
                 },
-                clientPhases: []
+                clientPhases: [],
+                detailsCollapsed: false
 			}
 		},
 		watch: {
@@ -444,6 +450,12 @@
 					this.filterAudits()
 					this.filterLocations()
 				}
+			},
+			'$root.mobile': function() {
+				if (window.innerWidth < this.$root.mobileBreakpoint) 
+					this.detailsCollapsed = true
+				else
+					this.detailsCollapsed = false
 			}
 		},
 		computed: {
@@ -485,6 +497,9 @@
 			}
 		},
 		methods: {
+			collapseDetails() {
+				this.detailsCollapsed ? this.detailsCollapsed = false : this.detailsCollapsed = true
+			},
 			saveClientDetails() {
 				let payload = this.client;
 
@@ -756,6 +771,7 @@
 
 			if (typeof this.$route.params.tab == 'undefined' && this.$route.params.id != "new")
 				this.$router.replace("/clients/"+this.$route.params.id+"/locations")
+
 		}
 	}
 </script>

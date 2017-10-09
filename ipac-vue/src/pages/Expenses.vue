@@ -52,13 +52,15 @@
 			<div class="col-md-8">
 		    	<table class="table table-striped">
 		    		<thead>
-		    			<th>Date Uploaded</th>
-		    			<th>User</th>
-		    			<th>Client/Project</th>
-		    			<th>Location</th>
-		    			<th>Processed</th>
-		    			<th>View</th>
-		    			<th></th>
+		    			<tr>
+			    			<th>Date Uploaded</th>
+			    			<th>User</th>
+			    			<th>Client/Project</th>
+			    			<th>Location</th>
+			    			<th>Processed</th>
+			    			<th>View</th>
+			    			<th></th>
+			    		</tr>
 		    		</thead>
 		    		<tbody>
 		    			<tr v-for="expense in expensesWithTokens" :key="expense.id">

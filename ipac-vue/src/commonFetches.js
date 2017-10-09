@@ -1,11 +1,13 @@
 export default {
 	computed: {
 		fullName() {
-			if (localStorage.userDetails) {
+			if ("userDetails" in localStorage) {
 				let user = JSON.parse(localStorage.userDetails)
 
 				return user.first_name +" " + user.last_name
 			}
+			else 
+				return "You"
 		}
 	},
 	methods: {
