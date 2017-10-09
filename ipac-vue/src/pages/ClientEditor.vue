@@ -53,7 +53,7 @@
 						</div>
 
 						<h2 v-on:click="collapseDetails" :title="detailsCollapsed ? 'Show details': 'Collapse details'">
-							<i v-if="$root.mobile" class="fa" :class="{'fa-chevron-down' : detailsCollapsed, 'fa-chevron-up': !detailsCollapsed}"></i> 
+							<i v-if="$root.mobile" class="fa" :class="{'fa-caret-down' : detailsCollapsed, 'fa-caret-up': !detailsCollapsed}"></i> 
 							Client Details 
 						</h2>
 
@@ -150,7 +150,7 @@
 						<div v-if="activeTab == 'audits'">
 							<h2>Audits</h2>
 
-							<button class="btn btn-success" v-on:click="auditDialog.visible = true"><i class="fa fa-plus"></i> New Audit</button>
+							<button class="btn btn-success" v-on:click="newAudit"><i class="fa fa-plus"></i> New Audit</button>
 
 							<search-widget v-model="auditFilterTerms" v-on:submit="filterAudits"></search-widget>
 
@@ -583,6 +583,10 @@
 					vm.filterLocations()
 
 				})
+			},
+			newAudit() {
+				this.fetchAuditTemplates()
+				this.auditDialog.visible = true
 			},
 			createNewAudit() {
 				let vm = this

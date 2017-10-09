@@ -34,7 +34,7 @@
           v-on:updateLoginStatus="updateLoginStatus" 
           v-on:toggleSpinner="toggleSpinner" 
           v-on:clientsChanged="fetchClients"
-          v-on:newAudit="auditDialog.visible = true"
+          v-on:newAudit="newAudit"
           v-on:pageTitle="setPageTitle"
 
           :is-offline="$root.isOffline"
@@ -133,7 +133,8 @@ export default {
           audit_date: null,
           form_template_id: null
         }
-      }
+      },
+      auditTemplates: []
     }
   }, 
   watch: {
@@ -183,6 +184,11 @@ export default {
     },
     setPageTitle(title) {
       this.pageTitle = title
+    },
+    newAudit() {
+      this.fetchAuditTemplates()
+      console.log(this.auditTemplates)
+      this.auditDialog.visible = true
     },
     createNewAudit() {
       let vm = this
