@@ -186,8 +186,7 @@ export default {
       this.pageTitle = title
     },
     newAudit() {
-      this.fetchAuditTemplates()
-      console.log(this.auditTemplates)
+      this.getAuditTemplates()
       this.auditDialog.visible = true
     },
     createNewAudit() {
@@ -332,6 +331,18 @@ export default {
 
 <style>
 
+html {
+  background-color: 
+}
+
+body {
+  background-color: transparent;
+}
+
+.btn, .form-control {
+  border-radius: 20px
+}
+
 .v-select .dropdown-toggle {
   position: relative;
   background-color: white;
@@ -397,7 +408,7 @@ export default {
   }
 
   .button-bar {
-    background-color: #daf2f7;
+    background-color: #006477;
     margin: -20px;
     margin-bottom: 20px;
     z-index: 3;
@@ -411,6 +422,10 @@ export default {
     margin-bottom: 5px;
     display: inline-block;
     cursor: pointer;
+  }
+
+  .button-bar a {
+    color: white;
   }
 
   .button-bar a.btn {

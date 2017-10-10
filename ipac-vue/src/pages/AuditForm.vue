@@ -502,6 +502,19 @@
 		z-index: 1;
 		min-width: 20px;
 		margin-left: 3px;
+
+		border-radius: 50%;
+	    background-color: red;
+	    color: white;
+	    padding: 3px;
+	    font-size: 8pt;
+	    height: 18px;
+	    width: 18px;
+	    display: inline-block;
+	    text-align: center;
+	    padding-top: 2px;
+
+	    box-shadow: 1px 1px 2px black;
 	}
 
 	@media (max-width: 991px) {

@@ -5,37 +5,7 @@
 			<div class="button-bar">
 				<router-link to="/clients" class='router-link'><i class="fa fa-angle-double-left"></i> Back to Clients</router-link>
 
-				<nav-tabs classes="pull-right" v-if="$route.params.id != 'new'">
-
-					<li :class="{active: activeTab == 'locations'}"><router-link to="locations">
-						<i class="fa fa-map-marker"></i>
-						Locations
-					</router-link></li>
-					<li :class="{active: activeTab == 'audits'}"><router-link to="audits" >
-						<i class="fa fa-balance-scale"></i>
-						Audits
-					</router-link></li>
-					<li :class="{active: activeTab == 'reports'}"><router-link to="reports">
-						<i class="fa fa-file-pdf-o"></i>
-						Reports
-					</router-link></li>
-
-					<li :class="{active: activeTab == 'phases'}"><router-link to="phases" >
-						<i class="fa fa-forward"></i>
-						Phases
-					</router-link></li>
-
-					<li :class="{active: activeTab == 'tasks'}"><router-link to="tasks">
-						<i class="fa fa-check-square-o"></i>
-						Tasks
-					</router-link></li>
-
-					<li :class="{active: activeTab == 'expenses'}"><router-link to='expenses' >
-						<i class="fa fa-money"></i>
-						Expenses
-					</router-link></li>
-
-				</nav-tabs>
+				<nav-tabs classes="pull-right" v-if="$route.params.id != 'new'" :tabs="navTabs"></nav-tabs>
 
 				<div style="clear: both;"></div>
 				
@@ -327,6 +297,39 @@
 				locationFilterTerms: "",
 				auditFilterTerms: "",
 				reportFilterTerms: "",
+				navTabs: [
+					{
+						label: "Locations",
+						path: "locations",
+						icon: "fa-map-marker"
+					},
+					{
+						label: "Audits",
+						path: "audits",
+						icon: "fa-balance-scale"
+					},
+					{
+						label: "Reports",
+						path: "reports",
+						icon: "fa-file-pdf-o"
+					},
+					{
+						label: "Phases",
+						path: "phases",
+						icon: "fa-forward"
+					},
+					{
+						label: "Tasks",
+						path: "tasks",
+						icon: "fa-check-square-o",
+						bubble: 0
+					},
+					{
+						label: "Expenses",
+						path: "expenses",
+						icon: "fa-money"
+					}
+				],
 				locationFields: [
 					{
 						label: "Location Name",
@@ -435,7 +438,7 @@
                 	]
                 },
                 clientPhases: [],
-                detailsCollapsed: false
+                detailsCollapsed: false, 
 			}
 		},
 		watch: {
@@ -479,6 +482,8 @@
 				let filtered = [] 
 
 				let vm = this
+				vm.navTabs[4].bubble = 0
+
 				this.tasks.forEach(function(task, index){
 					if (vm.taskFilter.value == "To-Do" && task.is_complete == 0) {
 						filtered.push(task)
@@ -490,6 +495,10 @@
 					 || vm.taskFilter.value == "Completed" && task.is_complete == 1 && task.billable == 1 && task.billed == 1) {
 						filtered.push(task)
 					}
+
+					if (task.is_complete == 0)
+						vm.navTabs[4].bubble++
+
 				})
 
 				return filtered
@@ -585,7 +594,7 @@
 				})
 			},
 			newAudit() {
-				this.fetchAuditTemplates()
+				this.getAuditTemplates()
 				this.auditDialog.visible = true
 			},
 			createNewAudit() {
@@ -733,6 +742,7 @@
 				this.getJSON(window.apiBase + "task/filter/client/"+this.$route.params.id).then(function(response){
 					vm.tasks = response
 
+					vm.filteredTasks //make sure computed value runs because sometimes it doesn't
 					vm.$emit("toggleSpinner",false)
 				})
 			},
@@ -758,13 +768,13 @@
 				this.filterReports()
 				this.fetchAuditTemplates()
 				this.fetchPhases()
+				this.fetchTasks()
 
 				localStorage.currentClientId = this.$route.params.id
 
 				if (this.$route.params.tab == "locations" || this.$route.params.tab == "expenses")
 					this.filterLocations()
-				else if (this.$route.params.tab == "tasks") 
-					this.fetchTasks()
+
 				else if (this.$route.params.tab == "audits") {
 					this.filterAudits()
 					this.filterLocations()

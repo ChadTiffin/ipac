@@ -70,6 +70,10 @@
 </script>
 
 <style type="text/css" scoped>
+	.modal {
+		max-width: 100%;
+	}
+
 	.modal.is-active {
 		background-color: rgba(10,10,10,0.8);
 		display: block;
@@ -81,7 +85,7 @@
 
 	.modal-body {
 		overflow-y: auto;
-		max-height: calc(100vh - 180px);
+		max-height: calc(100vh - 104px);
 	}
 
 </style>

@@ -4,24 +4,7 @@
 		<div class="button-bar">
 			<router-link to="/projects" class='router-link'><i class="fa fa-angle-double-left"></i> Back to Projects</router-link>
 
-			<nav-tabs classes="pull-right" v-if="$route.params.id != 'new'">
-
-				<li :class="{active: activeTab == 'tasks'}"><router-link to="tasks" >
-					<i class="fa fa-check-square-o"></i>
-					Tasks
-				</router-link></li>
-
-				<li :class="{active: activeTab == 'phases'}"><router-link to="phases" >
-					<i class="fa fa-forward"></i>
-					Phases
-				</router-link></li>
-
-				<li :class="{active: activeTab == 'expenses'}"><router-link to='expenses' >
-					<i class="fa fa-money"></i>
-					Expenses
-				</router-link></li>
-
-			</nav-tabs>
+			<nav-tabs classes="pull-right" v-if="$route.params.id != 'new'" :tabs="navTabs"></nav-tabs>
 
 			<div style="clear: both;"></div>
 			
@@ -94,7 +77,7 @@
 
 					<div v-if="activeTab == 'tasks'">
 
-						<task-list :heading="taskFilter.value + ' Tasks'" :include-new-button="true" :tasks="filteredTasks" :editable="project.archived == 0"></task-list>
+						<task-list :heading="taskFilter.value + ' Tasks'" :include-new-button="true" :tasks="filteredTasks" :editable="project.archived == 0" v-on:modelChanged="fetchProject"></task-list>
 
 					</div>
 					<div v-if="activeTab == 'phases'">
@@ -212,8 +195,26 @@
                 			value: "Completed"
                 		}
                 	]
-                }
-                
+                },
+                navTabs: [
+                	
+                	{
+                		label: "Phases",
+                		path: "phases",
+            			icon: "fa-forward"
+                	},
+                	{
+                		label: "Tasks",
+                		path: "tasks",
+            			icon: "fa-check-square-o",
+            			bubble: 0
+                	},
+                	{
+                		label: "Expenses",
+                		path: "expenses",
+            			icon: "fa-money"
+                	}
+                ]
 			}
 		},
 		watch: {
@@ -259,6 +260,7 @@
 
 				let vm = this
 
+				this.navTabs[1].bubble = 0
 				this.project.tasks.forEach(function(task, index){
 					if (vm.taskFilter.value == "To-Do" && task.is_complete == 0) {
 						filtered.push(task)
@@ -270,6 +272,9 @@
 					 || vm.taskFilter.value == "Completed" && task.is_complete == 1 && task.billable == 1 && task.billed == 1) {
 						filtered.push(task)
 					}
+
+					if (task.is_complete == 0)
+						vm.navTabs[1].bubble++
 				})
 
 				return filtered
@@ -358,6 +363,8 @@
 							subTitle: "Project"
 						}
 						vm.$emit("pageTitle",pageTitle)
+
+						vm.filteredTasks
 					}
 					vm.$emit("toggleSpinner",false)
 				})

@@ -78,7 +78,7 @@
 	        </form-group>
 
 	        <form-group label="Assigned To" col-class="col-md-3">
-	        	<select class="form-control" v-model="taskDialog.values.assigned_to">
+	        	<select class="form-control" v-model="taskDialog.values.assigned_to" required>
 	        		<option v-for="user in $root.users" :value="user.id">{{ user.first_name }} {{ user.last_name }}</option>
 	        	</select>
 	        </form-group>

@@ -86,7 +86,8 @@
                     buttonClass: "btn-danger",
                     parameters: "",
                     successFunction: "deleteExpense"
-                }
+                },
+                apiBase: window.apiBase
 			}
 		},
 		watch: {

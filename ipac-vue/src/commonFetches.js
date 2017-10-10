@@ -44,6 +44,12 @@ export default {
 
 			})
 		},
+		getAuditTemplates() {
+			if ("auditTemplates" in localStorage) 
+				this.auditTemplates = JSON.parse(localStorage.auditTemplates)
+			else
+				this.fetchAuditTemplates()
+		},
 		fetchAuditTemplates() {
 			let vm =this
 

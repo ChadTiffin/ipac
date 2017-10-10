@@ -180,6 +180,7 @@
 <style type="text/css" >
 	header {
 		font-family: 'Roboto', sans-serif;
+
 	}
 
 	.section-wrapper.menuShowing {
@@ -246,8 +247,8 @@
 	.page-heading .menu-list li:hover a, .page-heading .menu-list .router-link-exact-active {
 		text-decoration: none;
 		cursor: pointer;
-		color: #003540;
-		background-color: #daf2f7;
+		color: #fff;
+		background-color: #006477;
 	}
 
 	.new-transaction-button-container {
@@ -354,6 +355,9 @@
 		text-decoration: none;
 		font-size: 18px;
 		transition: transform 0.2s;
+		font-weight: lighter;
+    	font-size: 12pt;
+    	text-transform: uppercase;
 	}
 
 	.menu li a:hover {
@@ -373,33 +377,6 @@
 
 	.menu .menu-button {
 		float: right;
-	}
-
-	.bank-accounts {
-		list-style: none;
-		padding: 0;
-	}
-
-	.bank-balance {
-		text-align: right;
-		float: right;
-	}
-
-	.bank-accounts li {
-		padding-top: 2px;
-		padding-bottom: 2px;
-		transition: transform 0.2s;
-	}
-
-	.bank-accounts .account:hover {
-		background-color: rgba(255,255,255,0.1);
-		transform: scale(1.03, 1.03);
-		cursor: pointer;
-	}
-
-	.bank-accounts .total {
-		border-top: 1px solid #a0a0a0;
-		margin-top: 5px;
 	}
 
 	header .icon-button.fa-plus {
@@ -424,6 +401,10 @@
 
 	.side-menu-button {
 		display: none;
+	}
+
+	.panel {
+		border-radius: 2px;
 	}
 
 	@media (max-width: 1050px) {

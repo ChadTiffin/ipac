@@ -59,35 +59,37 @@
 			Your Expenses ({{ fullName }}) from This Month
 		</div>
 
-		<table class="table table-striped">
-			<thead>
-				<tr>
-					<th>Date Uploaded</th>
-					<th>User</th>
-					<th>Client/Project</th>
-					<th>Location</th>
-					<th>Processed</th>
-					<th>View</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr v-for="expense in expensesWithTokens" :key="expense.id">
-					<td>{{ formatDate(expense.submitted_at,'short') }}</td>
-					<td>{{ expense.users.first_name }} {{ expense.users.last_name }}</td>
-					<td>{{ expense.owner_type == "client" ? expense.clients.company : expense.projects.project_name }}</td>
-					<td>{{ expense.locations && expense.owner_type == 'client' ? expense.locations.location_name : '' }}</td>
-					<td>
-						<i class="fa" :class="{'fa-check': expense.processed == 1, 'fa-times': expense.processed == 0}"></i>
-					</td>
-					<td><a :href="expense.receipt_link" target="_blank">View Receipt</a></td>
-				</tr>
-				<tr v-if="expensesWithTokens.length == 0">
-					<td colspan="6">
-						No Expenses found
-					</td>
-				</tr>
-			</tbody>
-		</table>
+		<div style="overflow-x: auto;">
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>Date Uploaded</th>
+						<th>User</th>
+						<th>Client/Project</th>
+						<th>Location</th>
+						<th>Processed</th>
+						<th>View</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-for="expense in expensesWithTokens" :key="expense.id">
+						<td>{{ formatDate(expense.submitted_at,'short') }}</td>
+						<td>{{ expense.users.first_name }} {{ expense.users.last_name }}</td>
+						<td>{{ expense.owner_type == "client" ? expense.clients.company : expense.projects.project_name }}</td>
+						<td>{{ expense.locations && expense.owner_type == 'client' ? expense.locations.location_name : '' }}</td>
+						<td>
+							<i class="fa" :class="{'fa-check': expense.processed == 1, 'fa-times': expense.processed == 0}"></i>
+						</td>
+						<td><a :href="expense.receipt_link" target="_blank">View Receipt</a></td>
+					</tr>
+					<tr v-if="expensesWithTokens.length == 0">
+						<td colspan="6">
+							No Expenses found
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 	</div>
 
 
@@ -284,6 +286,10 @@
 </script>
 
 <style type="text/css" scoped>
+
+section {
+	background-color: transparent;
+}
 
 .avatar {
 	text-align: center;
