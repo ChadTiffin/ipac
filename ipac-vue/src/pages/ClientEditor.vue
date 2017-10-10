@@ -455,7 +455,9 @@
 				}
 			},
 			'$root.mobile': function() {
-				if (window.innerWidth < this.$root.mobileBreakpoint) 
+				console.log(this.$root.mobile)
+
+				if (this.$root.mobile)
 					this.detailsCollapsed = true
 				else
 					this.detailsCollapsed = false
@@ -785,6 +787,11 @@
 
 			if (typeof this.$route.params.tab == 'undefined' && this.$route.params.id != "new")
 				this.$router.replace("/clients/"+this.$route.params.id+"/locations")
+
+			if (this.$root.mobile)
+				this.detailsCollapsed = true
+			else
+				this.detailsCollapsed = false
 
 		}
 	}
