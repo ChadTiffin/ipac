@@ -263,9 +263,6 @@
 
 				})
 			},
-			fetchProjects() {
-
-			},
 			fetchClients() {
 
 			}

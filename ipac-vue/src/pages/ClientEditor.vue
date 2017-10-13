@@ -18,7 +18,7 @@
 						<div class="pull-right">
 
 							<router-link v-if="$route.params.id == 'new'" to="/clients" class="btn btn-default">Cancel</router-link>
-							<button v-if="!$root.isOffline" class="btn btn-success"><i class="fa fa-save"></i> Save</button>
+							<button v-if="!$root.isOffline && !detailsCollapsed" class="btn btn-success"><i class="fa fa-save"></i> Save</button>
 
 						</div>
 
@@ -82,7 +82,7 @@
 								{{error}}
 							</p>
 						</div>
-						<button v-if="$route.params.id != 'new'" class="btn btn-danger block-button" style="margin-bottom: 10px;" v-on:click="deleteClient"><i class="fa fa-times"></i> Delete Client</button>
+						<button v-if="$route.params.id != 'new' && !detailsCollapsed" class="btn btn-danger block-button" style="margin-bottom: 10px;" v-on:click="deleteClient"><i class="fa fa-times"></i> Delete Client</button>
 					</div>
 
 					<div class="well" v-if="activeTab == 'tasks'">
@@ -159,7 +159,7 @@
 						<div v-if="activeTab == 'tasks'">
 							<div v-if="!$root.isOffline">
 
-								<task-list :editable="true" :heading="taskFilter.value + ' Tasks'" :include-new-button="true" :tasks="filteredTasks"  v-on:modelChanged="fetchTasks"></task-list>
+								<task-list :editable="true" :heading="taskFilter.value + ' Tasks'" :include-new-button="true" owner-type="client" :tasks="filteredTasks"  v-on:modelChanged="fetchTasks"></task-list>
 	
 							</div>
 							<page-offline-alert v-else></page-offline-alert>

@@ -22,7 +22,7 @@ if (!("apiBase" in window))
 new Vue({
   el: '#app',
   router,
-  template: '<App/>',
+  template: '<App />',
   components: { App },
   data() {
   	return {
@@ -30,7 +30,8 @@ new Vue({
   		isOffline: false,
       userFullName: "",
       mobile: true,
-      mobileBreakpoint: 992
+      mobileBreakpoint: 992,
+      users: []
 	  }  		
   },
   methods: {
@@ -48,6 +49,14 @@ new Vue({
     }
     else
       this.userFullName = "You"
+
+    if (window.innerWidth < vm.mobileBreakpoint)
+      vm.mobile = true
+    else
+      vm.mobile = false
+
+    if ("apiKey" in localStorage)
+      this.fetchUsers()
 
     window.addEventListener('resize', function() {
 

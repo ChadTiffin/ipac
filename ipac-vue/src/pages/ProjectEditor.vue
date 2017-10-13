@@ -77,7 +77,7 @@
 
 					<div v-if="activeTab == 'tasks'">
 
-						<task-list :heading="taskFilter.value + ' Tasks'" :include-new-button="true" :tasks="filteredTasks" :editable="project.archived == 0" v-on:modelChanged="fetchProject"></task-list>
+						<task-list :heading="taskFilter.value + ' Tasks'" owner-type="project" :include-new-button="true" :tasks="filteredTasks" :editable="project.archived == 0" v-on:modelChanged="fetchProject"></task-list>
 
 					</div>
 					<div v-if="activeTab == 'phases'">

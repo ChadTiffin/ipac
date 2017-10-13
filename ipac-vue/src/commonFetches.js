@@ -87,10 +87,30 @@ export default {
 				vm.$emit("toggleSpinner",false)
 			})
 		},
-		fetchProjects() {
+		fetchProjects(filters, order) {
 			let vm = this
 
-			this.getJSON(window.apiBase + "project/get").then(function(response){
+			vm.$emit("toggleSpinner",true)
+
+			let endpoint = "project/get"
+
+			if (filters || order)
+				endpoint += "?"
+
+			if (filters) {
+				filters = JSON.stringify(filters)
+				endpoint = "project/get?filters="+filters
+			}
+
+			if (order) {
+				if (filters)
+					endpoint += "&"
+
+				order = JSON.stringify(order)
+				endpoint += "order="+order
+			}
+
+			this.getJSON(window.apiBase + endpoint).then(function(response){
 				if (response.status == "offline") {
 					//try to pull from localstorage
 					if (localStorage.projects) {

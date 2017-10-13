@@ -120,7 +120,6 @@ export default {
       spinnerVisible: true,
       clients: [],
       locations: [],
-      users: [],
       recentAudits: [],
       auditDialog: {
         visible: false,

@@ -14,7 +14,7 @@
 						vertical="true" 
 						:buttons="projectFilter.buttons" 
 						:full-width="true"
-						v-on:change="fetchProjects"
+						v-on:change="getProjects"
 						v-model="projectFilter.value">
 					</button-group>
 				</div>
@@ -199,37 +199,27 @@
 				this.postData(window.apiBase+"project/save",this.projectDialog.values).then(function(response) {
 					vm.projectDialog.values = {}
 					vm.projectDialog.visible = false
-					vm.fetchProjects()
+					vm.getProjects()
 				})
 			},
-			fetchProjects() {
-				let vm = this
-
-				this.$emit("toggleSpinner",true)
-
-				let order = JSON.stringify(["created_at","DESC"])
-				
+			getProjects() {
 				//default filter
-				let filters = JSON.stringify([
+				let filters = [
 					["archived",0]
-				])
+				]
 
 				if (this.projectFilter.value == "Archived") {
-					filters = JSON.stringify([
+					filters = [
 						["archived",1]
-					])
+					]
 				}
 
-				this.getJSON(window.apiBase+"project/get?order="+order+"&filters="+filters).then(function(response){
-					vm.projects = response
-
-					vm.$emit("toggleSpinner",false)
-				})
+				this.fetchProjects(filters,["created_at","DESC"])
 			}
 		},
 		created() {
 			this.$emit("toggleSpinner",true)
-			this.fetchProjects()
+			this.getProjects()
 		}
 	}
 </script>

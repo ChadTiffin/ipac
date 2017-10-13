@@ -4,7 +4,9 @@ class Task extends Base_Controller {
 
 	public $table = "tasks";
 	public $model = "TaskModel";
-	public $validation_rules = [];
+	public $validation_rules = [
+		["field" => "assigned_to","label" => "Assigned To", "rules" => "required"]
+	];
 
 	public function __construct()
 	{

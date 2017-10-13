@@ -83,6 +83,17 @@
 	        	</select>
 	        </form-group>
 
+	        <form-group v-if="ownerType != 'client' && ownerType != 'project'" label="Project/Client" col-class="col-md-3">
+	        	<select class="form-control" v-model="taskDialog.values.owner_type">
+	        		<optgroup label="Clients">
+	        			<option v-for="client in clients" :value="'client-' + client.id">{{ client.company }}</option>
+	        		</optgroup>
+	        		<optgroup label="Projects">
+	        			<option v-for="project in projects" :value="'project-' + project.id">{{ project.project_name}}</option>
+	        		</optgroup>
+	        	</select>
+	        </form-group>
+
 	        <div class="checkbox" style="margin-bottom: 10px;">	        	
 	        	<label>
 	        		<input type="checkbox" v-model="taskDialog.values.billable" :true-value="1" :false-value="0">
@@ -124,6 +135,14 @@
 
 	        </div>
 
+	        <div class="alert" :class="taskDialog.alert.class" v-if="taskDialog.alert.visible">
+				{{ taskDialog.alert.msg }}
+				<ul v-if="taskDialog.alert.errors">
+					<li v-for="error in taskDialog.alert.errors">
+						{{error}}
+					</li>
+				</ul>
+			</div>
 
 	        <button slot="footer" class="btn btn-danger pull-left" v-on:click="deleteTask(taskDialog.values.id)"><i class="fa fa-times"></i> Delete Task</button>
 
@@ -139,7 +158,7 @@
 
 	export default {
 		name: "TaskList",
-		props: ["tasks","filterIsComplete","filterBilled","heading","includeNewButton","editable","showOwner"],
+		props: ["tasks","filterIsComplete","filterBilled","heading","includeNewButton","editable","showOwner","ownerType"],
 		components: {
 			ModalDialog,
 			FormGroup,
@@ -150,18 +169,33 @@
 				filterMatch: null,
 				taskDialog: {
 					visible: false,
-					values: {} 
-				}
+					values: {},
+					alert: {
+						visible: false,
+						class: "alert-danger",
+						msg: "",
+						errors: []
+					}
+				},
+				clients: [],
+				projects: [],
+				localOwnerType: this.ownerType
 			}
 		},
 		methods: {
 			newTask() {
+
+				if (!this.ownerType) {
+					this.fetchClients()
+					this.fetchProjects([["archived",0]],["project_name","ASC"])
+				}
+
 				this.taskDialog.values = {
 					due_date: "",
 					priority: 1,
 					assigned_to: null,
 					description: "",
-					owner_type: "project",
+					owner_type: this.localOwnerType,
 					owner_id: this.$route.params.id,
 					billable: 0,
 					price: "",
@@ -171,7 +205,10 @@
 				this.taskDialog.visible = true;
 			},
 			editTask(task) {
-				
+				if (!this.ownerType) {
+					this.fetchClients()
+					this.fetchProjects([["archived",0]],["project_name","ASC"])
+				}
 				
 				this.taskDialog.values = {
 					id: task.id,
@@ -192,10 +229,34 @@
 				if (payload.due_date == "0000-00-00")
 					payload.due_date = null
 
-				this.postData(window.apiBase + "task/save",payload).then(function(response){
-					vm.taskDialog.visible = false
+				if (!("id" in payload)) {
+					payload.created_at = "{{{server_now}}}"
+					payload.created_by = "{{{current_user}}}"
+				}
 
-					vm.$emit("modelChanged");
+				//if ownerType is not defined, then we allow the user to select the Project/Client, which looks like this {{type}}-{{id}} ex client-12, so we need to split it up
+				if (!this.ownerType) {
+					let owner = payload.owner_type.split("-")
+
+					payload.owner_type = owner[0]
+					payload.owner_id = owner[1]
+				}
+
+				this.postData(window.apiBase + "task/save",payload).then(function(response){
+					if ("status" in response && response.status == "fail") {
+						vm.taskDialog.alert.visible = true
+						vm.taskDialog.alert.msg = "There were some errors:"
+						vm.taskDialog.alert.errors = response.errors
+
+						console.log(vm.taskDialog.alert.errors)
+					}
+					else {
+						vm.taskDialog.visible = false
+
+						vm.$emit("modelChanged");
+					}
+
+					
 				})
 			},
 			deleteTask(task_id) {
