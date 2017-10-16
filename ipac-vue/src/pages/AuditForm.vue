@@ -63,33 +63,7 @@
 						<h2 v-if="section.heading">{{ index+1 }}.0 {{section.heading}}</h2>
 
 						<div v-if="section.fields">
-							<form-group v-for="(field, fieldIndex) in section.fields" :key="field.question" :label="field.question" :col-class="field.type == 'textarea' || field.type == 'images' ? 'col-md-2' : 'col-md-6'" >
-
-								<yes-no-na-buttons v-if="field.type=='yes/no'" v-model="field.value" v-on:input="autoSave"></yes-no-na-buttons>
-
-								<div v-if="field.type=='images' || field.type == 'image'">
-									<image-upload-field
-										v-if="!$root.isOffline" 
-										:api-base="apiBase" 
-										v-on:imageListChanged="function (response, images, type) {
-											 saveImageFieldChange(field.value, response, images, type, index, false, fieldIndex) 
-										}" 
-										:images="field.value" 
-										:multi="true" 
-										upload-type="audit-image">
-										
-									</image-upload-field>
-
-									<div v-else class="alert alert-warning">
-										<i class="fa fa-warning"></i>
-										Can't upload images when offline
-									</div>
-								</div>
-
-								<textarea v-if="field.type == 'textarea'" v-model="field.value" v-on:change="autoSave" class="form-control"></textarea>
-
-								<textarea v-if="field.hasNotes" class="form-control" v-on:change="autoSave" placeholder="Notes..." v-model="field.notes"></textarea>
-							</form-group>
+							<audit-field v-for="(field, fieldIndex) in section.fields" :key="field.question" :label="field.question" :field="field" :value="field.value" v-on:change="autoSave" v-on:imageFieldChange="saveImageFieldChange($event,index, fieldIndex, false)"></audit-field>
 							
 						</div>
 
@@ -99,31 +73,7 @@
 
 							<div v-if="subSection.fields">
 
-								<form-group v-for="(subSectionField, fieldIndex) in subSection.fields" :key="subSection.question" :label="subSectionField.question" col-class="col-md-6">
-									<yes-no-na-buttons v-if="subSectionField.type=='yes/no'" v-model="subSectionField.value" v-on:input="autoSave"></yes-no-na-buttons>
-
-									<div v-if="subSectionField.type=='images' || subSectionField.type == 'image'">
-										<image-upload-field 
-											v-if="!$root.isOffline" 
-											api-base="apiBase" 
-											v-on:imageListChanged="function (response, images, type) { 
-												saveImageFieldChange(subSectionField.value, response, images, type, index, subindex, fieldIndex)
-											}" 
-											:images="subSectionField.value" 
-											:multi="true" 
-											upload-type="audit-image">
-										</image-upload-field>
-
-										<div v-else class="alert alert-warning">
-											<i class="fa fa-warning"></i>
-											Can't upload images when offline
-										</div>
-									</div>
-
-									<textarea v-if="subSectionField.type == 'textarea'" v-model="subSectionField.value" v-on:change="autoSave" class="form-control"></textarea>
-
-									<textarea v-if="subSectionField.hasNotes" class="form-control" placeholder="Notes..." v-model="subSectionField.notes"></textarea>
-								</form-group>
+								<audit-field v-for="(field, fieldIndex) in subSection.fields" :key="field.question" :label="field.question" :field="field" :value="field.value" v-on:change="autoSave" v-on:imageFieldChange="saveImageFieldChange($event,index, fieldIndex, true)"></audit-field>
 
 							</div>
 						</div>
@@ -160,19 +110,17 @@
 
 <script type="text/javascript">
 	import FormGroup from '../components/FormGroup'
-	import YesNoNaButtons from '../components/YesNoNaButtons'
-	import DateField from '../components/DateField'
-	import ImageUploadField from '../components/ImageUploadField'
 	import ModalDialog from '../components/ModalDialog'
+	import AuditField from '../components/AuditField'
+	import DateField from '../components/DateField'
 
 	export default {
 		name: "AuditForm",
 		components: {
 			FormGroup,
-			YesNoNaButtons,
-			DateField,
-			ImageUploadField,
-			ModalDialog
+			ModalDialog,
+			AuditField,
+			DateField
 		},
 		props: ["clients"],
 		data () {
@@ -274,25 +222,14 @@
 						vm.$set(section,"totalFieldsAnswered",sectionTotalAnswered)
 				})
 			},
-			saveImageFieldChange(field, response, images, changeType, index, subIndex, fieldIndex) {
+			saveImageFieldChange(newValue, index, fieldIndex, isSubField) {
 
-				if (!images)
-					images = []
-
-				if (changeType == "addition") {
-					if (!field) 
-						field = []
-					
-					field.push(response.filename)
-				}
-				else 
-					field = images
-				
-
-				if (subIndex) 
-					this.form[index].subSections[subIndex].fields[fieldIndex].value = field
+				if (isSubField) 
+					this.form[index].subSections[fieldIndex].fields[fieldIndex].value = newValue
 				else
-					this.form[index].fields[fieldIndex].value = field
+					this.form[index].fields[fieldIndex].value = newValue
+
+				console.log(newValue, fieldIndex, isSubField)
 
 				this.autoSave()
 

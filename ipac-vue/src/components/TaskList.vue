@@ -36,7 +36,7 @@
 				<div class="task-description">
 					<i v-if="task.priority == 2" class="fa fa-exclamation important-icon"></i>
 
-					<h4 v-if="showOwner">{{ task.owner_type == 'client' ? task.owner.company : task.owner.project_name }} <small>{{ task.owner_type.toUpperCase() }}</small></h4>
+					<h4 v-if="showOwner && task.owner">{{ task.owner_type == 'client' ? task.owner.company : task.owner.project_name }} <small>{{ task.owner_type.toUpperCase() }}</small></h4>
 					{{ task.description }}
 					<div v-if="!task.is_complete" class="task-meta">
 						<div v-if="task.due_date" class="due-date">Due {{ formatDate(task.due_date,'long') }}</div>

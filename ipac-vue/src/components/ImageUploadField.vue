@@ -123,7 +123,13 @@
 			},
 			saveUpload(response) {
 
-				this.$emit("imageListChanged",response,this.images,"addition")
+				let params = {
+					response: response,
+					new_images: this.images,
+					type: 'addition'
+				}
+
+				this.$emit("imageListChanged",params)
 
 			},
 			showLightbox(image) {
@@ -154,12 +160,19 @@
 				this.deleteDialog.visible = false
 
 				let new_images = []
+
 				vm.images.forEach(function(image, arr_index){
 					if (vm.deleteDialog.index != arr_index)
 						new_images.push(image)
 				})
 
-				vm.$emit("imageListChanged","",new_images,"deletion")
+				let params = {
+					response: "",
+					new_images: new_images,
+					type: 'deletion'
+				}
+
+				vm.$emit("imageListChanged",params)
 
 			},
 			confirmDeleteImage() {
@@ -180,7 +193,13 @@
 								new_images.push(image)
 						})
 
-						vm.$emit("imageListChanged",response,new_images,"deletion")
+						let params = {
+							response: response,
+							new_images: new_images,
+							type: 'deletion'
+						}
+
+						vm.$emit("imageListChanged",params)
 
 					}
 

@@ -270,11 +270,11 @@
 		created() {
 			this.users = localStorage.users ? JSON.parse(localStorage.users) : []
 
-			this.fetchTasks()
-			this.filterExpenses()
-
 			this.tasksFiltering.heading = "To-Do Tasks for "+ this.fullName
 			this.tasksFiltering.user = localStorage.userDetails ? JSON.parse(localStorage.userDetails) : null
+
+			this.fetchTasks()
+			this.filterExpenses()
 
 			this.$emit("toggleSpinner",true)
 			
