@@ -5,32 +5,34 @@
 			<button class="btn btn-success" v-on:click="newUser"><i class="fa fa-plus"></i> User</button>
 		</div>
 
-		<table class="table table-striped table-condensed">
-			<thead>
-				<tr>
-					<th>First Name</th>
-					<th>Last Name</th>
-					<th>Username</th>
-					<th>Email</th>
-					<th>Permissions</th>
-					<th>Last Login</th>
-					<th class="btn-col"></th>
-				</tr>	
-			</thead>
-			<tbody>
-				<tr v-for="user in users">
-					<td>{{ user.first_name }}</td>
-					<td>{{ user.last_name }}</td>
-					<td>{{ user.username }}</td>
-					<td>{{ user.email }}</td>
-					<td>{{ user.user_level }}</td>
-					<td>{{ user.last_login }}</td>
-					<td>
-						<button class="btn btn-sm btn-default" v-on:click="editUser(user)"><i class="fa fa-pencil"></i></button>
-					</td>
-				</tr>
-			</tbody>
-		</table>
+		<div style="overflow-x: auto;">
+			<table class="table table-striped table-condensed">
+				<thead>
+					<tr>
+						<th>First Name</th>
+						<th>Last Name</th>
+						<th>Username</th>
+						<th>Email</th>
+						<th>Permissions</th>
+						<th>Last Login</th>
+						<th class="btn-col"></th>
+					</tr>	
+				</thead>
+				<tbody>
+					<tr v-for="user in users">
+						<td>{{ user.first_name }}</td>
+						<td>{{ user.last_name }}</td>
+						<td>{{ user.username }}</td>
+						<td>{{ user.email }}</td>
+						<td>{{ user.user_level }}</td>
+						<td>{{ user.last_login }}</td>
+						<td>
+							<button class="btn btn-sm btn-default" v-on:click="editUser(user)"><i class="fa fa-pencil"></i></button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 
 		<ModalDialog
 			v-show="userDialog.visible" 
@@ -69,7 +71,7 @@
 			</FormGroup>
 
 			<FormGroup v-if="!userDialog.newUser" label="API Key" col-class="col-md-3">
-				<p v-show="userDialog.fields.api_key != ''" class="form-control-static" style="word-break: break-all;">{{ userDialog.fields.api_key }}</p>
+				<!--<p v-show="userDialog.fields.api_key != ''" class="form-control-static" style="word-break: break-all;">{{ userDialog.fields.api_key }}</p>-->
 				<button class="btn btn-danger" type="button" v-on:click="genNewAPIKey(userDialog.fields.id)"><i class="fa fa-refresh"></i> Generate New API Key</button>
 			</FormGroup>
 
@@ -148,7 +150,9 @@
 				userDialog : {
 					visible: false,
 					newUser: false,
-					fields: {},
+					fields: {
+						api_key: "asdf"
+					},
 					resetPassword: false,
 					alert : {
 						visible: false,
@@ -229,6 +233,9 @@
 				this.postData(window.apiBase + "auth/new-api-key",payload).then(function(response){
 					if (response.status == "success")
 						vm.userDialog.fields.api_key = response.newKey
+
+					vm.$set(vm.userDialog.fields,'api_key',response.newKey)
+					console.log(vm.userDialog.fields.api_key)
 
 
 				})

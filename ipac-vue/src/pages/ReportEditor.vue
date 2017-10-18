@@ -98,6 +98,14 @@
 					<option v-for="audit in audits" :value="audit.id">{{ audit.audit_date}} {{ audit.form_templates.form_name }}</option>
 				</select>
 			</form-group>
+
+			<div class="col-md-offset-4">
+				<label>
+					<input type="checkbox" v-model="includePositiveFindings">
+					Import Positive as well as negative findings
+				</label>
+			</div>
+
 		</modal-dialog>
 	</section>
 
@@ -138,6 +146,7 @@
 					section: null
 				},
 				includedAudits: [],
+				includePositiveFindings: false,
 				reportMeta: {},
 				locations: [],
 				audits: [],
@@ -212,7 +221,9 @@
 
 						if (audit.form_template_id == section.findings_form_template_id) {
 							//this is the template to pull from
-							let fields = JSON.parse(audit.form_values)
+							let fields = []
+							if (audit.form_values != "")
+								fields = JSON.parse(audit.form_values)
 
 							fields.forEach(function(field_section, index) {
 
@@ -248,8 +259,10 @@
 												if (field.value == "no" && field.notes) {
 													findings_html += "<li><em>"+field.question+"</em>: <strong>"+field.notes+"</strong></li>"
 												}
-												else if (field.value == "no") {
-													findings_html += "<li><em>"+field.question+"</em>: <strong>NO</strong></li>"
+												else if (field.value == "no" || vm.includePositiveFindings) {
+
+													if (field.value)
+														findings_html += "<li><em>"+field.question+"</em>: <strong>"+field.value.toUpperCase()+"</strong></li>"
 												}
 											}
 											else if (field.type == 'textarea') {
@@ -300,12 +313,13 @@
 				})
 
 				if (findings_html == "") {
-					findings_html = "<p>No negative findings found on Audit</p>"
+					if (vm.includePositiveFindings) 
+						findings_html = "<p>No import data found</p>"
+					else
+						findings_html = "<p>No negative findings found on Audit</p>"
 				}
 
 				let editor = tinymce.get("editor-"+section.id)
-
-
 
 				editor.insertContent(findings_images+findings_html)
 			},

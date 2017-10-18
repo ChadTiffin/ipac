@@ -144,7 +144,7 @@
 				</ul>
 			</div>
 
-	        <button slot="footer" class="btn btn-danger pull-left" v-on:click="deleteTask(taskDialog.values.id)"><i class="fa fa-times"></i> Delete Task</button>
+	        <button v-if="'id' in taskDialog.values" slot="footer" class="btn btn-danger pull-left" v-on:click="deleteTask(taskDialog.values.id)"><i class="fa fa-times"></i> Delete Task</button>
 
 	    </modal-dialog>
 	</div>

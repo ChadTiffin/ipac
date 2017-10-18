@@ -173,6 +173,16 @@
 
 				let vm = this
 
+				let user_id = this.tasksFiltering.user.id
+
+				let filterUserName = ""
+				this.users.forEach(function(user, index) {
+					if (user_id == user.id)
+						filterUserName = user.first_name + " " + user.last_name
+				})
+
+				this.tasksFiltering.heading = this.tasksFiltering.statusValue + " Tasks for " + filterUserName
+
 				if (this.tasksFiltering.statusValue == "To-Do") {
 					this.tasks.forEach(function(task, index) {
 						if (task.is_complete == 0)
