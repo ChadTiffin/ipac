@@ -224,12 +224,11 @@
 			},
 			saveImageFieldChange(newValue, index, fieldIndex, isSubField) {
 
+				console.log(this.form)
 				if (isSubField) 
 					this.form[index].subSections[fieldIndex].fields[fieldIndex].value = newValue
 				else
 					this.form[index].fields[fieldIndex].value = newValue
-
-				console.log(newValue, fieldIndex, isSubField)
 
 				this.autoSave()
 

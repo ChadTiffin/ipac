@@ -278,10 +278,15 @@
 			}
 		},
 		created() {
+
+			if (localStorage.userDetails)
+				this.tasksFiltering.user = localStorage.userDetails
+			else
+				window.location = "/login"
+
 			this.users = localStorage.users ? JSON.parse(localStorage.users) : []
 
 			this.tasksFiltering.heading = "To-Do Tasks for "+ this.fullName
-			this.tasksFiltering.user = localStorage.userDetails ? JSON.parse(localStorage.userDetails) : null
 
 			this.fetchTasks()
 			this.filterExpenses()

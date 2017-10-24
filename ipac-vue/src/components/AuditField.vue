@@ -8,7 +8,7 @@
 				v-if="!$root.isOffline" 
 				:api-base="apiBase" 
 				v-on:imageListChanged="imageFieldChange($event)" 
-				:images="field.value" 
+				:images="value" 
 				:multi="true" 
 				upload-type="audit-image">		
 			</image-upload-field>
@@ -54,11 +54,18 @@ import CounterField from './CounterField'
 		},
 		watch: {
 			value() {
+				console.log("value change in AuditField", this.value)
 				this.localValue = this.value
+			},
+			field() {
+				console.log("field change in AuditField", this.field)
 			}
 		},
 		methods: {
 			imageFieldChange(event) {
+
+				if (!this.localValue)
+					this.localValue = []
 
 				if (event.type == "addition") {					
 					this.localValue.push(event.response.filename)
@@ -79,9 +86,6 @@ import CounterField from './CounterField'
 				this.$emit("change",this.localValue)
 				this.$emit("input",this.localValue)
 			}
-		},
-		created() {
-			
 		}
 	}
 </script>
