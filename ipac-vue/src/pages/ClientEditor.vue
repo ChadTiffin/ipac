@@ -15,23 +15,21 @@
 				<div class="col-md-4">
 					<div class="well">
 
+						<h2 class="clickable-heading" v-on:click="collapseDetails" :title="detailsCollapsed ? 'Show details': 'Collapse details'">
+							<i v-if="$root.mobile" class="fa" :class="{'fa-caret-down' : detailsCollapsed, 'fa-caret-up': !detailsCollapsed}"></i> 
+							Client Details 
+						</h2>
+
+						<p v-if="detailsCollapsed" v-on:click="collapseDetails" class="help-block">Click heading to expand details</p>
+
 						<form v-if="!detailsCollapsed" class="form-horizontal" v-on:submit.prevent="saveClientDetails">
 
-							<div class="pull-right">
+							<div class="client-detail-buttons">
 
 								<router-link v-if="$route.params.id == 'new'" to="/clients" class="btn btn-default">Cancel</router-link>
 								<button v-if="!$root.isOffline && !detailsCollapsed" class="btn btn-success"><i class="fa fa-save"></i> Save</button>
 
 							</div>
-
-							<h2 v-on:click="collapseDetails" :title="detailsCollapsed ? 'Show details': 'Collapse details'">
-								<i v-if="$root.mobile" class="fa" :class="{'fa-caret-down' : detailsCollapsed, 'fa-caret-up': !detailsCollapsed}"></i> 
-								Client Details 
-							</h2>
-
-							<p v-if="detailsCollapsed" v-on:click="collapseDetails" class="help-block">Click heading to expand details</p>
-
-							<div style="clear: both;"></div>
 						
 							<form-group label="Company" col-class="col-md-3">
 								<input v-if="!$root.isOffline" type="text" v-model='client.company' class="form-control">
@@ -810,4 +808,18 @@
 		}
 	}
 </script>
+
+<style type="text/css" scoped>
+	
+	.well {
+		position: relative;
+	}
+
+	.client-detail-buttons {
+		position: absolute;
+		top: 10px;
+		right: 10px;
+	}
+
+</style>
 

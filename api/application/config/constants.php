@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-defined('APP_NAME') OR define('APP_NAME', "IPAC Report Builder");
+defined('APP_NAME') OR define('APP_NAME', "IPAC App");
 defined('DOMAIN_NAME') OR define('DOMAIN_NAME', "ipac-api.chadtiffin.com");
 defined('FRONT_END_DOMAIN') OR define('FRONT_END_DOMAIN', "ipac.chadtiffin.com");
 defined('PSW_MIN_LENGTH') OR define('PSW_MIN_LENGTH', 6);

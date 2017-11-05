@@ -7,7 +7,7 @@
       @focus="onFocus($event)">
     </ckeditor>-->
 
-    <textarea style="height: 400px" :id="id" :value="content" v-on:input="input" :name="name" v-html="content"></textarea>
+    <textarea style="height: 400px" :id="id" v-on:input="input" :name="name"></textarea>
 
 </template>
 
@@ -23,7 +23,9 @@
 		},
 		data () {
 			return {
-				initialized: false
+				initialized: false,
+				localValue: this.value,
+				lastValue: null
 			}
 		},
 		methods: {
@@ -31,7 +33,7 @@
 				this.$emit("input",editor.getContent())
 			},
 			initEditor() {
-				this.initialized = true
+				
 				let vm = this
 
 				tinymce.remove("#"+this.id)
@@ -55,6 +57,7 @@
 
 						});
 						editor.on('change undo redo paste keyup',function(){
+							console.log("editor change")
 
 							let container = editor.getContentAreaContainer();
 
@@ -71,16 +74,26 @@
 						custom_format: {block : 'p', styles : {margin: '0px'}}
 					}
 				});
+				this.initialized = true
 			}
 		},
 		watch: {
 			value() {
-				this.initEditor()
+
 				if (!this.initialized) {
-					tinymce.activeEditor.setContent(this.value)
-					this.initialized = true
+					this.initEditor()
+
+					if (tinymce.get(this.id))
+						tinymce.get(this.id).setContent(this.content)
+
 				}
-				
+
+				if (!this.lastValue && this.lastValue != "" && this.initialized) {
+					if (tinymce.get(this.id))
+						tinymce.get(this.id).setContent(this.value)
+				}
+
+				this.lastValue = this.content
 			}
 		},
 		mounted() {
@@ -101,6 +114,7 @@
 		beforeDestroy () {
 
 			//kill the editors DEAD!
+			this.initialized = false
 			tinymce.remove("#"+this.id)
 			tinymce.EditorManager.execCommand('mceRemoveControl',true, this.id);
 			tinymce.EditorManager.editors = [];

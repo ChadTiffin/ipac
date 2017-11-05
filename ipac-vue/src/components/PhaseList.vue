@@ -49,15 +49,23 @@
             button-class="btn-success"
             v-on:confirm="updateProjectPhases"
             v-on:closeModal="phaseDialog.visible = false">
-            
-            <p>Select the phases that this project should progress through:</p>
 
-            <div v-for="phase in masterPhases" :key="phase.id" class="checkbox">
-            	<label>
-            		<input type="checkbox" :value="phase.id" v-model="phaseDialog.includedPhases">
-            		{{ phase.label }}
-            	</label>
-            </div>
+            <div v-if="masterPhases.length > 0">
+            
+	            <p>Select the phases that this project should progress through:</p>
+
+	            <div v-for="phase in masterPhases" :key="phase.id" class="checkbox">
+	            	<label>
+	            		<input type="checkbox" :value="phase.id" v-model="phaseDialog.includedPhases">
+	            		{{ phase.label }}
+	            	</label>
+	            </div>
+
+	            <p>Want to add more phases? Head over to the <router-link to="/phases">Master Phase List</router-link>.</p>
+	        </div>
+	        <div v-else>
+	        	<p>Oops! You haven't created any phases yet. Go on over to the <router-link to="/phases">Master Phase List</router-link> to create some!</p>
+	        </div>
 
         </modal-dialog>
 	</div>

@@ -316,8 +316,12 @@ class Report extends Base_Controller {
 				//are there images?
 				$imageWidth = 250/72;
 
-				$images = json_decode($section['images']);
-				if ($images) {
+				if (strlen($section['images']) > 2) {
+
+					$images = json_decode($section['images']);
+				
+					$pdf->Ln();
+
 					foreach ($images as $image) {
 						
 						//check if line wrap needs to occur
@@ -340,9 +344,9 @@ class Report extends Base_Controller {
 		    			}
 
 					}
-				}
 
-				$pdf->SetY($pdf->GetY() + ($imageWidth*.75));
+					$pdf->SetY($pdf->GetY() + ($imageWidth*.75));
+				}
 
 				$this->setTextFormat($pdf,"text");
 				$rendered_text = $m->render($section['findings'],$variables);

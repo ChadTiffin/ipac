@@ -66,15 +66,13 @@
 						<h2><small>Findings:</small> {{ section.heading }}</h2>
 
 						<image-upload-field :api-base="apiBase" :multi="true" 
-							v-on:imageListChanged="function(response, images, type) {
-								saveImageFieldChange(section, response, images, type)
-							}" 
+							v-on:imageListChanged="saveImageFieldChange($event, section)" 
 							upload-msg="Upload section images here"
 							:images="section.images" 
 							upload-type="audit-image">
 						</image-upload-field>
 
-						<rich-text :id="'editor-'+section.id" v-on:input="editorChanged" v-model="section.findings"></rich-text>
+						<rich-text :key="section.id" :id="'editor-'+section.id" v-on:input="editorChanged" v-model="section.findings"></rich-text>
 					</div>
 					
 				</div>
@@ -184,19 +182,13 @@
 
 				},1000)
 			},
-			saveImageFieldChange(section, response, images, changeType) {
+			saveImageFieldChange($eventParams, section) {
 
-				if (!images)
-					images = []
-
-				if (changeType == "addition") {
-					if (!section.images) 
-						section.images = []
-					
-					section.images.push(response.filename)
+				if ($eventParams.type == "addition")
+					section.images.push($eventParams.response.filename)
+				else if ($eventParams.type == "deletion") {
+					section.images.splice(section.images.indexOf($eventParams.removed_image))
 				}
-				else 
-					section.images = images
 
 				this.save()
 
@@ -240,7 +232,6 @@
 											if (field.type == 'images' || field.type =='image') {
 												//console.log("images found")
 												if (field.value) {
-													console.log(field.value)
 
 													if (!section.images)
 														section.images = field.value

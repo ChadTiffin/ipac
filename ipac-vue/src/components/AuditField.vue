@@ -54,11 +54,11 @@ import CounterField from './CounterField'
 		},
 		watch: {
 			value() {
-				console.log("value change in AuditField", this.value)
+				//console.log("value change in AuditField", this.value)
 				this.localValue = this.value
 			},
 			field() {
-				console.log("field change in AuditField", this.field)
+				//console.log("field change in AuditField", this.field)
 			}
 		},
 		methods: {

@@ -1,5 +1,5 @@
 <div style="max-width: 600px;margin:auto;font-size: 1.4em;padding:20px;border:1px solid #f4f4f4;">
-	<p>Hello, you have been registered for the <?=APP_NAME?> app. These are your login details:</p>
+	<p>Hello, you have been registered for the <?=APP_NAME?>. These are your login details:</p>
 
 	<table>
 		<tr>
@@ -16,7 +16,8 @@
 		</tr>
 	</table>
 
-	<p>After you navigate to the App, you can go to the browser menu and click "Add to Homescreen". The web app will now behave like a native web app.</p>
+	<p>After you navigate to the App, you can go to the browser menu and click "Add to Homescreen". The web app will now behave like a native web app (you will still need to be online).</p>
 
 	<p>It would be a good idea to change your password after logging in. Happy report building!</p>
+
 </div>

@@ -312,8 +312,8 @@ export default {
       this.fetchLocations()
       //this.fetchRecentAudits(7)
 
-      this.syncLocalStorage()
-      this.checkAppVersion()
+      //this.syncLocalStorage()
+      //this.checkAppVersion()
     }
     else
       this.loggedIn = false
@@ -520,6 +520,11 @@ body {
 
   .well {
     padding: 10px;
+  }
+
+  .clickable-heading:hover {
+    cursor: pointer;
+    text-decoration: underline;
   }
 
   @media (max-width: 1200px) {

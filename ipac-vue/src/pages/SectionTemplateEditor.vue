@@ -1,6 +1,6 @@
 <template>
 	<section>
-		
+	
 		<form class="form-horizontal" v-on:submit.prevent="save">
 
 			<div class="button-bar">
@@ -31,7 +31,7 @@
 		
 			<form-group label="Introduction Template" col-class="col-md-2">
 				<p class="help-block">This text will appear in every report that contains this section</p>
-				<rich-text id="intro-text" v-model="section.description_text" v-on:input="richTextChange"></rich-text>
+				<rich-text key="intro_editor" id="intro-text" v-model="section.description_text" v-on:input="richTextChange"></rich-text>
 			</form-group>
 
 			<hr>
@@ -45,7 +45,7 @@
 
 			<form-group v-show="section.has_guidelines == '1'" label="Guidelines Template" col-class="col-md-2">
 				<p class="help-block">This text will appear in every report that contains this section</p>
-				<rich-text id="guidelines-text" v-model="section.guidelines_text"></rich-text>
+				<rich-text key="guidelines_editor" id="guidelines-text" v-model="section.guidelines_text"></rich-text>
 			</form-group>
 
 			<hr>
@@ -113,7 +113,8 @@
 				section: {},
 				findingsSectionNames: [],
 				formTemplates: [],
-				varHelpVisible: false
+				varHelpVisible: false,
+				tempSection: {}
 			}
 		},
 		computed: {
@@ -146,16 +147,15 @@
 					
 					this.getJSON(window.apiBase+"sectionTemplate/find/"+id).then(function(response){
 
-						let findingsSectionNames = JSON.parse(response.findings_section_names)
+						vm.findingsSectionNames = []
 
+						if ("findings_section_names" in response && response.findings_section_names.length > 2) {
 
-						if (typeof findingsSectionNames == "string")
-							vm.findingsSectionNames = []
-						else
-							vm.findingsSectionNames = findingsSectionNames
+							vm.findingsSectionNames = JSON.parse(response.findings_section_names)
 
-						vm.section = response
+						}
 
+						//set vm.section 
 						for (var key in response) {
 
 							if (!(key in vm.section)) {

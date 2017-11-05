@@ -48,11 +48,11 @@
 					Manage 
 				</h2>
 
-				<div v-if="updateAvailable" v-on:click="installUpdate" class="alert alert-info update-alert" style="text-align: center;margin-top: 10px;padding: 3px;">
+				<!--<div v-if="updateAvailable" v-on:click="installUpdate" class="alert alert-info update-alert" style="text-align: center;margin-top: 10px;padding: 3px;">
 					<i class="fa fa-refresh"></i>
 					Update Available<br>
 					<small>Click to install update</small>
-				</div>
+				</div>-->
 
 				<ul class="menu-list">
 
@@ -83,7 +83,7 @@
 				</ul>
 			</div>
 
-			<p style="text-align: center;"><small>Version #{{appVersion}}</small></p>
+			<!--<p style="text-align: center;"><small>Version #{{appVersion}}</small></p>-->
 		</nav>
 	</header>
 </template>

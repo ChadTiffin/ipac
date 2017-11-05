@@ -13,7 +13,7 @@
                     <td v-for="field in fields">
                         {{ record[field.key] }}
                     </td>
-                    <td v-if="hasEdit || hasDelete">
+                    <td v-if="hasEdit || hasDelete" style="min-width: 90px">
 
                         <div class="other-buttons" v-for="button in otherButtons" v-if="otherButtons">
                             <router-link class="btn btn-sm" style="margin-left: 4px;" :to="button.link + record.id" :class="button.class">

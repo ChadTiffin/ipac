@@ -15,8 +15,13 @@ Vue.mixin(CommonFetches)
 
 Vue.use(VueClipboard);
 
-if (!("apiBase" in window))
-  window.apiBase = "https://ipac-api.chadtiffin.com/"
+if (!("apiBase" in window)) {
+  if (window.location.hostname == "ipac-app.ca")
+    window.apiBase = "https://api.ipac-app.ca/"
+  else
+    window.apiBase = "https://ipac-api.chadtiffin.com/"
+    
+}
 
 /* eslint-disable no-new */
 new Vue({

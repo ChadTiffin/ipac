@@ -125,7 +125,7 @@
 
 				let params = {
 					response: response,
-					new_images: this.images,
+					new_images: [response.filename],
 					type: 'addition'
 				}
 
@@ -160,15 +160,19 @@
 				this.deleteDialog.visible = false
 
 				let new_images = []
+				let removed_image = ""
 
 				vm.images.forEach(function(image, arr_index){
 					if (vm.deleteDialog.index != arr_index)
 						new_images.push(image)
+					else
+						removed_image = vm.images[arr_index]
 				})
 
 				let params = {
 					response: "",
 					new_images: new_images,
+					removed_image: removed_image,
 					type: 'deletion'
 				}
 
