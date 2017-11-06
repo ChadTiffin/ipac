@@ -6,7 +6,7 @@
 		</div>
 
 		<div class="counter-btn success">
-			<button type="button" v-on:click="test" class="btn-success plus">
+			<button type="button" v-on:click="compliance++" class="btn-success plus">
 				<i class="fa fa-plus"></i><br>
 				Compliance
 			</button>
@@ -29,7 +29,7 @@
 <script type="text/javascript">
 
 	export default {
-		name: "CounterField",
+		name: "OpportunityCounterField",
 		props: ["value"],
 		data() {
 			return {
@@ -43,7 +43,11 @@
 				this.compliance = this.value[0]
 				this.missed = this.value[1]
 			},
-			localValues() {
+			missed() {
+				this.$emit("input",[this.compliance, this.missed])
+				this.$emit("change",[this.compliance, this.missed])
+			},
+			compliance() {
 				this.$emit("input",[this.compliance, this.missed])
 				this.$emit("change",[this.compliance, this.missed])
 			}
@@ -58,10 +62,6 @@
 			}
 		},
 		methods: {
-			test() {
-				this.compliance++
-
-			},
 			complianceMinus() {
 				if (this.compliance > 0)
 					this.compliance--

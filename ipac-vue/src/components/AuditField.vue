@@ -19,7 +19,7 @@
 			</div>
 		</div>
 
-		<counter-field v-else-if="field.type == 'counter'"></counter-field>
+		<opportunity-counter-field v-else-if="field.type == 'opportunityCounter'" v-model="field.value" v-on:change="fieldChanged"></opportunity-counter-field>
 
 		<textarea v-else-if="field.type == 'textarea'" v-model="field.value" v-on:change="fieldChanged" class="form-control"></textarea>
 
@@ -33,7 +33,7 @@ import ButtonGroup from "./ButtonGroup"
 import YesNoNaButtons from './YesNoNaButtons'
 import DateField from './DateField'
 import ImageUploadField from './ImageUploadField'
-import CounterField from './CounterField'
+import OpportunityCounterField from './OpportunityCounterField'
 
 	export default {
 		name: "AuditField",
@@ -43,7 +43,7 @@ import CounterField from './CounterField'
 			ImageUploadField,
 			FormGroup,
 			YesNoNaButtons,
-			CounterField
+			OpportunityCounterField
 		},
 		props: ["field","value", "colClass"],
 		data () {
@@ -56,9 +56,6 @@ import CounterField from './CounterField'
 			value() {
 				//console.log("value change in AuditField", this.value)
 				this.localValue = this.value
-			},
-			field() {
-				//console.log("field change in AuditField", this.field)
 			}
 		},
 		methods: {
@@ -83,6 +80,7 @@ import CounterField from './CounterField'
 
 			},
 			fieldChanged() {
+				console.log("change...")
 				this.$emit("change",this.localValue)
 				this.$emit("input",this.localValue)
 			}

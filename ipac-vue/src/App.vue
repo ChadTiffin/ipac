@@ -141,6 +141,8 @@ export default {
       if (window.innerWidth <= 1400)
           this.menuShowing = false
 
+      document.body.classList.remove("modal-open");
+
       this.pageTitle = {
         mainTitle: this.$route.meta.titleText,
         subTitle: false

@@ -207,6 +207,8 @@
 				let findings_html = "";
 				let findings_images = "";
 
+				let findings_section_names = JSON.parse(section.findings_section_names)
+
 				this.audits.forEach(function(audit,index){
 
 					if (vm.includedAudits.indexOf(audit.id) >= 0) {
@@ -219,7 +221,7 @@
 
 							fields.forEach(function(field_section, index) {
 
-								if (section.findings_section_names.indexOf(field_section.heading) >= 0) { //search for field section heading in array of titles of bound sections
+								if (findings_section_names.indexOf(field_section.heading) >= 0) { //search for field section heading in array of titles of bound sections
 									//we've found it, pull in all the photos and negative answer notes
 
 									findings_html += "<p><strong>" + field_section.heading + "</strong></p>"
@@ -228,7 +230,7 @@
 									if ("fields" in field_section) {
 										//console.log("searching main fields...")
 										field_section.fields.forEach(function(field, index){
-											
+
 											if (field.type == 'images' || field.type =='image') {
 												//console.log("images found")
 												if (field.value) {
@@ -255,6 +257,11 @@
 													if (field.value)
 														findings_html += "<li><em>"+field.question+"</em>: <strong>"+field.value.toUpperCase()+"</strong></li>"
 												}
+											}
+											else if (field.type == "opportunityCounter") {
+												let percentage = Math.round((field.value[0] / (field.value[0] + field.value[1])) * 100)
+
+												findings_html += "<li>"+field.question+": "+percentage + "%"+"</li>"
 											}
 											else if (field.type == 'textarea') {
 												findings_html += "<li><em>"+field.question+"</em>: "+field.value+"</li>"
@@ -290,6 +297,14 @@
 														else if (field.value == "no") {
 															findings_html += "<li><em>"+field.question+"</em>: <strong>NO</strong></li>"
 														}
+													}
+													else if (field.type == "opportunityCounter") {
+														let percentage = Math.round((field.value[0] / (field.value[0] + field.value[1])) * 100)
+
+														findings_html += "<li>"+percentage + "%"+"</li>"
+													}
+													else if (field.type == 'textarea') {
+														findings_html += "<li><em>"+field.question+"</em>: "+field.value+"</li>"
 													}
 												})
 											}
