@@ -248,7 +248,6 @@
 						vm.taskDialog.alert.msg = "There were some errors:"
 						vm.taskDialog.alert.errors = response.errors
 
-						console.log(vm.taskDialog.alert.errors)
 					}
 					else {
 						vm.taskDialog.visible = false

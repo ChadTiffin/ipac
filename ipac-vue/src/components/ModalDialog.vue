@@ -60,11 +60,15 @@
 		},
 		methods : {
 			closeModal () {
+				document.body.classList.remove("modal-open");
 				this.$emit("closeModal");
 			},
 			confirm () {
 				this.$emit("confirm")
 			}
+		},
+		created() {
+			document.body.classList.add("modal-open");
 		}
 	}
 </script>
@@ -72,6 +76,7 @@
 <style type="text/css" scoped>
 	.modal {
 		max-width: 100%;
+		overflow-y: auto;
 	}
 
 	.modal.is-active {
@@ -84,8 +89,17 @@
 	}
 
 	.modal-body {
+		height: auto;
+		max-height: none;
+	}
+
+	body.modal-open {
+		overflow: hidden;
+	}
+
+	/*.modal-body {
 		overflow-y: auto;
 		max-height: calc(100vh - 104px);
-	}
+	}*/
 
 </style>

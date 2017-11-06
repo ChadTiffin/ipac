@@ -47,7 +47,14 @@
 				</div>
 				<div class="col-md-9">
 
-					<task-list :show-owner="true" :heading="tasksFiltering.heading" :include-new-button="true" :tasks="filteredTasks" :editable="true"></task-list>
+					<task-list 
+						:show-owner="true" 
+						:heading="tasksFiltering.heading" 
+						:include-new-button="true" 
+						:tasks="filteredTasks" 
+						:editable="true"
+						v-on:modelChanged="fetchTasks">
+					</task-list>
 				</div>
 
 			</div>
@@ -280,7 +287,7 @@
 		created() {
 
 			if (localStorage.userDetails)
-				this.tasksFiltering.user = localStorage.userDetails
+				this.tasksFiltering.user = JSON.parse(localStorage.userDetails)
 			else
 				window.location = "/login"
 
