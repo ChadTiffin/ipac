@@ -57,8 +57,6 @@
 
 						});
 						editor.on('change undo redo paste keyup',function(){
-							console.log("editor change")
-
 							let container = editor.getContentAreaContainer();
 
 							let html = container.querySelector("iframe").contentWindow.document.body.innerHTML

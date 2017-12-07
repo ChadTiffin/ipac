@@ -80,7 +80,7 @@ import OpportunityCounterField from './OpportunityCounterField'
 
 			},
 			fieldChanged() {
-				console.log("change...")
+				
 				this.$emit("change",this.localValue)
 				this.$emit("input",this.localValue)
 			}

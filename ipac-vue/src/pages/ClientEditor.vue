@@ -31,44 +31,59 @@
 
 							</div>
 						
-							<form-group label="Company" col-class="col-md-3">
+							<form-group label="Company" col-class="col-md-4">
 								<input v-if="!$root.isOffline" type="text" v-model='client.company' class="form-control">
 								<p v-else class="form-control-static">{{ client.company }}</p>
 							</form-group>
 
-							<form-group label="Contact Name" col-class="col-md-3">
+							<form-group label="Contact Name" col-class="col-md-4">
 								<input v-if="!$root.isOffline" type="text" v-model='client.contact_name' class="form-control">
 								<p v-else class="form-control-static">{{ client.contact_name }}</p>
 							</form-group>
 
-							<form-group label="Primary Phone" col-class="col-md-3">
+							<form-group label="Primary Phone" col-class="col-md-4">
 								<input v-if="!$root.isOffline" type="tel" v-model='client.primary_phone' class="form-control">
 								<p v-else class="form-control-static">{{ client.primary_phone }}</p>
 							</form-group>
 
-							<form-group label="Email" col-class="col-md-3">
+							<form-group label="Cell Phone" col-class="col-md-4">
+								<input v-if="!$root.isOffline" type="tel" v-model='client.cellphone' class="form-control">
+								<p v-else class="form-control-static">{{ client.cellphone }}</p>
+							</form-group>
+
+							<form-group label="Email" col-class="col-md-4">
 								<input v-if="!$root.isOffline" type="text" v-model='client.email' class="form-control">
 								<p v-else class="form-control-static">{{ client.email }}</p>
 							</form-group>
 
-							<form-group label="Address" col-class="col-md-3">
+							<form-group label="Secondary Contact" col-class="col-md-4">
+								<textarea v-if="!$root.isOffline" v-model='client.secondary_contact' class="form-control"></textarea>
+								<p v-else class="form-control-static">{{ client.secondary_contact }}</p>
+							</form-group>
+
+							<form-group label="Address" col-class="col-md-4">
 								<input v-if="!$root.isOffline" type="text" v-model='client.address' class="form-control">
 								<p v-else class="form-control-static">{{ client.address }}</p>
 							</form-group>
 
-							<form-group label="City" col-class="col-md-3">
+							<form-group label="City" col-class="col-md-4">
 								<input v-if="!$root.isOffline" type="text" v-model='client.city' class="form-control">
 								<p v-else class="form-control-static">{{ client.city }}</p>
 							</form-group>
 
-							<form-group label="Province" col-class="col-md-3">
+							<form-group label="Province" col-class="col-md-4">
 								<input v-if="!$root.isOffline" type="text" v-model='client.province' class="form-control">
 								<p v-else class="form-control-static">{{ client.province }}</p>
 							</form-group>
 
-							<form-group label="Postal Code" col-class="col-md-3">
+							<form-group label="Postal Code" col-class="col-md-4">
 								<input v-if="!$root.isOffline" type="text" v-model='client.postal_code' class="form-control">
 								<p v-else class="form-control-static">{{ client.postal_code }}</p>
+							</form-group>
+
+							<form-group label="Referred By" col-class="col-md-4">
+								<input v-if="!$root.isOffline" type="text" v-model='client.referred_by' class="form-control">
+								<p v-else class="form-control-static">{{ client.referred_by }}</p>
 							</form-group>
 
 							<div style="clear: both;"></div>
@@ -453,7 +468,7 @@
 				}
 			},
 			'$root.mobile': function() {
-				console.log(this.$root.mobile)
+				//console.log(this.$root.mobile)
 
 				if (this.$root.mobile)
 					this.detailsCollapsed = true

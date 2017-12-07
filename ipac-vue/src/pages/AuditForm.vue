@@ -150,8 +150,21 @@
 
 				let totalUnanswered = totalFields - totalAnswered
 
-				if (totalUnanswered == 0 && this.audit.task_id != 0) 
-					this.confirmDialog.visible = true
+				// Audit is complete, show prompt to mark related task if its not already marked as complete as well
+				if (totalUnanswered == 0 && this.audit.task_id != 0) {
+					//check to make sure task isn't already marked as complete
+
+					let vm = this
+
+					let task_id = this.audit.task_id
+
+					//get task to check its status
+					this.getJSON(window.apiBase+"task/find/"+task_id).then(function(response){
+						if (response.completed_at == null)
+							vm.confirmDialog.visible = true
+					})
+					
+				}
 
 			}
 		},
@@ -224,7 +237,6 @@
 			},
 			saveImageFieldChange(newValue, index, fieldIndex, isSubField) {
 
-				console.log(this.form)
 				if (isSubField) 
 					this.form[index].subSections[fieldIndex].fields[fieldIndex].value = newValue
 				else
@@ -253,7 +265,6 @@
 					this.calcTotalFieldsAnswered()
 
 					if (this.$root.isOffline) { //save to local
-						console.log("offline autosave")
 
 						//find audit in list
 						let offlineAudits = []

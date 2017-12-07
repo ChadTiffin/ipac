@@ -11,13 +11,14 @@ class BaseModel extends CI_Model {
 		'key' => {table_key ex user_id},
 		'joins' => [
 			['table' => {table}, 'key' => {key}]
-		]
+		],
+		'model' => {modelName}
+	] 
 
-		$filters expects = [
+	$filters expects = [
 			['col','value'],
 			['col operator','value']
-		]
-	] */
+		]*/
 	public $relations = [];
 
 	private function appendChildren($result, $relations) {

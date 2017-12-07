@@ -108,9 +108,6 @@
 			}
 		},
 		methods: {
-			sortChange() {
-				console.log("sort-change")
-			},
 			computeAvailableSections() {
 				let vm = this
 				let avail = []

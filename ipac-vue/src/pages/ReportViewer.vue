@@ -133,8 +133,6 @@
 				let renderedSections = [];
 				let vm = this
 
-				console.log(this.variables.client, this.variables.company, this.variables.report_date)
-
 				//make sure client object exists, otherwise skip render (it will render again when client changes)
 				if (Object.keys(this.variables.client).length > 0 && Object.keys(this.variables.company).length > 0 && this.variables.report_date) {
 
@@ -156,10 +154,10 @@
 						renderedSections.push(section)
 					})
 
-					console.log("It should all be rendered now")
+					//console.log("It should all be rendered now")
 				}
 				else
-					console.log("Skipping template render...")
+					//console.log("Skipping template render...")
 
 				return renderedSections
 			}

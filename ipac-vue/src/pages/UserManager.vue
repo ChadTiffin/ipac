@@ -235,13 +235,8 @@
 						vm.userDialog.fields.api_key = response.newKey
 
 					vm.$set(vm.userDialog.fields,'api_key',response.newKey)
-					console.log(vm.userDialog.fields.api_key)
-
 
 				})
-			},
-			resetPassword() {
-
 			},
 			sendResetInstructions(email) {
 				let vm = this

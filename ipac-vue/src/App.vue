@@ -223,9 +223,9 @@ export default {
       })
     },
     syncLocalStorage() {
-      console.log("Checking local storage...")
+      //console.log("Checking local storage...")
       if (localStorage.offlineAudits) {
-        console.log("Sync required")
+        //console.log("Sync required")
 
         let audits = JSON.parse(localStorage.offlineAudits)
 

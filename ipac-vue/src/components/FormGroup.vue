@@ -20,13 +20,26 @@
 		},
 		computed: {
 			fieldClass () {
-				//Compute the field column size from the label column size
-				let num_cols_arry = this.colClass.split("-")
-				let num_cols = parseInt(num_cols_arry[2])
 
-				let difference_cols = 12 - num_cols
+				//split into classes
 
-				return "col-" + num_cols_arry[1] + "-"+difference_cols
+				let classes = this.colClass.split(" ");
+
+				let returnedClasses = ""
+				classes.forEach(function(singleClass, index) {
+
+					//Compute the field column size from the label column size
+					let num_cols_arry = singleClass.split("-")
+					let num_cols = parseInt(num_cols_arry[2])
+
+					let difference_cols = 12 - num_cols
+
+					returnedClasses += " col-" + num_cols_arry[1] + "-"+difference_cols
+
+				})
+
+				return returnedClasses
+				
 			}
 		}
 	}
