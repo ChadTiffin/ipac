@@ -542,6 +542,8 @@
 					if (vm.$route.params.id == "new") {
 						vm.$router.replace("/clients/"+response.id+"/locations")
 
+						vm.client.id = response.id
+
 						let pageTitle = {
 							mainTitle: payload.company_name,
 							subTitle: "Client"

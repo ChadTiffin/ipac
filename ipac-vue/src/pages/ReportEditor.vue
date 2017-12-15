@@ -219,10 +219,13 @@
 							if (audit.form_values != "")
 								fields = JSON.parse(audit.form_values)
 
+
+
 							fields.forEach(function(field_section, index) {
 
 								if (findings_section_names.indexOf(field_section.heading) >= 0) { //search for field section heading in array of titles of bound sections
-									//we've found it, pull in all the photos and negative answer notes
+									//we've found it, pull in all the photos and answer notes
+
 
 									findings_html += "<p><strong>" + field_section.heading + "</strong></p>"
 									findings_html += "<ul>"
@@ -294,8 +297,8 @@
 														if (field.value == "no" && field.notes) {
 															findings_html += "<li><em>"+field.question+"</em>: <strong>"+field.notes+"</strong></li>"
 														}
-														else if (field.value == "no") {
-															findings_html += "<li><em>"+field.question+"</em>: <strong>NO</strong></li>"
+														else if (field.value == "no" || vm.includePositiveFindings) {
+															findings_html += "<li><em>"+field.question+"</em>: <strong>"+field.value.toUpperCase()+"</strong></li>"
 														}
 													}
 													else if (field.type == "opportunityCounter") {
@@ -327,7 +330,7 @@
 
 				let editor = tinymce.get("editor-"+section.id)
 
-				editor.insertContent(findings_images+findings_html)
+				editor.insertContent(findings_html)
 			},
 			save() {
 

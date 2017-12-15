@@ -158,11 +158,14 @@
 
 					let task_id = this.audit.task_id
 
-					//get task to check its status
-					this.getJSON(window.apiBase+"task/find/"+task_id).then(function(response){
-						if (response.completed_at == null)
-							vm.confirmDialog.visible = true
-					})
+					if (task_id != 0) {
+
+						//get task to check its status
+						this.getJSON(window.apiBase+"task/find/"+task_id).then(function(response){
+							if (response.completed_at == null)
+								vm.confirmDialog.visible = true
+						})
+					}
 					
 				}
 

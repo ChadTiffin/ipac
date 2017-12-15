@@ -19,7 +19,8 @@ if (!("apiBase" in window)) {
   if (window.location.hostname == "ipac-app.ca")
     window.apiBase = "https://api.ipac-app.ca/"
   else
-    window.apiBase = "https://ipac-api.chadtiffin.com/"
+    //window.apiBase = "https://ipac-api.chadtiffin.com/"
+  window.apiBase = "https://api.ipac-app.ca/"
     
 }
 
