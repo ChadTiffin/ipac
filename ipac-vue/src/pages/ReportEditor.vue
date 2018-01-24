@@ -253,7 +253,7 @@
 											}
 											else if (field.type == 'yes/no') {
 												if (field.value == "no" && field.notes) {
-													findings_html += "<li><em>"+field.question+"</em>: <strong>"+field.notes+"</strong></li>"
+													findings_html += "<li><em>"+field.question+"</em>: <strong>"+field.value.toUpperCase()+". "+field.notes+"</strong></li>"
 												}
 												else if (field.value == "no" || vm.includePositiveFindings) {
 
