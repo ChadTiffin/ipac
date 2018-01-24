@@ -32,6 +32,12 @@
         		<tr v-for="field in company">
         			<td>{{field}}</td>
         		</tr>
+                <tr>
+                    <td :rowspan="user.length+1">user.</td>
+                </tr>
+                <tr v-for="field in user">
+                    <td>{{field}}</td>
+                </tr>
         		<tr>
         			<td colspan="2">date_issued</td>
         		</tr>
@@ -57,7 +63,8 @@
 				visible: false,
 				client: ["address","city","company","contact_name","email","postal_code","primary_phone","province"],
                 location: ["location_name","address","city","province","postal_code", "phone"],
-				company: ["address","city","company_name","email","personal_name","postal_code","province","websites"]
+				company: ["address","city","company_name","email","personal_name","postal_code","province","websites"],
+                user: ["first_name","last_name","email"]
 			}
 		},
 		methods: {

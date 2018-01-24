@@ -19,7 +19,7 @@ class Base_Controller extends CI_Controller {
 			header('Access-Control-Allow-Origin: '.$_SERVER['HTTP_ORIGIN']);
 		else {
 			//header('Access-Control-Allow-Origin: http://localhost:8081');
-			header('Access-Control-Allow-Origin: https://budget.chadtiffin.com');	
+			//header('Access-Control-Allow-Origin: https://budget.chadtiffin.com');	
 		}
 
 		header('Access-Control-Allow-Credentials: true');

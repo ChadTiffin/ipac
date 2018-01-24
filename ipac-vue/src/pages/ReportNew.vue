@@ -49,7 +49,8 @@
 					report_title: "",
 					date_issued: "",
 					report_template_id: null,
-					client_id: null
+					client_id: null,
+					updated_by: "{{{current_user}}}"
 				},
 				reportTemplates: [],
 				activeSection: null,

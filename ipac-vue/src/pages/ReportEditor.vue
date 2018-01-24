@@ -349,7 +349,7 @@
 				let payload = {
 					sections: sections_payload,
 					report: this.report,
-					id: this.$route.params.id,
+					id: this.$route.params.id
 				}
 
 				this.postData(window.apiBase+"report/save-report",payload).then(function(response){

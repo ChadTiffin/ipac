@@ -63,11 +63,17 @@
 
 							vm.$emit("input", html)
 						});
+						editor.addButton('custom_pagebreak', {
+							icon: "pagebreak",
+							onclick: function () {
+								editor.insertContent("<article>-----pagebreak-----</article>");
+							}
+						});
 
 					},
-					plugins: 'link lists advlist hr code',
+					plugins: 'link lists advlist hr code pagebreak',
 					menubar : false,
-					toolbar: 'undo redo | alignleft aligncenter alignright | bold italic bullist numlist hr | code',
+					toolbar: 'undo redo | alignleft aligncenter alignright | bold italic bullist numlist hr | custom_pagebreak | code',
 					formats: {
 						custom_format: {block : 'p', styles : {margin: '0px'}}
 					}

@@ -93,8 +93,12 @@ function addReportPage() {
 
 function WriteHTML($html,$lineheight=0.25)
 {
+
+    //search for page break comments and replace them with my own <pagebreak> element
+    $html = str_replace("-----pagebreak-----", "", $html);
+
 	//HTML parser
-	$html=strip_tags($html,"<b><u><i><a><img><p><br><strong><em><font><tr><blockquote><br /><ul><ol><li><hr>"); //supprime tous les tags sauf ceux reconnus
+	$html=strip_tags($html,"<article><b><u><i><a><p><br><strong><em><font><tr><blockquote><br /><ul><ol><li><hr>"); //supprime tous les tags sauf ceux reconnus
 
 	$html=str_replace("\n",' ',$html); //remplace retour à la ligne par un espace
 	$html=str_replace("&nbsp;", " ", $html);
@@ -102,6 +106,7 @@ function WriteHTML($html,$lineheight=0.25)
 	$html=str_replace("<br />", "\n", $html);
 
 	$a=preg_split('/<(.*)>/U',$html,-1,PREG_SPLIT_DELIM_CAPTURE); //éclate la chaîne avec les balises
+
 	foreach($a as $i=>$e)
 	{
 
@@ -266,6 +271,11 @@ function OpenTag($tag, $attr,$lineheight=0.25)
 				$this->issetfont=true;
 			}
 			break;
+        case "ARTICLE":
+
+            $this->addReportPage();
+            
+            break;
 	}
 
     if ($setLastElement)
