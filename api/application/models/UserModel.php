@@ -157,11 +157,11 @@ class UserModel extends BaseModel {
 			$user_details = $this->db->get_where('users',['id' => $token_record->user_id])->row();
 
 			if ($user_details) {
-				$booTokenValid = true;
+				return $user_details;
 			}
 		}
-
-		return $booTokenValid;
+		return false;
+		
 	}
 
 }

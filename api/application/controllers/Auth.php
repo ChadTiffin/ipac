@@ -92,6 +92,9 @@ class Auth extends Base_Controller {
 	{
 		$usermodel = $this->user_model;
 
+		error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 		if ($request == "reset") {
 
 			$post = $this->input->post();
@@ -117,15 +120,15 @@ class Auth extends Base_Controller {
 			}
 			else {
 				//validate token
-				$booTokenValid = $this->user_model->validateToken($post['token']);
+				$user_details = $this->$usermodel->validateToken($post['token']);
 
-				if ($booTokenValid) {
+				if ($user_details) {
 					//check length
 
 					$result = $this->$usermodel->changePassword($user_details->id,$post['confirm']);
 
 					//delete token
-					$r = $this->db->where('id',$token_record->id)
+					$r = $this->db->where('token',$post['token'])
 						->delete("user_tokens");
 
 					$response = [

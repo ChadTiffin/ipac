@@ -14,6 +14,7 @@ api/application/config/production/database.php
 api/application/config/production/constants.php
 
 api/application/sftp-config.json
+api/uploads/
 
 api/composer.lock
 
