@@ -528,6 +528,7 @@
 				let payload = this.client;
 
 				delete payload.locations;
+				delete payload.owner_phases
 				
 				let vm = this
 
