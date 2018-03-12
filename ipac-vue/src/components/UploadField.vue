@@ -17,7 +17,7 @@
 </template>
 
 <script type="text/javascript">
-	import FileUpload from 'vue-simple-upload/dist/FileUpload'
+	import FileUpload from 'vue-simple-upload'
 
 	export default {
 		name: "UploadField",

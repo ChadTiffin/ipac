@@ -8,15 +8,19 @@
     "dev": "node build/dev-server.js",
     "start": "node build/dev-server.js",
     "build": "node build/build.js",
-    "staging-build" : "node build/staging.js"
+    "staging-build": "node build/staging.js"
   },
   "dependencies": {
+    "npm": "^5.7.1",
     "vue": "^2.3.3",
     "vue-ckeditor2": "^1.0.7",
     "vue-clipboard2": "0.0.6",
     "vue-quill-editor": "^2.2.6",
     "vue-router": "^2.6.0",
+    "vue-select": "^2.4.0",
+    "vue-simple-upload": "^0.1.6",
     "vue2-datepicker": "^1.5.0",
+    "vuedraggable": "^2.16.0",
     "vuejs-datepicker": "^0.9.7"
   },
   "devDependencies": {

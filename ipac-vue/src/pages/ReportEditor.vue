@@ -264,7 +264,7 @@
 											else if (field.type == "opportunityCounter") {
 												let percentage = Math.round((field.value[0] / (field.value[0] + field.value[1])) * 100)
 
-												findings_html += "<li>"+field.question+": "+percentage + "%"+"</li>"
+												findings_html += "<li><strong>"+field.question+": "+percentage + "%"+"</strong>: "+field.notes+"</li>"
 											}
 											else if (field.type == 'textarea') {
 												findings_html += "<li><em>"+field.question+"</em>: "+field.value+"</li>"
