@@ -17,13 +17,13 @@
 </template>
 
 <script type="text/javascript">
-	import FileUpload from 'vue-simple-upload'
+	import FileUpload from 'vue-simple-upload/dist/FileUpload'
 
 	export default {
 		name: "UploadField",
 		props: ["value","uploadMsg","uploadType"],
 		components: {
-			'fileupload': FileUpload
+			'fileupload':FileUpload
 		},
 		data() {
 			return {

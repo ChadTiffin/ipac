@@ -24,6 +24,15 @@
 		<textarea v-else-if="field.type == 'textarea'" v-model="field.value" v-on:change="fieldChanged" class="form-control"></textarea>
 
 		<textarea v-if="field.hasNotes" class="form-control" v-on:change="fieldChanged" placeholder="Notes..." v-model="field.notes"></textarea>
+
+		<div v-if="field.hasObservations">
+			<label>Observations</label>
+			<textarea class="form-control" placeholder="Observations" v-on:change="fieldChanged" v-model="field.observations"></textarea>
+		</div>
+		<div v-if="field.hasRecommendations">
+			<label>Recommendation</label>
+			<textarea class="form-control" placeholder="Recommendations" v-on:change="fieldChanged" v-model="field.recommendations"></textarea>
+		</div>
 	</form-group>
 </template>
 
@@ -80,7 +89,7 @@ import OpportunityCounterField from './OpportunityCounterField'
 
 			},
 			fieldChanged() {
-				
+				console.log(this.localValue)
 				this.$emit("change",this.localValue)
 				this.$emit("input",this.localValue)
 			}

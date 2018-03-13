@@ -234,6 +234,10 @@
 										//console.log("searching main fields...")
 										field_section.fields.forEach(function(field, index){
 
+											//check if we need an opening <li> tag
+											if (field.type == "yes/no" || field.type == "opportunityCounter" || field.type == "textarea")
+												findings_html += "<li>"
+
 											if (field.type == 'images' || field.type =='image') {
 												//console.log("images found")
 												if (field.value) {
@@ -253,22 +257,41 @@
 											}
 											else if (field.type == 'yes/no') {
 												if (field.value == "no" && field.notes) {
-													findings_html += "<li><em>"+field.question+"</em>: <strong>"+field.value.toUpperCase()+". "+field.notes+"</strong></li>"
+													findings_html += "<em>"+field.question+"</em>: <strong>"+field.value.toUpperCase()+". "+field.notes+"</strong>"
 												}
 												else if (field.value == "no" || vm.includePositiveFindings) {
 
 													if (field.value)
-														findings_html += "<li><em>"+field.question+"</em>: <strong>"+field.value.toUpperCase()+"</strong></li>"
+														findings_html += "<em>"+field.question+"</em>: <strong>"+field.value.toUpperCase()+"</strong>"
 												}
 											}
 											else if (field.type == "opportunityCounter") {
+
 												let percentage = Math.round((field.value[0] / (field.value[0] + field.value[1])) * 100)
 
-												findings_html += "<li><strong>"+field.question+": "+percentage + "%"+"</strong>: "+field.notes+"</li>"
+												findings_html += "<strong>"+field.question+": "+percentage + "%"+"</strong>"
 											}
 											else if (field.type == 'textarea') {
-												findings_html += "<li><em>"+field.question+"</em>: "+field.value+"</li>"
+												findings_html += "<em>"+field.question+"</em>: "+field.value
 											}
+
+											if ("observations" in field || "recommendations" in field)
+												findings_html += "<ul>"
+
+											if ("observations" in field)
+												findings_html += "<li><strong>Observations</strong>: "+field.observations+"</li>"
+
+											if ("recommendations" in field)
+												findings_html += "<li><strong>Recommendations</strong>: "+field.recommendations+"</li>"
+
+											if ("observations" in field || "recommendations" in field)
+												findings_html += "</ul>"
+
+
+											//check if we need an opening <li> tag
+											if (field.type == "yes/no" || field.type == "opportunityCounter" || field.type == "textarea")
+												findings_html += "</li>"
+
 										})
 									}
 									if ("subSections" in field_section) {

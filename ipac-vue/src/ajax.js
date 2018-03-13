@@ -26,7 +26,7 @@ export default {
 								status: "offline"
 							}
 
-							vm.$root.isOffline = true
+							//vm.$root.isOffline = true
 
 							resolve(response)
 						}
@@ -78,7 +78,7 @@ export default {
 							status: "offline"
 						}
 
-						vm.$root.isOffline = true
+						//vm.$root.isOffline = true
 
 						resolve(response)
 					}
@@ -133,7 +133,7 @@ export default {
 							status: "offline"
 						}
 
-						vm.$root.isOffline = true
+						//vm.$root.isOffline = true
 
 						resolve(response)
 					}

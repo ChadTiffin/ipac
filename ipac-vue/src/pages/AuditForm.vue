@@ -64,6 +64,7 @@
 
 						<div v-if="section.fields">
 							<audit-field v-for="(field, fieldIndex) in section.fields" :key="field.question" :label="field.question" :field="field" :value="field.value" v-on:change="autoSave" v-on:imageFieldChange="saveImageFieldChange($event,index, fieldIndex, false)"></audit-field>
+							}
 							
 						</div>
 
@@ -300,6 +301,8 @@
 					else {
 						vm.audit.performed_by = "{{{current_user}}}"
 
+						console.log(vm.audit)
+
 						vm.postData(window.apiBase+"auditForm/save",vm.audit).then(function(response){
 							vm.$emit("updateAlert",{
 								visible:true,
@@ -322,8 +325,6 @@
 				let vm = this
 
 				this.getJSON(window.apiBase + "auditForm/find/"+this.$route.params.id).then(function(response){
-
-					let addValuesandNotes = false
 
 					if ("status" in response && response.status == "offline") {
 						//look for it in local
@@ -352,11 +353,10 @@
 
 											templates.forEach(function(template, index){
 
-												if (audit.form_template_id == template.id) {
-
+												if (audit.form_template_id == template.id) 
 													vm.form = JSON.parse(template.fields)
-													addValuesandNotes = true
-												}
+
+												
 											})
 										}
 									}
@@ -368,10 +368,9 @@
 
 						if (response.form_values)
 							vm.form = JSON.parse(response.form_values)
-						else {
+						else 
 							vm.form = JSON.parse(response.form_templates.fields)
-							addValuesandNotes = true
-						}
+						
 
 						vm.fullAudit = response
 
