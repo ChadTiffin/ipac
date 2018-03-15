@@ -8,9 +8,9 @@
 					<i class="fa fa-question-circle"></i> Variable Reference
 				</button>
 
-				<a class="btn btn-primary" :href="'/reports/view/'+$route.params.id" target="_blank">
+				<!--<a class="btn btn-primary" :href="'/reports/view/'+$route.params.id" target="_blank">
 					<i class="fa fa-eye"></i> View Report
-				</a>
+				</a>-->
 
 				<a class="btn btn-primary" :href="pdfUrl" target="_blank">
 					<i class="fa fa-download"></i> Report PDF
@@ -208,6 +208,20 @@
 				let findings_images = "";
 
 				let findings_section_names = JSON.parse(section.findings_section_names)
+
+				//find audit that was selected
+				let audit_date = null
+				vm.audits.forEach(audit => {
+					if (vm.includedAudits[0] == audit.id)
+						audit_date = audit.audit_date
+				})
+
+				//save audit date to report
+				let payload = {
+					id: this.$route.params.id, 
+					audit_date: audit_date
+				}
+				this.postData(window.apiBase+"report/save",payload)
 
 				this.audits.forEach(function(audit,index){
 

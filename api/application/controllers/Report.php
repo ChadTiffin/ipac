@@ -221,7 +221,7 @@ class Report extends Base_Controller {
 
 	public function pdf($id) {
 
-		$this->load->library("fpdf/Pdfhtml");
+		$this->load->library("fpdf/PDF_TOC");
 
 		$this->load->model("ReportModel");
 
@@ -238,12 +238,15 @@ class Report extends Base_Controller {
 			'company' => $company_vars,
 			'location'=> $report['location'],
 			'user' => $report['user'],
-			'date_issued' => $report['date_issued']
+			'date' => [
+				"report_issued" => $report['date_issued'],
+				"audit_performed" => $report['audit_date']
+			]
 		];
 
-		$page_num = 0;
+		$pdf = new PDF_TOC("P","in","letter",base_url());
 
-		$pdf = new Pdfhtml("P","in","letter",base_url());
+		$pdf->page_num = 0;
 
 		$m = new Mustache_Engine;
 
@@ -270,7 +273,7 @@ class Report extends Base_Controller {
 		$pdf->SetTextColor(1,1,1);
 
 		$pdf->AddPage();
-		$page_num++;
+		$pdf->page_num++;
 
 		$this->setTextFormat($pdf,"text");
 
@@ -280,13 +283,13 @@ class Report extends Base_Controller {
 
 		//Table of contents Page
 		/////////////////////////////
-		$pdf->addReportPage();
-		$page_num++;
+		/*$pdf->addReportPage($pdf->page_num);
+		$pdf->page_num++;
 
 		$this->writeHeading($pdf,"Table Of Contents");
 		
 		$this->setTextFormat($pdf,"text");
-		$section_page_num = $page_num;
+		$section_page_num = $pdf->page_num;
 		$text_line = 1.9;
 		foreach ($report['sections'] as $section) {
 
@@ -296,7 +299,7 @@ class Report extends Base_Controller {
 			$text_line += $this->pdf_line_height*1.5;
 
 			$section_page_num++;
-		}
+		}*/
 		//////////////////////////////
 
 		//SECTION PAGES
@@ -305,8 +308,15 @@ class Report extends Base_Controller {
 		//echo "<pre>";
 		//var_dump($report['sections']);
 
+		$toc = [];
+
+		$pdf->page_num = 1;
+
 		foreach ($report['sections'] as $section) {
-			$pdf->addReportPage();
+			$pdf->page_num++;
+			$pdf->addReportPage($pdf->page_num);
+			
+			$toc[] = [$section['heading'],$pdf->page_num];
 
 			$this->writeHeading($pdf,$section['heading']);
 
@@ -381,7 +391,8 @@ class Report extends Base_Controller {
 		                }
 
 		                if ($pdf->getPageHeight() - $pdf->GetY() - $futureRowHeight - 1.5 <= 0) {
-		                    $pdf->addReportPage();
+		                	$pdf->page_num++;
+		                    $pdf->addReportPage($pdf->page_num);
 		                    //$this->last_element = null;
 		                    //$setLastElement = false;
 		                    $rowMaxHeight = 0; //reset rowMaxHeight because its a new image row
@@ -419,6 +430,24 @@ class Report extends Base_Controller {
 			}
 		}
 
+		$pdf->SetPage(2);
+
+		$pdf->addReportPage();
+
+		$this->writeHeading($pdf,"Table Of Contents");
+		
+		$this->setTextFormat($pdf,"text");
+		$section_page_num = $pdf->page_num;
+		$text_line = 1.9;
+		foreach ($toc as $section) {
+
+			$pdf->Text($this->pdf_margin_side,$text_line,$section[0]);
+			$pdf->Cell(0,$this->pdf_line_height*1.5,$section[1],0,2,"R");
+			//$pdf->Text($)
+			$text_line += $this->pdf_line_height*1.5;
+		}
+
+		$pdf->SetPage($pdf->GetPageCount());
 
 		$pdf->Output("I");
 		

@@ -57,6 +57,8 @@ protected $api_base = "";
 protected $last_element = "";
 protected $image_width = 250/72;
 
+public $page_num;
+
 function __construct($orientation='P', $unit='mm', $format='A4',$api_base="")
 {
 	//Call parent constructor
@@ -73,22 +75,25 @@ function __construct($orientation='P', $unit='mm', $format='A4',$api_base="")
 }
 
 function AcceptPageBreak() {
-    $this->addReportPage();
+    $this->page_num++;
+    $this->addReportPage($this->page_num);
 }
 
-function addReportPage() {
+function addReportPage($page_num = "") {
 	$this->AddPage();
 
 	//create header
 	$this->Image("assets/logo.jpg",$this->absolute_left_margin,$this->top_margin,0,1,'');
 
 	$this->SetLineWidth(0.025);
-	$this->setDrawColor(60,85,75);
+	$this->SetDrawColor(60,85,75);
 	$this->Line($this->absolute_left_margin,$this->top_margin+1.05,8.5-$this->absolute_left_margin,$this->top_margin+1.05);
 	// end header
-    $this->setY(1.4);
+    $this->SetY(1.4);
 	//create footer
 	$this->Image("assets/report_footer.png",0,9.3,8.5,0,'PNG');
+
+    $this->Text(4.25,10.75,$page_num);
 }
 
 function WriteHTML($html,$lineheight=0.25)
@@ -176,7 +181,8 @@ function OpenTag($tag, $attr,$lineheight=0.25)
 
                 //check if page break needs to occur
                 if ($this->getPageHeight() - ($this->GetY() + ($width*0.75)) - 2 <= 0) {
-                    $this->addReportPage();
+                    $this->page_num++;
+                    $this->addReportPage($this->page_num);
                     //$this->last_element = null;
                     //$setLastElement = false;
                 }
@@ -272,8 +278,8 @@ function OpenTag($tag, $attr,$lineheight=0.25)
 			}
 			break;
         case "ARTICLE":
-
-            $this->addReportPage();
+            $this->page_num++;
+            $this->addReportPage($this->page_num);
             
             break;
 	}
@@ -353,7 +359,8 @@ function CellSmallCaps($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=fal
             $this->ws=0;
             $this->_out('0 Tw');
         }
-        $this->addReportPage();
+        $this->page_num++;
+        $this->addReportPage($this->page_num);
         $this->x=$x;
         if($ws>0)
         {
@@ -561,4 +568,6 @@ function MultiCellSmallCaps($w, $h, $txt, $border=0, $align='', $fill=false)
 }
 
 }//end of class
-?>
+
+
+

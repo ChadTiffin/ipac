@@ -39,8 +39,11 @@
                     <td>{{field}}</td>
                 </tr>
         		<tr>
-        			<td colspan="2">date_issued</td>
+        			<td :rowspan="date.length+1">date</td>
         		</tr>
+                <tr v-for="field in date">
+                    <td>{{ field }}</td>
+                </tr>
         	</tbody>
         </table>
 
@@ -64,7 +67,8 @@
 				client: ["address","city","company","contact_name","email","postal_code","primary_phone","province"],
                 location: ["location_name","address","city","province","postal_code", "phone"],
 				company: ["address","city","company_name","email","personal_name","postal_code","province","websites"],
-                user: ["first_name","last_name","email"]
+                user: ["first_name","last_name","email"],
+                date: ["report_issued","audit_performed"]
 			}
 		},
 		methods: {

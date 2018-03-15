@@ -169,6 +169,14 @@ function __construct($orientation='P', $unit='mm', $size='A4')
 	$this->PDFVersion = '1.3';
 }
 
+function SetPage($num) {
+    $this->page = $num;
+}
+
+function GetPageCount() {
+	return count($this->pages);
+}
+
 function SetMargins($left, $top, $right=null)
 {
 	// Set left, top and right margins
