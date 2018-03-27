@@ -69,6 +69,9 @@
 		},
 		created() {
 			document.body.classList.add("modal-open");
+		},
+		destroyed() {
+			document.body.classList.remove("modal-open");
 		}
 	}
 </script>

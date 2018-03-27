@@ -219,7 +219,7 @@ class Report extends Base_Controller {
 		$pdf->setY($pdf->getY()+$this->pdf_line_height);
 	}
 
-	public function pdf($id) {
+	public function pdf($id,$type = null) {
 
 		$this->load->library("fpdf/PDF_TOC");
 
@@ -308,149 +308,185 @@ class Report extends Base_Controller {
 		//echo "<pre>";
 		//var_dump($report['sections']);
 
-		$toc = [];
+		if (!$type) {
 
-		$pdf->page_num = 1;
+			$toc = [];
 
-		foreach ($report['sections'] as $section) {
-			$pdf->page_num++;
-			$pdf->addReportPage($pdf->page_num);
-			
-			$toc[] = [$section['heading'],$pdf->page_num];
+			$pdf->page_num = 1;
 
-			$this->writeHeading($pdf,$section['heading']);
-
-			if ($section['description_text']) {
-				$this->setTextFormat($pdf,"text");
-
-				$rendered_text = $m->render($section['description_text'],$variables);
-				$pdf->WriteHTML($rendered_text,$this->pdf_line_height,$this->pdf_margin_side);
-				$pdf->Ln();
-			}
-
-			if ($section['has_guidelines']) {
-				$this->writeSubHeading($pdf,"Guidelines and Requirements");
-
-				$this->setTextFormat($pdf,"text");
-				$rendered_text = $m->render($section['guidelines_text'],$variables);
-				$pdf->WriteHTML($rendered_text,$this->pdf_line_height,$this->pdf_margin_side);
-				$pdf->Ln();
-			}
-
-			if ($section['has_findings']) {
-
-				$this->writeSubHeading($pdf,"Findings");
-
-				$imageMaxDimension = 250/72;
-
-				$imageWidth = 250/72;
-
-				if (strlen($section['images']) > 2) {
-
-					$images = json_decode($section['images']);
+			foreach ($report['sections'] as $section) {
+				$pdf->page_num++;
+				$pdf->addReportPage($pdf->page_num);
 				
+				$toc[] = [$section['heading'],$pdf->page_num];
+
+				$this->writeHeading($pdf,$section['heading']);
+
+				if ($section['description_text']) {
+					$this->setTextFormat($pdf,"text");
+
+					$rendered_text = $m->render($section['description_text'],$variables);
+					$pdf->WriteHTML($rendered_text,$this->pdf_line_height,$this->pdf_margin_side);
 					$pdf->Ln();
-
-					$rowMaxHeight = 0;
-
-					$index = 0;
-					foreach ($images as $image) {
-						
-						//check if line wrap needs to occur
-		                if ($pdf->getPageWidth() - $pdf->GetX() - $imageWidth <= 0) {
-		                    $pdf->SetY($pdf->getY() + $rowMaxHeight);
-		                    $rowMaxHeight = 0; //reset rowMaxHeight because its a new image row
-		                }
-
-		                //check if page break needs to occur
-		                /*
-		                1. Look ahead up to 2 images
-		                2. Calculate max row height for those 2 images
-		                3. determine if there is enough space left on the page to fit rowMaxHeight
-		                */
-
-		                $futureRowHeight = 0;
-		                if (isset($images[$index+1])) {
-
-		                	if (file_exists(UPLOAD_FOLDER.$images[$index+1])) {
-		                		//get image dimensions
-								$future1_size = getimagesize(UPLOAD_FOLDER.$images[$index+1]);
-
-								$futureRowHeight = $imageWidth * ($future1_size[1]/$future1_size[0]);
-		                	}
-
-		                	if (isset($images[$index+2])) {
-		                		if (file_exists(UPLOAD_FOLDER.$images[$index+2])) {
-			                		//get image dimensions
-									$future2_size = getimagesize(UPLOAD_FOLDER.$images[$index+2]);
-
-									if ($futureRowHeight < $imageWidth * ($future2_size[1]/$future2_size[0]))
-										$futureRowHeight =  $imageWidth * ($future2_size[1]/$future2_size[0]);
-			                	}
-		                	}
-		                }
-
-		                if ($pdf->getPageHeight() - $pdf->GetY() - $futureRowHeight - 1.5 <= 0) {
-		                	$pdf->page_num++;
-		                    $pdf->addReportPage($pdf->page_num);
-		                    //$this->last_element = null;
-		                    //$setLastElement = false;
-		                    $rowMaxHeight = 0; //reset rowMaxHeight because its a new image row
-		                }
-
-						if (file_exists(UPLOAD_FOLDER.$image)) {
-
-		                	//get image dimensions
-							$size = getimagesize(UPLOAD_FOLDER.$image);
-
-							$width = $size[0];
-							$height = $size[1];
-
-							$height_ratio = $height/$width;
-
-		                	if ($rowMaxHeight < $imageWidth * $height_ratio)
-		                		$rowMaxHeight = $imageWidth * $height_ratio;
-		                	
-		                	$pdf->Image(UPLOAD_FOLDER.$image, $pdf->GetX(), $pdf->GetY(), $imageWidth, 0);
-						             
-		    				$pdf->SetX($pdf->GetX()+$imageWidth);
-		    			}
-
-		    			$index++;
-					}
-
-					$pdf->SetY($pdf->GetY() + $rowMaxHeight);
 				}
 
-				$this->setTextFormat($pdf,"text");
-				$rendered_text = $m->render($section['findings'],$variables);
+				if ($section['has_guidelines']) {
+					$this->writeSubHeading($pdf,"Guidelines and Requirements");
 
-				$pdf->WriteHTML($rendered_text,$this->pdf_line_height,$this->pdf_margin_side);
-				$pdf->Ln();
+					$this->setTextFormat($pdf,"text");
+					$rendered_text = $m->render($section['guidelines_text'],$variables);
+					$pdf->WriteHTML($rendered_text,$this->pdf_line_height,$this->pdf_margin_side);
+					$pdf->Ln();
+				}
+
+				if ($section['has_findings']) {
+
+					$this->writeSubHeading($pdf,"Findings");
+
+					$imageMaxDimension = 250/72;
+
+					$imageWidth = 250/72;
+
+					if (strlen($section['images']) > 2) {
+
+						$images = json_decode($section['images']);
+					
+						$pdf->Ln();
+
+						$rowMaxHeight = 0;
+
+						$index = 0;
+						foreach ($images as $image) {
+							
+							//check if line wrap needs to occur
+			                if ($pdf->getPageWidth() - $pdf->GetX() - $imageWidth <= 0) {
+			                    $pdf->SetY($pdf->getY() + $rowMaxHeight);
+			                    $rowMaxHeight = 0; //reset rowMaxHeight because its a new image row
+			                }
+
+			                //check if page break needs to occur
+			                /*
+			                1. Look ahead up to 2 images
+			                2. Calculate max row height for those 2 images
+			                3. determine if there is enough space left on the page to fit rowMaxHeight
+			                */
+
+			                $futureRowHeight = 0;
+			                if (isset($images[$index+1])) {
+
+			                	if (file_exists(UPLOAD_FOLDER.$images[$index+1])) {
+			                		//get image dimensions
+									$future1_size = getimagesize(UPLOAD_FOLDER.$images[$index+1]);
+
+									$futureRowHeight = $imageWidth * ($future1_size[1]/$future1_size[0]);
+			                	}
+
+			                	if (isset($images[$index+2])) {
+			                		if (file_exists(UPLOAD_FOLDER.$images[$index+2])) {
+				                		//get image dimensions
+										$future2_size = getimagesize(UPLOAD_FOLDER.$images[$index+2]);
+
+										if ($futureRowHeight < $imageWidth * ($future2_size[1]/$future2_size[0]))
+											$futureRowHeight =  $imageWidth * ($future2_size[1]/$future2_size[0]);
+				                	}
+			                	}
+			                }
+
+			                if ($pdf->getPageHeight() - $pdf->GetY() - $futureRowHeight - 1.5 <= 0) {
+			                	$pdf->page_num++;
+			                    $pdf->addReportPage($pdf->page_num);
+			                    //$this->last_element = null;
+			                    //$setLastElement = false;
+			                    $rowMaxHeight = 0; //reset rowMaxHeight because its a new image row
+			                }
+
+							if (file_exists(UPLOAD_FOLDER.$image)) {
+
+			                	//get image dimensions
+								$size = getimagesize(UPLOAD_FOLDER.$image);
+
+								$width = $size[0];
+								$height = $size[1];
+
+								$height_ratio = $height/$width;
+
+			                	if ($rowMaxHeight < $imageWidth * $height_ratio)
+			                		$rowMaxHeight = $imageWidth * $height_ratio;
+			                	
+			                	$pdf->Image(UPLOAD_FOLDER.$image, $pdf->GetX(), $pdf->GetY(), $imageWidth, 0);
+							             
+			    				$pdf->SetX($pdf->GetX()+$imageWidth);
+			    			}
+
+			    			$index++;
+						}
+
+						$pdf->SetY($pdf->GetY() + $rowMaxHeight);
+					}
+
+					$this->setTextFormat($pdf,"text");
+					$rendered_text = $m->render($section['findings'],$variables);
+
+					$pdf->WriteHTML($rendered_text,$this->pdf_line_height,$this->pdf_margin_side);
+					$pdf->Ln();
+				}
 			}
+
+			$pdf->SetPage(2);
+
+			$pdf->addReportPage();
+
+			$this->writeHeading($pdf,"Table Of Contents");
+			
+			$this->setTextFormat($pdf,"text");
+			$section_page_num = $pdf->page_num;
+			$text_line = 1.9;
+			foreach ($toc as $section) {
+
+				$pdf->Text($this->pdf_margin_side,$text_line,$section[0]);
+				$pdf->Cell(0,$this->pdf_line_height*1.5,$section[1],0,2,"R");
+				//$pdf->Text($)
+				$text_line += $this->pdf_line_height*1.5;
+			}
+
+			$pdf->SetPage($pdf->GetPageCount());
 		}
+		elseif ($type == "cover") {
 
-		$pdf->SetPage(2);
-
-		$pdf->addReportPage();
-
-		$this->writeHeading($pdf,"Table Of Contents");
-		
-		$this->setTextFormat($pdf,"text");
-		$section_page_num = $pdf->page_num;
-		$text_line = 1.9;
-		foreach ($toc as $section) {
-
-			$pdf->Text($this->pdf_margin_side,$text_line,$section[0]);
-			$pdf->Cell(0,$this->pdf_line_height*1.5,$section[1],0,2,"R");
-			//$pdf->Text($)
-			$text_line += $this->pdf_line_height*1.5;
 		}
-
-		$pdf->SetPage($pdf->GetPageCount());
 
 		$pdf->Output("I");
 		
+	}
+
+	public function text($id) {
+
+		$report = $this->findQuery($id,"id");
+		$company = $this->db->get("company_settings")->result_array();
+
+		$company_vars = [];
+		foreach ($company as $setting) {
+			$company_vars[$setting['setting']] = $setting['value'];
+		}
+
+		$variables = [
+			'client' => $report['client'],
+			'company' => $company_vars,
+			'location'=> $report['location'],
+			'user' => $report['user'],
+			'date' => [
+				"report_issued" => $report['date_issued'],
+				"audit_performed" => $report['audit_date']
+			]
+		];
+
+		$data = [
+			'sections' => $report['sections'],
+			'm' => new Mustache_Engine,
+			'variables' => $variables
+		];
+
+		$this->load->view("report_text",$data);
 	}
 
 }

@@ -16,6 +16,14 @@
 					<i class="fa fa-download"></i> Report PDF
 				</a>
 
+				<a class="btn btn-primary" :href="pdfCoverUrl" target="_blank">
+					<i class="fa fa-download"></i> Report PDF - Cover
+				</a>
+
+				<a class="btn btn-primary" :href="textUrl" target="_blank">
+					<i class="fa fa-eye"></i> Report Text
+				</a>
+
 				<button class="btn btn-success" v-on:click="save">
 					<i class="fa fa-save"></i> Save
 				</button>
@@ -153,6 +161,8 @@
 				varHelpVisible: false,
 				currentClientId: localStorage.currentClientId,
 				pdfUrl: window.apiBase+"report/pdf/"+this.$route.params.id+"?key="+localStorage.apiKey,
+				pdfCoverUrl: window.apiBase+"report/pdf/cover"+this.$route.params.id+"?key="+localStorage.apiKey,
+				textUrl: window.apiBase+"report/text"+this.$route.params.id+"?key="+localStorage.apiKey,
 				typingTimer: null
 			}
 		},
@@ -233,13 +243,10 @@
 							if (audit.form_values != "")
 								fields = JSON.parse(audit.form_values)
 
-
-
 							fields.forEach(function(field_section, index) {
 
 								if (findings_section_names.indexOf(field_section.heading) >= 0) { //search for field section heading in array of titles of bound sections
 									//we've found it, pull in all the photos and answer notes
-
 
 									findings_html += "<p><strong>" + field_section.heading + "</strong></p>"
 									findings_html += "<ul>"
@@ -248,9 +255,9 @@
 										//console.log("searching main fields...")
 										field_section.fields.forEach(function(field, index){
 
-											//check if we need an opening <li> tag
-											if (field.type == "yes/no" || field.type == "opportunityCounter" || field.type == "textarea")
-												findings_html += "<li>"
+											let notes = "";
+											if (typeof field.notes != "undefined")
+												notes = field.notes
 
 											if (field.type == 'images' || field.type =='image') {
 												//console.log("images found")
@@ -266,31 +273,38 @@
 													})*/
 												}
 												if (field.hasNotes && field.notes != "") 
-													findings_images += "<p>"+field.notes+"</p>"
+													findings_images += "<p>"+notes+"</p>"
 												
 											}
 											else if (field.type == 'yes/no') {
-												if (field.value == "no" && field.notes) {
-													findings_html += "<em>"+field.question+"</em>: <strong>"+field.value.toUpperCase()+". "+field.notes+"</strong>"
-												}
-												else if (field.value == "no" || vm.includePositiveFindings) {
 
-													if (field.value)
-														findings_html += "<em>"+field.question+"</em>: <strong>"+field.value.toUpperCase()+"</strong>"
+												if (typeof field.value != 'undefined') {
+													if (field.value == "no" && field.notes) {
+														findings_html += "<li><em>"+field.question+"</em>: <strong>"+field.value.toUpperCase()+". "+notes+"</strong></li>"
+													}
+													else if (field.value == "no" || vm.includePositiveFindings) {
+
+														if (field.value)
+															findings_html += "<li><em>"+field.question+"</em>: <strong>"+field.value.toUpperCase()+". "+ notes + "</strong></li>"
+													}
+													else if (field.value == "n/a") {
+														findings_html += "<li><em>"+field.question+"</em>: <strong>"+field.value.toUpperCase()+". "+ notes + "</strong></li>"
+													}
 												}
+
 											}
 											else if (field.type == "opportunityCounter") {
 
 												let percentage = Math.round((field.value[0] / (field.value[0] + field.value[1])) * 100)
 
-												findings_html += "<strong>"+field.question+": "+percentage + "%"+"</strong>"
+												findings_html += "<strong>"+field.question+": "+percentage + "%"+"</strong></li>"
 											}
 											else if (field.type == 'textarea') {
-												findings_html += "<em>"+field.question+"</em>: "+field.value
+												findings_html += "<em>"+field.question+"</em>: "+field.value+"</li>"
 											}
 
 											if ("observations" in field || "recommendations" in field)
-												findings_html += "<ul>"
+												findings_html += "<li><ul>"
 
 											if ("observations" in field)
 												findings_html += "<li><strong>Observations</strong>: "+field.observations+"</li>"
@@ -299,12 +313,7 @@
 												findings_html += "<li><strong>Recommendations</strong>: "+field.recommendations+"</li>"
 
 											if ("observations" in field || "recommendations" in field)
-												findings_html += "</ul>"
-
-
-											//check if we need an opening <li> tag
-											if (field.type == "yes/no" || field.type == "opportunityCounter" || field.type == "textarea")
-												findings_html += "</li>"
+												findings_html += "</ul></li>"
 
 										})
 									}
@@ -313,6 +322,10 @@
 										field_section.subSections.forEach(function(subSection, index) {
 											if ("fields" in subSection) {
 												subSection.fields.forEach(function(field, index) {
+
+													let notes = "";
+													if (typeof field.notes != "undefined")
+														notes = field.notes
 
 													if (field.type == 'images' || field.type =='image') {
 
@@ -328,15 +341,24 @@
 															})*/
 														}
 														if (field.hasNotes && field.notes != "") 
-															findings_images += "<p>"+field.notes+"</p>"
+															findings_images += "<p>"+notes+"</p>"
 													}
 													else if (field.type == 'yes/no') {
-														if (field.value == "no" && field.notes) {
-															findings_html += "<li><em>"+field.question+"</em>: <strong>"+field.notes+"</strong></li>"
+
+														if (typeof field.value != 'undefined') {
+															if (field.value == "no" && field.notes) {
+																findings_html += "<li><em>"+field.question+"</em>: <strong>"+field.value.toUpperCase()+". "+notes+"</strong></li>"
+															}
+															else if (field.value == "no" || vm.includePositiveFindings) {
+
+																if (field.value)
+																	findings_html += "<li><em>"+field.question+"</em>: <strong>"+field.value.toUpperCase()+". "+ notes + "</strong></li>"
+															}
+															else if (field.value == "n/a") {
+																findings_html += "<li><em>"+field.question+"</em>: <strong>"+field.value.toUpperCase()+". "+ notes + "</strong></li>"
+															}
 														}
-														else if (field.value == "no" || vm.includePositiveFindings) {
-															findings_html += "<li><em>"+field.question+"</em>: <strong>"+field.value.toUpperCase()+"</strong></li>"
-														}
+
 													}
 													else if (field.type == "opportunityCounter") {
 														let percentage = Math.round((field.value[0] / (field.value[0] + field.value[1])) * 100)
@@ -346,7 +368,20 @@
 													else if (field.type == 'textarea') {
 														findings_html += "<li><em>"+field.question+"</em>: "+field.value+"</li>"
 													}
+
+													if ("observations" in field || "recommendations" in field)
+														findings_html += "<li><ul>"
+
+													if ("observations" in field)
+														findings_html += "<li><strong>Observations</strong>: "+field.observations+"</li>"
+
+													if ("recommendations" in field)
+														findings_html += "<li><strong>Recommendations</strong>: "+field.recommendations+"</li>"
+
+													if ("observations" in field || "recommendations" in field)
+														findings_html += "</ul></li>"
 												})
+
 											}
 										})
 									}

@@ -23,6 +23,8 @@ if (!("apiBase" in window)) {
     
 }
 
+//window.apiBase = "https://api.ipac-app.ca/"
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
