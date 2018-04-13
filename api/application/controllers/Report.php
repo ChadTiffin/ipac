@@ -39,44 +39,49 @@ class Report extends Base_Controller {
 			->where($this->table.".id",$id)
 			->get()->row_array();
 
-		$report['client'] = $this->db->get_where("clients",["id" => $report['client_id']])->row_array();
-		/*$report['sections'] = $this->db
-			->select("*")
-			->from("report_templates")
-			->join("report_template_sections","report_template_sections.report_template_id = report_templates.id")
-			->join("section_templates", "section_templates.id = report_template_sections.section_template_id")
-			->where("report_templates.id",$report['report_template_id'])
-			->get()->result_array();*/
+		if ($report) {
 
-		$report['location'] = $this->db->get_where("locations",["id"=>$report['location_id']])->row_array();
+			$report['client'] = $this->db->get_where("clients",["id" => $report['client_id']])->row_array();
+			/*$report['sections'] = $this->db
+				->select("*")
+				->from("report_templates")
+				->join("report_template_sections","report_template_sections.report_template_id = report_templates.id")
+				->join("section_templates", "section_templates.id = report_template_sections.section_template_id")
+				->where("report_templates.id",$report['report_template_id'])
+				->get()->result_array();*/
 
-		$report['sections'] = $this->db
-			->select("*")
-			->from("report_template_sections")
-			->join("section_templates", "section_templates.id = report_template_sections.section_template_id","right")
-			->where("report_template_sections.report_template_id",$report['report_template_id'])
-			->order_by("order_index","ASC")
-			->get()->result_array();
+			$report['location'] = $this->db->get_where("locations",["id"=>$report['location_id']])->row_array();
 
-		$report['user'] = $this->db
-			->select("first_name, last_name, email")
-			->from("users")
-			->where("id",$report['updated_by'])
-			->get()->row();
+			$report['sections'] = $this->db
+				->select("*")
+				->from("report_template_sections")
+				->join("section_templates", "section_templates.id = report_template_sections.section_template_id","right")
+				->where("report_template_sections.report_template_id",$report['report_template_id'])
+				->order_by("order_index","ASC")
+				->get()->result_array();
 
-		$new_sections = [];
-		foreach ($report['sections'] as $section) {
-			$report_section = $this->db->get_where("report_sections",["report_id" => $id,"section_template_id" => $section['section_template_id']])->row_array();
+			$report['user'] = $this->db
+				->select("first_name, last_name, email")
+				->from("users")
+				->where("id",$report['updated_by'])
+				->get()->row();
 
-			$section['findings'] = $report_section['body_text'];
-			$section['images'] = $report_section['images'];
+			$new_sections = [];
+			foreach ($report['sections'] as $section) {
+				$report_section = $this->db->get_where("report_sections",["report_id" => $id,"section_template_id" => $section['section_template_id']])->row_array();
 
-			$new_sections[] = $section;
+				$section['findings'] = $report_section['body_text'];
+				$section['images'] = $report_section['images'];
+
+				$new_sections[] = $section;
+			}
+
+			$report['sections'] = $new_sections;
+
+			return $report;
 		}
-
-		$report['sections'] = $new_sections;
-
-		return $report;
+		else
+			return false;
 	}
 
 	public function find($id,$field='id') {
@@ -459,7 +464,7 @@ class Report extends Base_Controller {
 		
 	}
 
-	public function text($id) {
+	public function text($id, $download = null) {
 
 		$report = $this->findQuery($id,"id");
 		$company = $this->db->get("company_settings")->result_array();
@@ -468,6 +473,43 @@ class Report extends Base_Controller {
 		foreach ($company as $setting) {
 			$company_vars[$setting['setting']] = $setting['value'];
 		}
+
+		$this->load->model("ImageModel");
+
+		//attach image tokens
+		$mutated = [];
+		foreach ($report['sections'] as $section) {
+			if (strlen($section['images']) > 2) {
+
+				$images = json_decode($section['images']);
+
+				$section['image_urls'] = [];
+				foreach ($images as $image) {
+					$image_record = $this->db->get_where("uploads",["filename" => $image])->row();
+
+					$token = $this->ImageModel->generateUploadToken($image_record->id,4200); //6mon expiry
+
+					$size = getimagesize(UPLOAD_FOLDER.$image);
+
+					$width = $size[0];
+					$height = $size[1];
+
+					//set dimensions
+					$setWidth = 250;
+					$setHeight = $setWidth/$width * $height;
+
+					$section['image_urls'][] = [
+						'url' => base_url()."image/serve/".$token['token']."/".$image,
+						'width' => $setWidth,
+						'height' => $setHeight
+					];
+				}
+
+			}
+
+			$mutated[] = $section;
+		}
+		$report['sections'] = $mutated;
 
 		$variables = [
 			'client' => $report['client'],
@@ -485,6 +527,15 @@ class Report extends Base_Controller {
 			'm' => new Mustache_Engine,
 			'variables' => $variables
 		];
+
+		if ($download) {
+			$filename = $report['report_title'];
+
+			header("Content-Type: application/vnd.ms-word");
+			header("Expires: 0");
+			header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+			header("content-disposition: attachment;filename=$filename.doc");
+		}
 
 		$this->load->view("report_text",$data);
 	}

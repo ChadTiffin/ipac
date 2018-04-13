@@ -13,15 +13,15 @@
 				</a>-->
 
 				<a class="btn btn-primary" :href="pdfUrl" target="_blank">
-					<i class="fa fa-download"></i> Report PDF
+					<i class="fa fa-pdf-o"></i> Report PDF
 				</a>
 
 				<a class="btn btn-primary" :href="pdfCoverUrl" target="_blank">
-					<i class="fa fa-download"></i> Report PDF - Cover
+					<i class="fa fa-pdf-o"></i> Report PDF - Cover
 				</a>
 
-				<a class="btn btn-primary" :href="textUrl" target="_blank">
-					<i class="fa fa-eye"></i> Report Text
+				<a class="btn btn-primary" :href="docUrl" target="_blank">
+					<i class="fa fa-file-word-o"></i> Report to Word
 				</a>
 
 				<button class="btn btn-success" v-on:click="save">
@@ -161,8 +161,8 @@
 				varHelpVisible: false,
 				currentClientId: localStorage.currentClientId,
 				pdfUrl: window.apiBase+"report/pdf/"+this.$route.params.id+"?key="+localStorage.apiKey,
-				pdfCoverUrl: window.apiBase+"report/pdf/cover"+this.$route.params.id+"?key="+localStorage.apiKey,
-				textUrl: window.apiBase+"report/text"+this.$route.params.id+"?key="+localStorage.apiKey,
+				pdfCoverUrl: window.apiBase+"report/pdf/"+this.$route.params.id+"/cover?key="+localStorage.apiKey,
+				docUrl: window.apiBase+"report/text/"+this.$route.params.id+"/word?key="+localStorage.apiKey,
 				typingTimer: null
 			}
 		},

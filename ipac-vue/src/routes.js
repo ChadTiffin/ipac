@@ -21,6 +21,8 @@ import Templating from './pages/Templating'
 import Dashboard from './pages/Dashboard'
 import Phases from './pages/Phases'
 import Expenses from './pages/Expenses'
+import LocalAudits from './pages/LocalAudits'
+import LocalAudit from './pages/LocalAudit'
 
 export default [
 
@@ -251,6 +253,25 @@ export default [
       navbar: true,
       navGroup: ["main"],
       titleText: "Expenses"
+    }
+  },
+  {
+    path: '/local-audits',
+    component: LocalAudits,
+    meta: {
+      icon: "fa-mobile",
+      navbar: true,
+      navGroup: ["main"],
+      titleText: "Audits on Device"
+    }
+  },
+  {
+    path: '/local-audits/:id',
+    component: LocalAudit,
+    meta: {
+      icon: "fa-mobile",
+      navbar: false,
+      titleText: "Audit on Device"
     }
   },
 ]

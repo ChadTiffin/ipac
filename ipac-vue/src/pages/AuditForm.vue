@@ -253,7 +253,6 @@
 
 				//recalculated number of fields unanswereed for this section
 
-
 				if (this.autoSaveActive) { //we need to prevent autosave from firing on load when controls get bound
 					this.$emit("updateAlert",{
 						visible:true,
@@ -265,6 +264,40 @@
 					let vm = this
 
 					this.audit.form_values = this.form
+
+					////////////////////////////////
+					// LOCAL SAVE
+					////////////////////////////////
+					let localAuditBackups = "localAuditBackups" in localStorage ? JSON.parse(localStorage.localAuditBackups) : []
+
+					//check limit
+					if ("localAuditBackups" in localStorage && localStorage.localAuditBackups.length > 3000000) {
+						
+						localAuditBackups.splice(0,1)
+					}
+
+					//get client name
+					let clientName = ""
+					this.clients.forEach(client => {
+						if (client.id == vm.audit.client_id)
+							clientName = client.company
+					})
+
+					//get location
+					let auditLocation = ""
+					this.selectedClientLocations.forEach(location => {
+						if (location.id == vm.audit.location_id)
+							auditLocation = location.location_name
+					})
+
+					localAuditBackups.push({
+						clientName: clientName,
+						auditLocation: auditLocation,
+						auditDate: vm.audit.audit_date,
+						auditData: vm.audit
+					})
+
+					localStorage.localAuditBackups = JSON.stringify(localAuditBackups)
 
 					this.calcTotalFieldsAnswered()
 
@@ -301,21 +334,34 @@
 					else {
 						vm.audit.performed_by = "{{{current_user}}}"
 
-						console.log(vm.audit)
+						/////////////////////////
+						// SAVE TO SERVER
+						/////////////////////////
 
 						vm.postData(window.apiBase+"auditForm/save",vm.audit).then(function(response){
-							vm.$emit("updateAlert",{
-								visible:true,
-								class: "alert-success",
-								msg: "Saved!",
-								icon: "fa-save"
-							})
 
-							setTimeout(function(){
+							if (response.status == "success") {
 								vm.$emit("updateAlert",{
-									visible:false,
+									visible:true,
+									class: "alert-success",
+									msg: "Saved!",
+									icon: "fa-save"
 								})
-							},6000)
+
+								setTimeout(function(){
+									vm.$emit("updateAlert",{
+										visible:false,
+									})
+								},6000)
+							}
+							else {
+								vm.$emit("updateAlert",{
+									visible:true,
+									class: "alert-danger",
+									msg: "A problem occurred, the save did not occur. Check your internet connection.",
+									icon: "fa-alert"
+								})
+							}
 						})
 					}
 				}
