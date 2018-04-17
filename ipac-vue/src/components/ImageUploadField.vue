@@ -33,7 +33,7 @@
 				class="thumb" 
 				:style="{backgroundImage: 'url('+apiBase+'image/serve/'+image+'?t='+rand+')'}">
 				<!--<p style="margin-top: 40px;">{{ image }}</p>-->
-				<div class="buttons">
+				<div class="buttons" v-if="!locked">
 
 					<!--<button type="button" class="btn btn-sm btn-default" v-on:click="showLightbox(image)"><i class="fa fa-arrows-alt"></i></button>-->
 
@@ -56,7 +56,7 @@
 			</div>
 		</div>
 
-		<upload-field v-if="!multi && images.length == 0 || multi" :upload-type="uploadType" v-on:uploaded="saveUpload($event)" :upload-msg="uploadMsg"></upload-field>
+		<upload-field v-if="!multi && images && images.length == 0 || multi" :upload-type="uploadType" v-on:uploaded="saveUpload($event)" :upload-msg="uploadMsg"></upload-field>
 	</div>
 
 </template>
@@ -67,7 +67,7 @@
 
 	export default {
 		name: "ImageUploadField",
-		props: ["images", "apiBase","multi","uploadMsg","uploadType","noThumbs"],
+		props: ["images", "apiBase","multi","uploadMsg","uploadType","noThumbs","locked"],
 		components: {
 			UploadField,
 			ModalDialog

@@ -2,6 +2,30 @@
 	<section>
 		<div class="button-bar">
 			<router-link :to="'/clients/'+currentClientId+'/audits'" class='router-link'><i class="fa fa-angle-double-left"></i> Back to Client</router-link>
+
+			<div class="pull-right">
+				<a :href="docUrl" class="btn btn-primary"><i class="fa fa-file-word-o"></i> Audit to Word</a>
+			</div>
+		</div>
+
+		<div class="text-center" style="margin-bottom: 30px;">
+			<p>The audit is 
+				<strong v-if="audit.locked == 0"><i class="fa fa-unlock"></i> EDITABLE</strong>
+				<strong v-else-if="audit.locked== 1"><i class="fa fa-lock"></i> LOCKED</strong>
+
+				&nbsp; &nbsp;
+
+				<button v-if="audit.locked == 0" v-on:click="lockUnlockAudit" class="btn btn-default">
+					<i class="fa fa-lock"></i>
+					Lock
+				</button>
+				<button v-else-if="audit.locked == 1" v-on:click="lockUnlockAudit" class="btn btn-default">
+					<i class="fa fa-unlock"></i>
+					Un-Lock
+				</button>
+			</p>
+
+			
 		</div>
 
 		<div class="row">
@@ -63,18 +87,82 @@
 						<h2 v-if="section.heading">{{ index+1 }}.0 {{section.heading}}</h2>
 
 						<div v-if="section.fields">
-							<audit-field v-for="(field, fieldIndex) in section.fields" :key="field.question" :label="field.question" :field="field" :value="field.value" v-on:change="autoSave" v-on:imageFieldChange="saveImageFieldChange($event,index, fieldIndex, false)"></audit-field>
-							}
-							
+							<p v-if="audit.locked == 1" v-show="false">The audit is locked, so these fields aren't editable</p>
+							<audit-field 
+								v-if="audit.locked == 0"
+								v-for="(field, fieldIndex) in section.fields" 
+								:key="field.question" 
+								:label="field.question" 
+								:field="field" 
+								:value="field.value" 
+								v-on:change="autoSave" 
+								v-on:imageFieldChange="saveImageFieldChange($event,index, fieldIndex, false)">	
+							</audit-field>
+
+							<form-group
+								v-else
+								v-for="(field, fieldIndex) in section.fields"
+								:key="field.question" 
+								:label="field.question"
+								col-class="col-md-6">
+
+								<image-upload-field v-if="field.type == 'images'"
+									:images="field.value"
+									:locked="true"
+									:api-base="apiBase">
+								</image-upload-field>
+
+								<div v-else class="form-control-plaintext"><div class="field-text-answer">{{ field.value }}</div></div>
+
+								<strong v-if="field.hasNotes">Notes:</strong>
+								<div v-if="field.hasNotes" class="form-control-plaintext">{{ field.notes }}</div>
+
+								<hr>
+
+							</form-group>
 						</div>
 
 						<div v-if="section.subSections" v-for="(subSection, subindex) in section.subSections" class="form-subsection">
 
 							<h3 v-if="subSection.heading">{{index+1}}.{{subindex+1}} {{ subSection.heading }}</h3>
 
+
+
 							<div v-if="subSection.fields">
 
-								<audit-field v-for="(field, fieldIndex) in subSection.fields" :key="field.question" :label="field.question" :field="field" :value="field.value" v-on:change="autoSave" v-on:imageFieldChange="saveImageFieldChange($event,index, fieldIndex, true)"></audit-field>
+								<p v-if="audit.locked == 1" v-show="false">The audit is locked, so these fields aren't editable</p>
+
+								<audit-field 
+									v-for="(field, fieldIndex) in subSection.fields" 
+									v-if="audit.locked == 0"
+									:key="field.question" 
+									:label="field.question" 
+									:field="field" 
+									:value="field.value" 
+									v-on:change="autoSave" 
+									v-on:imageFieldChange="saveImageFieldChange($event,index, fieldIndex, true)">
+								</audit-field>
+
+								<form-group
+									v-else
+									v-for="(field, fieldIndex) in subSection.fields"
+									:key="field.question" 
+									col-class="col-md-6"
+									:label="field.question">
+
+									<image-upload-field v-if="field.type == 'images'"
+										:images="field.images"
+										:locked="true"
+										:api-base="apiBase">
+									</image-upload-field>
+									<div v-else class="form-control-plaintext"><div class="field-text-answer">{{ field.value }}</div></div>
+
+									<strong v-if="field.hasNotes">Notes:</strong>
+									<div v-if="field.hasNotes" class="form-control-plaintext">{{ field.notes }}</div>
+
+								</form-group>
+
+								<hr>
 
 							</div>
 						</div>
@@ -114,6 +202,8 @@
 	import ModalDialog from '../components/ModalDialog'
 	import AuditField from '../components/AuditField'
 	import DateField from '../components/DateField'
+	import ButtonGroup from '../components/ButtonGroup'
+	import ImageUploadField from '../components/ImageUploadField'
 
 	export default {
 		name: "AuditForm",
@@ -121,7 +211,9 @@
 			FormGroup,
 			ModalDialog,
 			AuditField,
-			DateField
+			DateField,
+			ButtonGroup,
+			ImageUploadField
 		},
 		props: ["clients"],
 		data () {
@@ -136,7 +228,9 @@
 				tocCollapsed: false,
 				confirmDialog: {
 					visible: false,
-				}
+				},
+				apiBase: window.apiBase,
+				docUrl: window.apiBase+"auditForm/word/"+this.$route.params.id+"?key="+localStorage.apiKey,
 			}
 		},
 		watch: {
@@ -189,6 +283,38 @@
 			}
 		},
 		methods: {
+			lockUnlockAudit() {
+				let vm = this
+
+				let locked = vm.audit.locked == 1 ? 0 : 1
+
+				let payload = {
+					locked: locked,
+					id: vm.audit.id
+				}
+
+				let icon = "fa-lock"
+				let msg = "Audit is now Locked"
+				if (locked == 0) {
+					icon = "fa-unlock"
+					msg = "Audit is now Un-locked!"
+				}
+
+				console.log(locked)
+
+				this.postData(window.apiBase+"auditForm/save",payload).then(response => {
+					if (response.status == "success") {
+						vm.audit.locked = locked
+
+						vm.$emit("updateAlert",{
+							visible:true,
+							class: "alert-success",
+							msg: msg,
+							icon: icon
+						})
+					}
+				})
+			},
 			completeTask() {
 				let vm = this
 
@@ -263,7 +389,7 @@
 
 					let vm = this
 
-					this.audit.form_values = this.form
+					this.audit.form_values = JSON.stringify(this.form)
 
 					////////////////////////////////
 					// LOCAL SAVE
@@ -301,69 +427,49 @@
 
 					this.calcTotalFieldsAnswered()
 
-					if (this.$root.isOffline) { //save to local
+					vm.audit.performed_by = "{{{current_user}}}"
 
-						//find audit in list
-						let offlineAudits = []
-						let auditFound = false
+					/////////////////////////
+					// SAVE TO SERVER
+					/////////////////////////
 
-						if (localStorage.offlineAudits)
-							offlineAudits = JSON.parse(localStorage.offlineAudits)
+					vm.postData(window.apiBase+"auditForm/save",vm.audit).then(function(response){
 
-						offlineAudits.forEach(function(audit,index) {
-							if (audit.id == vm.$route.params.id) {
-					
-								audit.form_values = vm.audit.form_values
+						if (response.status == "success") {
+							vm.$emit("updateAlert",{
+								visible:true,
+								class: "alert-success",
+								msg: "Saved!",
+								icon: "fa-save"
+							})
 
-								auditFound = true
-							}
-						})
-						if (!auditFound) {
-							offlineAudits.push(this.audit)
+							setTimeout(function(){
+								vm.$emit("updateAlert",{
+									visible:false,
+								})
+							},6000)
 						}
-						localStorage.offlineAudits = JSON.stringify(offlineAudits);
+						else {
+							let msg = "A problem occurred, the save did not occur. Check your internet connection."
 
-						vm.$emit("updateAlert",{
-							visible:true,
-							class: "alert-success",
-							msg: "Saved locally!",
-							icon: "fa-save"
-						})
+							if ("msg" in response)
+								msg = response.msg
 
-					}
-					else {
-						vm.audit.performed_by = "{{{current_user}}}"
+							vm.$emit("updateAlert",{
+								visible:true,
+								class: "alert-danger",
+								msg: msg,
+								icon: "fa-alert"
+							})
 
-						/////////////////////////
-						// SAVE TO SERVER
-						/////////////////////////
+							if ("reason" in response && response.reason == "locked") {
+								vm.autoSaveActive = false
 
-						vm.postData(window.apiBase+"auditForm/save",vm.audit).then(function(response){
-
-							if (response.status == "success") {
-								vm.$emit("updateAlert",{
-									visible:true,
-									class: "alert-success",
-									msg: "Saved!",
-									icon: "fa-save"
-								})
-
-								setTimeout(function(){
-									vm.$emit("updateAlert",{
-										visible:false,
-									})
-								},6000)
+								vm.fetchAudit()
 							}
-							else {
-								vm.$emit("updateAlert",{
-									visible:true,
-									class: "alert-danger",
-									msg: "A problem occurred, the save did not occur. Check your internet connection.",
-									icon: "fa-alert"
-								})
-							}
-						})
-					}
+						}
+					})
+					
 				}
 
 			},
@@ -372,64 +478,27 @@
 
 				this.getJSON(window.apiBase + "auditForm/find/"+this.$route.params.id).then(function(response){
 
-					if ("status" in response && response.status == "offline") {
-						//look for it in local
+					if (response.form_values)
+						vm.form = JSON.parse(response.form_values)
+					else 
+						vm.form = JSON.parse(response.form_templates.fields)
+					
 
-						if (localStorage.offlineAudits) {
-							let localAudits = JSON.parse(localStorage.offlineAudits)
+					vm.fullAudit = response
 
-							localAudits.forEach(function(audit, index){
-								if (audit.id == vm.$route.params.id) {
-
-									vm.audit = {
-										audit_date: audit.audit_date,
-										client_id: audit.client_id,
-										form_template_id: audit.form_template_id,
-										location_id: audit.location_id,
-										id: audit.id,
-										task_id: audit.task_id
-									}
-
-									if ("form_values" in audit)
-										vm.form = audit.form_values		
-									else {
-										//no values yet, we need to get the template
-										if (localStorage.auditTemplates) {
-											let templates = JSON.parse(localStorage.auditTemplates)
-
-											templates.forEach(function(template, index){
-
-												if (audit.form_template_id == template.id) 
-													vm.form = JSON.parse(template.fields)
-
-												
-											})
-										}
-									}
-								}
-							})
-						}
+					vm.audit = {
+						audit_date: response.audit_date,
+						client_id: response.client_id,
+						form_template_id: response.form_template_id,
+						id: response.id,
+						location_id: response.location_id,
+						task_id: response.task_id,
+						locked: response.locked
 					}
-					else {
 
-						if (response.form_values)
-							vm.form = JSON.parse(response.form_values)
-						else 
-							vm.form = JSON.parse(response.form_templates.fields)
-						
+					vm.$set(vm.audit,"form_values",response.form_values)
 
-						vm.fullAudit = response
-
-						vm.audit = {
-							audit_date: response.audit_date,
-							client_id: response.client_id,
-							form_template_id: response.form_template_id,
-							form_values: response.form_values,
-							id: response.id,
-							location_id: response.location_id,
-							task_id: response.task_id
-						}
-					}
+					console.log(vm.form)
 
 					vm.calcTotalFieldsAnswered()
 					
@@ -510,6 +579,13 @@
 	    padding-top: 2px;
 
 	    box-shadow: 1px 1px 2px black;
+	}
+
+	.field-text-answer {
+		text-transform: uppercase;
+		padding: 2px;
+		display: inline-block;
+		border: 1px solid #a0a0a0;
 	}
 
 	@media (max-width: 991px) {

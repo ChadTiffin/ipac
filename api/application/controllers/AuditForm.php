@@ -5,10 +5,10 @@ class AuditForm extends Base_Controller {
 	public $table = "audits";
 
 	public $validation_rules = [
-		["field" => "client_id","label" => "Client","rules"=>"required|greater_than[0]"],
+		/*["field" => "client_id","label" => "Client","rules"=>"required|greater_than[0]"],
 		["field" => "location_id","label" => "Location","rules"=>"required|greater_than[0]"],
 		["field" => "audit_date","label" => "Audit Date","rules"=>"required"],
-		["field" => "form_template_id","label" => "Form Template","rules"=>"required|greater_than[0]"]
+		["field" => "form_template_id","label" => "Form Template","rules"=>"required|greater_than[0]"]*/
 	];
 
 	public $model = "AuditFormModel";
@@ -19,6 +19,27 @@ class AuditForm extends Base_Controller {
 	
 		$this->gatekeep(["Demo", "User","Admin","Root"]);
 
+	}
+
+	public function save() {
+		$data = $this->input->post();
+
+		if (isset($data['id'])) {
+			//get audit to make sure its not locked
+			$audit = $this->db->get_where($this->table,["id" => $data['id']])->row();
+
+			if ($audit->locked == 1 && isset($data['form_values'])) {
+
+				echo json_encode([
+					"status" => "fail",
+					"msg" => "You can't edit this Audit's fields, it is locked!",
+					"reason" => "locked"
+				]);
+			}
+			else {
+				parent::save();
+			}
+		}
 	}
 
 	public function delete() {
@@ -125,13 +146,18 @@ class AuditForm extends Base_Controller {
 
 				if (isset($record['id']) && $record['id'] != 'undefined' && $record['id'] != 0) {
 
-					$this->db
-						->set($record)
-						->where('id',$record['id'])
-						->update($this->table);
+					$audit = $this->db->get_where($this->table,["id" => $record['id']])->row();
 
-					$record_id = $record['id'];
-					$numUpdates++;
+					if ($audit->locked == 0) {
+
+						$this->db
+							->set($record)
+							->where('id',$record['id'])
+							->update($this->table);
+
+						$record_id = $record['id'];
+						$numUpdates++;
+					}
 				}
 				else {
 
@@ -148,6 +174,27 @@ class AuditForm extends Base_Controller {
 			"status" => "success"
 		]);
 
+	}
+
+	public function word($audit_id) {
+		$audit = $this->db->select("*")
+			->from($this->table)
+			->join("clients","clients.id = client_id")
+			->join("locations","location_id=locations.id")
+			->join("users","performed_by=users.id")
+			->where($this->table.".id",$audit_id)
+			->get()->row();
+
+		$this->load->model("ImageModel");
+
+		$filename = "Audit - ".$audit->location_name;
+
+		header("Content-Type: application/vnd.ms-word");
+		header("Expires: 0");
+		header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+		header("content-disposition: attachment;filename=$filename.doc");
+
+		$this->load->view("audit_text",$audit);
 	}
 
 }
