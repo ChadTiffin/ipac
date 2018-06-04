@@ -8,6 +8,188 @@ class Tools extends Base_Controller {
 	
 	}
 
+	public function add_recommendations_retroactively() {
+		$audits = $this->db
+			->where("id >",341)
+			->get("audits")->result_array();
+
+		ini_set('max_execution_time', 1200);
+
+		foreach ($audits as $audit) {
+			$new_form = [];
+
+			$form = json_decode($audit['form_values'],true);
+
+			if ($form) {
+
+				foreach ($form as $section) {
+
+					if (isset($section['fields'])) {
+
+						$new_qs = [];
+						foreach ($section['fields'] as $q) {
+							$form_q_stripped = str_replace(" ","",str_replace(":","",strtolower($q['question'])));
+							$csv = fopen("recommendations.csv","r");
+
+							while (($row = fgetcsv($csv, 0, ",")) !== FALSE) {
+								//find matching question
+
+								$q_stripped = strtolower($row[0]);
+								$q_stripped = str_replace(":", "", $q_stripped);
+								$q_stripped = str_replace(" ", "", $q_stripped);
+
+								if ($form_q_stripped == $q_stripped) {
+									//question found, add recommendation
+									$q['recommendation'] = $row[1];
+									break;
+								}
+							}
+							$new_qs[] = $q;
+
+							fclose($csv);
+						}
+
+						$section['fields'] = $new_qs;
+					}
+
+					if (isset($section['subSections'])) {
+
+						$new_subsections = [];
+
+						foreach ($section['subSections'] as $subsection) {
+							if (isset($subsection['fields'])) {
+
+								$new_qs = [];
+								foreach ($subsection['fields'] as $q) {
+									$form_q_stripped = str_replace(" ","",str_replace(":","",strtolower($q['question'])));
+									$csv = fopen("recommendations.csv","r");
+
+									while (($row = fgetcsv($csv, 0, ",")) !== FALSE) {
+										//find matching question
+
+										$q_stripped = strtolower($row[0]);
+										$q_stripped = str_replace(":", "", $q_stripped);
+										$q_stripped = str_replace(" ", "", $q_stripped);
+
+										if ($form_q_stripped == $q_stripped) {
+											//question found, add recommendation
+											//strip "recommendation:" text
+											$rec = str_replace("Recommendation: ", "", $row[1]);
+
+											$q['recommendation'] = $rec;
+											break;
+										}
+									}
+									$new_qs[] = $q;
+
+									fclose($csv);
+								}
+
+								$subsection['fields'] = $new_qs;
+							}
+							$new_subsections[] = $subsection;
+						}
+
+						$section['subSections'] = $new_subsections;
+					}
+
+					$new_form[] = $section;
+				}
+
+				$this->db->set("form_values",json_encode($new_form))
+					->set("updated_at",date("Y-m-d H:i:s"))
+					->where("id",$audit['id'])
+					->update('audits');
+			}
+		}
+	}
+
+	public function add_recommendations() {
+		
+		$form = file_get_contents("audit_form.json");
+
+		$form = json_decode($form,true);
+
+		$new_form = [];
+
+		foreach ($form as $section) {
+
+			if (isset($section['fields'])) {
+
+				$new_qs = [];
+				foreach ($section['fields'] as $q) {
+					$form_q_stripped = str_replace(" ","",str_replace(":","",strtolower($q['question'])));
+					$csv = fopen("recommendations.csv","r");
+
+					while (($row = fgetcsv($csv, 0, ",")) !== FALSE) {
+						//find matching question
+
+						$q_stripped = strtolower($row[0]);
+						$q_stripped = str_replace(":", "", $q_stripped);
+						$q_stripped = str_replace(" ", "", $q_stripped);
+
+						if ($form_q_stripped == $q_stripped) {
+							//question found, add recommendation
+							$q['recommendation'] = $row[1];
+							break;
+						}
+					}
+					$new_qs[] = $q;
+
+					fclose($csv);
+				}
+
+				$section['fields'] = $new_qs;
+			}
+
+			if (isset($section['subSections'])) {
+
+				$new_subsections = [];
+
+				foreach ($section['subSections'] as $subsection) {
+					if (isset($subsection['fields'])) {
+
+						$new_qs = [];
+						foreach ($subsection['fields'] as $q) {
+							$form_q_stripped = str_replace(" ","",str_replace(":","",strtolower($q['question'])));
+							$csv = fopen("recommendations.csv","r");
+
+							while (($row = fgetcsv($csv, 0, ",")) !== FALSE) {
+								//find matching question
+
+								$q_stripped = strtolower($row[0]);
+								$q_stripped = str_replace(":", "", $q_stripped);
+								$q_stripped = str_replace(" ", "", $q_stripped);
+
+								if ($form_q_stripped == $q_stripped) {
+									//question found, add recommendation
+									//strip "recommendation:" text
+									$rec = str_replace("Recommendation: ", "", $row[1]);
+
+									$q['recommendation'] = $rec;
+									break;
+								}
+							}
+							$new_qs[] = $q;
+
+							fclose($csv);
+						}
+
+						$subsection['fields'] = $new_qs;
+					}
+					$new_subsections[] = $subsection;
+				}
+
+				$section['subSections'] = $new_subsections;
+			}
+
+			$new_form[] = $section;
+		}
+
+		echo json_encode($new_form);
+		
+	}
+
 	public function form_generator() {
 		$this->load->view("form_builder");	
 	}

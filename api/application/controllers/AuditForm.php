@@ -40,6 +40,8 @@ class AuditForm extends Base_Controller {
 				parent::save();
 			}
 		}
+		else
+			parent::save();
 	}
 
 	public function delete() {

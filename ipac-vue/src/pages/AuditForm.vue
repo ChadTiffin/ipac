@@ -10,22 +10,19 @@
 
 		<div class="text-center" style="margin-bottom: 30px;">
 			<p>The audit is 
-				<strong v-if="audit.locked == 0"><i class="fa fa-unlock"></i> EDITABLE</strong>
+				<strong v-if="!audit.locked"><i class="fa fa-unlock"></i> EDITABLE</strong>
 				<strong v-else-if="audit.locked== 1"><i class="fa fa-lock"></i> LOCKED</strong>
-
-				&nbsp; &nbsp;
-
-				<button v-if="audit.locked == 0" v-on:click="lockUnlockAudit" class="btn btn-default">
-					<i class="fa fa-lock"></i>
-					Lock
-				</button>
-				<button v-else-if="audit.locked == 1" v-on:click="lockUnlockAudit" class="btn btn-default">
+				<span> &nbsp; &nbsp; </span>
+				<button v-if="audit.locked == 1" v-on:click="lockUnlockAudit" class="btn btn-default">
 					<i class="fa fa-unlock"></i>
 					Un-Lock
 				</button>
+				<button v-else v-on:click="lockUnlockAudit" class="btn btn-default">
+					<i class="fa fa-lock"></i>
+					Lock
+				</button>
 			</p>
 
-			
 		</div>
 
 		<div class="row">

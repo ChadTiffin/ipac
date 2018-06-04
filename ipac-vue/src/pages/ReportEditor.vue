@@ -209,6 +209,83 @@
 					section: section
 				}
 			},
+			//modifies output in place 
+			outputQuestion(section,field,findings_html, findings_images) {
+				console.log(field)
+
+				let vm = this
+
+				let notes = "";
+				if (typeof field.notes != "undefined")
+					notes = field.notes
+
+				if (field.type == 'images' || field.type =='image') {
+					//console.log("images found")
+					if (field.value) {
+
+						if (!section.images)
+							section.images = field.value
+						else
+							section.images = section.images.concat(field.value)
+
+						/*field.value.forEach(function(image,index){
+							findings_images += "<img style='width:320px' src='"+window.apiBase+"image/serve/public/"+image+"'>"
+						})*/
+					}
+					if (field.hasNotes && field.notes != "") 
+						findings_images += "<p>"+notes+"</p>"
+					
+				}
+				else if (field.type == 'yes/no') {
+
+					if (typeof field.value != 'undefined') {
+
+						//add question
+						findings_html += "<li><em>"+field.question+"</em>: <ul><li><strong>Observation: </strong>"
+
+						if (field.notes) 
+							findings_html += notes
+						
+						else if (field.value == "no" || vm.includePositiveFindings) {
+
+							if (field.value)
+								findings_html += field.value.toUpperCase()
+						}
+
+						findings_html += "</li>"
+
+						if ("recommendation" in field) 
+							findings_html += "<li><strong>Recommendation: </strong>"+field.recommendation+"</li>"
+						
+
+						findings_html += "<ul></li>"
+					}
+
+				}
+				else if (field.type == "opportunityCounter") {
+
+					let percentage = Math.round((field.value[0] / (field.value[0] + field.value[1])) * 100)
+
+					findings_html += "<li><em>"+field.question+":</em> "+percentage + "%"+"</li>"
+				}
+				else if (field.type == 'textarea') {
+					findings_html += "<li><em>"+field.question+"</em>: <ul><li>"+field.value+"</li></ul></li>"
+				}
+
+				if ("observations" in field || "recommendations" in field)
+					findings_html += "<li><ul>"
+
+				if ("observations" in field)
+					findings_html += "<li><strong>Observations</strong>: "+field.observations+"</li>"
+
+				if ("recommendations" in field)
+					findings_html += "<li><strong>Recommendations</strong>: "+field.recommendations+"</li>"
+
+				if ("observations" in field || "recommendations" in field)
+					findings_html += "</ul></li>"
+
+				return [findings_html,findings_images]
+			},
 			importAuditData(section) {
 
 				this.importModal.visible = false
@@ -255,65 +332,10 @@
 										//console.log("searching main fields...")
 										field_section.fields.forEach(function(field, index){
 
-											let notes = "";
-											if (typeof field.notes != "undefined")
-												notes = field.notes
+											let result = vm.outputQuestion(section,field,findings_html, findings_images)
 
-											if (field.type == 'images' || field.type =='image') {
-												//console.log("images found")
-												if (field.value) {
-
-													if (!section.images)
-														section.images = field.value
-													else
-														section.images = section.images.concat(field.value)
-
-													/*field.value.forEach(function(image,index){
-														findings_images += "<img style='width:320px' src='"+window.apiBase+"image/serve/public/"+image+"'>"
-													})*/
-												}
-												if (field.hasNotes && field.notes != "") 
-													findings_images += "<p>"+notes+"</p>"
-												
-											}
-											else if (field.type == 'yes/no') {
-
-												if (typeof field.value != 'undefined') {
-													if (field.value == "no" && field.notes) {
-														findings_html += "<li><em>"+field.question+"</em>: <strong>"+field.value.toUpperCase()+". "+notes+"</strong></li>"
-													}
-													else if (field.value == "no" || vm.includePositiveFindings) {
-
-														if (field.value)
-															findings_html += "<li><em>"+field.question+"</em>: <strong>"+field.value.toUpperCase()+". "+ notes + "</strong></li>"
-													}
-													else if (field.value == "n/a") {
-														findings_html += "<li><em>"+field.question+"</em>: <strong>"+field.value.toUpperCase()+". "+ notes + "</strong></li>"
-													}
-												}
-
-											}
-											else if (field.type == "opportunityCounter") {
-
-												let percentage = Math.round((field.value[0] / (field.value[0] + field.value[1])) * 100)
-
-												findings_html += "<strong>"+field.question+": "+percentage + "%"+"</strong></li>"
-											}
-											else if (field.type == 'textarea') {
-												findings_html += "<em>"+field.question+"</em>: "+field.value+"</li>"
-											}
-
-											if ("observations" in field || "recommendations" in field)
-												findings_html += "<li><ul>"
-
-											if ("observations" in field)
-												findings_html += "<li><strong>Observations</strong>: "+field.observations+"</li>"
-
-											if ("recommendations" in field)
-												findings_html += "<li><strong>Recommendations</strong>: "+field.recommendations+"</li>"
-
-											if ("observations" in field || "recommendations" in field)
-												findings_html += "</ul></li>"
+											findings_html = result[0]
+											findings_images = result[1]
 
 										})
 									}
@@ -323,63 +345,11 @@
 											if ("fields" in subSection) {
 												subSection.fields.forEach(function(field, index) {
 
-													let notes = "";
-													if (typeof field.notes != "undefined")
-														notes = field.notes
+													let result = vm.outputQuestion(subSection,field,findings_html, findings_images)
 
-													if (field.type == 'images' || field.type =='image') {
+													findings_html = result[0]
+													findings_images = result[1]
 
-														if (field.value) {
-
-															if (!section.images)
-																section.images = field.value
-															else
-																section.images = section.images.concat(field.value)
-
-															/*field.value.forEach(function(image,index){
-																findings_images += "<img style='width:320px' src='"+window.apiBase+"image/serve/public/"+image+"'>"
-															})*/
-														}
-														if (field.hasNotes && field.notes != "") 
-															findings_images += "<p>"+notes+"</p>"
-													}
-													else if (field.type == 'yes/no') {
-
-														if (typeof field.value != 'undefined') {
-															if (field.value == "no" && field.notes) {
-																findings_html += "<li><em>"+field.question+"</em>: <strong>"+field.value.toUpperCase()+". "+notes+"</strong></li>"
-															}
-															else if (field.value == "no" || vm.includePositiveFindings) {
-
-																if (field.value)
-																	findings_html += "<li><em>"+field.question+"</em>: <strong>"+field.value.toUpperCase()+". "+ notes + "</strong></li>"
-															}
-															else if (field.value == "n/a") {
-																findings_html += "<li><em>"+field.question+"</em>: <strong>"+field.value.toUpperCase()+". "+ notes + "</strong></li>"
-															}
-														}
-
-													}
-													else if (field.type == "opportunityCounter") {
-														let percentage = Math.round((field.value[0] / (field.value[0] + field.value[1])) * 100)
-
-														findings_html += "<li>"+percentage + "%"+"</li>"
-													}
-													else if (field.type == 'textarea') {
-														findings_html += "<li><em>"+field.question+"</em>: "+field.value+"</li>"
-													}
-
-													if ("observations" in field || "recommendations" in field)
-														findings_html += "<li><ul>"
-
-													if ("observations" in field)
-														findings_html += "<li><strong>Observations</strong>: "+field.observations+"</li>"
-
-													if ("recommendations" in field)
-														findings_html += "<li><strong>Recommendations</strong>: "+field.recommendations+"</li>"
-
-													if ("observations" in field || "recommendations" in field)
-														findings_html += "</ul></li>"
 												})
 
 											}
