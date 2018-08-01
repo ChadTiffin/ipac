@@ -23,6 +23,7 @@ import Phases from './pages/Phases'
 import Expenses from './pages/Expenses'
 import LocalAudits from './pages/LocalAudits'
 import LocalAudit from './pages/LocalAudit'
+import AuditEditor from './pages/AuditEditor'
 
 export default [
 
@@ -128,6 +129,16 @@ export default [
       icon: "fa-cube",
       navbar: false,
       titleText: "Project"
+    }
+  },
+  {
+    path: '/audit-editor' , 
+    component: AuditEditor,
+    meta: {
+      icon: "fa-pencil",
+      navbar: true,
+      navGroup: ["main"],
+      titleText: "Audit  Editor"
     }
   },
   {

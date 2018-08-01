@@ -20,9 +20,23 @@
 					</button-group>
 					<spinner v-else :inline="true"></spinner>
 
+					<h4>Account Manager</h4>
+
+					<button-group
+						v-if="users.length > 0"
+						vertical="true" 
+						:buttons="userFilteringButtons" 
+						:full-width="true"
+						v-model="clientsFiltering.accountManager">
+					</button-group>
+
 				</div>
 			</div>
 			<div class="col-md-9 col-sm-8">
+				<form v-on:submit.prevent="searchClients">
+					<input type="text" placeholder="Search clients..." v-model="searchTerms" class="form-control">
+				</form>
+
 				<table-list 
 					:records="filteredClients" 
 					:fields="fields" 
@@ -52,6 +66,7 @@
 		},
 		data () {
 			return {
+				searchTerms: "",
 				fields: [
 					{
 						key: "company",
@@ -91,8 +106,10 @@
 					successFunction: ""
 				},
 				clientsFiltering: {
-					activePhase: "all"
+					activePhase: "all",
+					accountManager: 'all'
 				},
+				users:[],
 				clientPhaseFilteringButtons: []
 				/*otherButtons: [
 					{
@@ -111,6 +128,22 @@
 			}
 		},
 		computed: {
+			userFilteringButtons() {
+
+				let users = this.users.map(user => {
+					return {
+						text: user.first_name+" "+user.last_name,
+						value: user.id
+					}
+				})
+
+				users.splice(0,0,{	
+					text: "All",
+					value: "all"	
+				})
+
+				return users
+			},
 			filteredClients() {
 				let filteredClients = [];
 				let vm = this
@@ -127,18 +160,34 @@
 						}
 					})
 
+					let includePhase = false
+					let includeManager = false
+
 					if (vm.clientsFiltering.activePhase == "all" || vm.clientsFiltering.activePhase == activePhase) {
 						//include this client and add active phase label
 						client['activePhaseLabel'] = activePhaseLabel
 
-						filteredClients.push(client)
+						includePhase = true
 					}
+
+					if (vm.clientsFiltering.accountManager == "all" || vm.clientsFiltering.accountManager == client.managing_user_id) {
+						includeManager = true
+					}
+
+					if (includePhase && includeManager)
+						filteredClients.push(client)
 				})
 
 				return filteredClients
 			}
 		},
 		methods: {
+			searchClients() {
+				this.clientsFiltering.accountManager = "all"
+				this.clientsFiltering.activePhase = "all"
+
+				this.$emit("searchClients",this.searchTerms)
+			},
 			fetchPhases() {
 				let vm = this
 
@@ -163,9 +212,17 @@
 		},
 		created() {
 			this.fetchPhases()
+			this.fetchUsers()
 
 			this.$emit("toggleSpinner",false)
 			this.$emit("clientsChanged")
+
+			//set account manager filtering default
+			if ("userDetails" in localStorage) {
+				let details = JSON.parse(localStorage.userDetails) 
+
+				this.clientsFiltering.accountManager = details.id
+			}
 		}
 	}
 </script>

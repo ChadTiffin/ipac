@@ -34,6 +34,7 @@
           v-on:updateLoginStatus="updateLoginStatus" 
           v-on:toggleSpinner="toggleSpinner" 
           v-on:clientsChanged="fetchClients"
+          v-on:searchClients="searchClients"
           v-on:newAudit="newAudit"
           v-on:pageTitle="setPageTitle"
 

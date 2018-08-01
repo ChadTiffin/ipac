@@ -86,6 +86,12 @@
 								<p v-else class="form-control-static">{{ client.referred_by }}</p>
 							</form-group>
 
+							<form-group label="Account Manager" col-class="col-md-4">
+								<select class="form-control" v-model="client.managing_user_id">
+									<option v-for="user in users" :value="user.id">{{ user.first_name }} {{ user.last_name }}</option>
+								</select>
+							</form-group>
+
 							<div style="clear: both;"></div>
 
 						</form>
@@ -306,6 +312,7 @@
 					errors: []
 				},
 				client: {},
+				users: [],
 				locations: [],
 				locationFilterTerms: "",
 				auditFilterTerms: "",
@@ -792,6 +799,7 @@
 					vm.clientPhases = response
 				})
 			}
+			
 		},
 		created() {
 			if (this.$route.params.id != "new") {
@@ -814,6 +822,8 @@
 			}
 			else
 				this.$emit("toggleSpinner",false)
+
+			this.fetchUsers()
 
 			if (typeof this.$route.params.tab == 'undefined' && this.$route.params.id != "new")
 				this.$router.replace("/clients/"+this.$route.params.id+"/locations")

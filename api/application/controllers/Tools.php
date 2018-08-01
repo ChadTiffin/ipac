@@ -10,7 +10,7 @@ class Tools extends Base_Controller {
 
 	public function add_recommendations_retroactively() {
 		$audits = $this->db
-			->where("id >",341)
+			->where("id",360)
 			->get("audits")->result_array();
 
 		ini_set('max_execution_time', 1200);

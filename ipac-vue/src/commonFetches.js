@@ -67,10 +67,31 @@ export default {
 				}
 			})
 		},
+		searchClients(terms) {
+			let vm = this
+
+			let order = JSON.stringify(["company","ASC"]);
+
+			let filters = JSON.stringify([
+				["company",terms,"or","like"],
+				["contacT_name",terms,"or","like"],
+				["email",terms,"or","like"],
+				["city",terms,"or","like"]
+			])
+
+			vm.$emit("toggleSpinner",true)
+
+			this.getJSON(window.apiBase+"client/get?order="+order+"&filters="+filters).then(response => {
+				vm.clients = response
+				vm.$emit("toggleSpinner",false)
+			})
+		},
 		fetchClients() {
 			let vm = this
 
-			this.getJSON(window.apiBase + "client/get").then(function(response){
+			let order = JSON.stringify(["company","ASC"]);
+
+			this.getJSON(window.apiBase + "client/get?order="+order).then(function(response){
 				if (response.status == "offline") {
 					//try to pull from localstorage
 					if (localStorage.clients) {
@@ -85,6 +106,13 @@ export default {
 				}
 
 				vm.$emit("toggleSpinner",false)
+			})
+		},
+		fetchUsers() {
+			let vm = this
+
+			this.getJSON(window.apiBase+"user/get").then(response => {
+				vm.users = response
 			})
 		},
 		fetchProjects(filters, order) {
