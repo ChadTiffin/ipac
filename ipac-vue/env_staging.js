@@ -1,1 +1,0 @@
-window.apiBase = "https://ipac-api.chadtiffin.com/"

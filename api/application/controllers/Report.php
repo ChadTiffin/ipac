@@ -489,20 +489,24 @@ class Report extends Base_Controller {
 
 					$token = $this->ImageModel->generateUploadToken($image_record->id,4200); //6mon expiry
 
-					$size = getimagesize(UPLOAD_FOLDER.$image);
 
-					$width = $size[0];
-					$height = $size[1];
+					if (file_exists(UPLOAD_FOLDER.$image)) {
+						$size = getimagesize(UPLOAD_FOLDER.$image);
+					
 
-					//set dimensions
-					$setWidth = 250;
-					$setHeight = $setWidth/$width * $height;
+						$width = $size[0];
+						$height = $size[1];
 
-					$section['image_urls'][] = [
-						'url' => base_url()."image/serve/".$token['token']."/".$image,
-						'width' => $setWidth,
-						'height' => $setHeight
-					];
+						//set dimensions
+						$setWidth = 250;
+						$setHeight = $setWidth/$width * $height;
+
+						$section['image_urls'][] = [
+							'url' => base_url()."image/serve/".$token['token']."/".$image,
+							'width' => $setWidth,
+							'height' => $setHeight
+						];
+					}
 				}
 
 			}

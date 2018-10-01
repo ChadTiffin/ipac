@@ -167,6 +167,11 @@
 			}
 		},
 		methods: {
+			capitalizeFirstLetter(string) {
+				let lower = string.toLowerCase()
+
+				return lower.charAt(0).toUpperCase() + lower.substr(1)
+			},
 			editorChanged() {
 				let vm = this
 
@@ -211,7 +216,6 @@
 			},
 			//modifies output in place 
 			outputQuestion(section,field,findings_html, findings_images) {
-				console.log(field)
 
 				let vm = this
 
@@ -241,15 +245,17 @@
 					if (typeof field.value != 'undefined') {
 
 						//add question
-						findings_html += "<li><em>"+field.question+"</em>: <ul><li><strong>Observation: </strong>"
+						findings_html += "<li><h4>"+field.question+":</h4> <ul><li><strong>Observation: </strong>"
 
 						if (field.notes) 
 							findings_html += notes
 						
 						else if (field.value == "no" || vm.includePositiveFindings) {
 
+							let value = vm.capitalizeFirstLetter(field.value)+"."
+
 							if (field.value)
-								findings_html += field.value.toUpperCase()
+								findings_html += value
 						}
 
 						findings_html += "</li>"
@@ -266,10 +272,10 @@
 
 					let percentage = Math.round((field.value[0] / (field.value[0] + field.value[1])) * 100)
 
-					findings_html += "<li><em>"+field.question+":</em> "+percentage + "%"+"</li>"
+					findings_html += "<li><h4>"+field.question+":</h4> "+percentage + "%"+"</li>"
 				}
 				else if (field.type == 'textarea') {
-					findings_html += "<li><em>"+field.question+"</em>: <ul><li>"+field.value+"</li></ul></li>"
+					findings_html += "<li><h4>"+field.question+":</h4> <ul><li>"+field.value+"</li></ul></li>"
 				}
 
 				if ("observations" in field || "recommendations" in field)
@@ -326,6 +332,10 @@
 									//we've found it, pull in all the photos and answer notes
 
 									findings_html += "<p><strong>" + field_section.heading + "</strong></p>"
+
+									if ("description" in field_section)
+										findings_html += "<p>"+field_section.description+"</p>"
+
 									findings_html += "<ul>"
 
 									if ("fields" in field_section) {
@@ -340,8 +350,15 @@
 										})
 									}
 									if ("subSections" in field_section) {
-										//console.log("searching subsection fields...")
+									
 										field_section.subSections.forEach(function(subSection, index) {
+
+											if ("heading" in subSection) 
+												findings_html += "<p>"+subSection.heading+"<p>"
+
+											if ("description" in subSection)
+												findings_html += "<p>"+subSection.description+"</p>"
+
 											if ("fields" in subSection) {
 												subSection.fields.forEach(function(field, index) {
 
